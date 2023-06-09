@@ -72,6 +72,12 @@ public class UserProfileController {
         return ResponseEntity.ok(userProfileService.showPersonnelInformation(token));
     }
 
+    @PutMapping("/inactivate-user/{authId}")
+    public ResponseEntity<Boolean> inactivateUser(@PathVariable Long authId){
+        System.out.println("burdayım");
+        return ResponseEntity.ok(userProfileService.inactivateUser(authId));
+    }
+
     @GetMapping("/find-all")
     public ResponseEntity<List<UserProfile>> findAll(){
         return ResponseEntity.ok(userProfileService.findAll());

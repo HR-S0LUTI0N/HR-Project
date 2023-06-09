@@ -13,7 +13,8 @@ public enum ErrorType {
     INVALID_TOKEN(4600,"Token hatası" ,  HttpStatus.BAD_REQUEST),
     USER_NOT_FOUND(4400, "Böyle bir kullanıcı bulunamadı", HttpStatus.NOT_FOUND),
     NO_AUTHORIZATION(4900,"Yetkisiz giriş denemesi",HttpStatus.BAD_REQUEST),
-    COMPANY_NOT_FOUND(5100, "Böyle bir şirket bulunamadı", HttpStatus.NOT_FOUND);
+    COMPANY_NOT_FOUND(5100, "Böyle bir şirket bulunamadı", HttpStatus.NOT_FOUND),
+    COMPANY_ALREADY_EXIST(5200,"Bu şirket veritabanında zaten kayıtlı", HttpStatus.BAD_REQUEST);
 
 
 

@@ -59,7 +59,7 @@ public class UserProfileService extends ServiceManager<UserProfile, String> {
      * @param action
      * @return
      */
-
+    //çift butonlu olacaktır
     public Boolean adminChangeManagerStatus(String token, String userId, Boolean action) {
         Long authId = jwtTokenProvider.getIdFromToken(token).orElseThrow(() -> {throw new UserProfileManagerException(ErrorType.INVALID_TOKEN);});
         Optional<UserProfile> optionalAdminProfile = userProfileRepository.findByAuthId(authId);
@@ -137,16 +137,18 @@ public class UserProfileService extends ServiceManager<UserProfile, String> {
         return true;
     }
 
+
     public Boolean createManagerUser(NewCreateManagerUserResponseDto dto) {
-        String companyId = companyManager.saveCompanyRequestDto(IUserProfileMapper.INSTANCE.fromNewCreateManagerUserResponseDtoToSaveCompanyRequestDto(dto)).getBody();
+        System.out.println(dto);
         UserProfile userProfile = IUserProfileMapper.INSTANCE.fromNewCreateManagerUserResponseDtoToUserProfile(dto);
         List<ERole> roleList = new ArrayList<>();
         roleList.add(ERole.MANAGER);
         roleList.add(ERole.PERSONEL);
         userProfile.setStatus(EStatus.PENDING);
         userProfile.setRole(roleList);
-        userProfile.setCompanyId(companyId);
+        System.out.println(userProfile);
         save(userProfile);
+        System.out.println(userProfile);
         return true;
     }
 
@@ -201,6 +203,20 @@ public class UserProfileService extends ServiceManager<UserProfile, String> {
             return IUserProfileMapper.INSTANCE.fromPersonnelCompanyInformationResponseDtoToPersonnelInformationResponseDto(companyDto,dto);
         }
         throw new UserProfileManagerException(ErrorType.AUTHORIZATION_ERROR);
+    }
+
+    public Boolean inactivateUser(Long authId) {
+        Optional<UserProfile> optionalUserProfile = userProfileRepository.findByAuthId(authId);
+        System.out.println("şurdayım");
+        System.out.println(optionalUserProfile);
+        if(optionalUserProfile.isEmpty())
+            throw new UserProfileManagerException(ErrorType.USER_NOT_FOUND);
+        System.out.println("şurdayım");
+        optionalUserProfile.get().setStatus(EStatus.INACTIVE);
+        System.out.println("şurdayım");
+        update(optionalUserProfile.get());
+        System.out.println(optionalUserProfile);
+        return true;
     }
 }
 

@@ -2,7 +2,7 @@ package com.hrmanagement.controller;
 
 import com.hrmanagement.dto.response.CompanyInformationResponseDto;
 import com.hrmanagement.dto.response.PersonnelCompanyInformationResponseDto;
-import com.hrmanagement.dto.response.SaveCompanyResponseDto;
+import com.hrmanagement.dto.request.SaveCompanyRequestDto;
 import com.hrmanagement.dto.response.VisitorCompanyInformations;
 import com.hrmanagement.repository.entity.Company;
 import com.hrmanagement.service.CompanyService;
@@ -20,8 +20,8 @@ import static com.hrmanagement.constants.ApiUrls.*;
 public class CompanyController {
     private final CompanyService companyService;
 
-    @PostMapping("/save-company")
-    public ResponseEntity<String> saveCompanyRequestDto(@RequestBody SaveCompanyResponseDto dto){
+    @PostMapping("/save")
+    public ResponseEntity<Boolean> saveCompanyRequestDto(@RequestBody SaveCompanyRequestDto dto){
         return ResponseEntity.ok(companyService.save(dto));
     }
 
@@ -42,6 +42,11 @@ public class CompanyController {
     @GetMapping("/get-personnel-company-information/{companyId}")
     public ResponseEntity<PersonnelCompanyInformationResponseDto> getPersonnelCompanyInformation(@PathVariable String companyId){
         return ResponseEntity.ok(companyService.getPersonnelCompanyInformation(companyId));
+    }
+
+    @GetMapping("/does-company-exists/{companyId}")
+    public ResponseEntity<Boolean> doesCompanyExist(@PathVariable String companyId){
+        return ResponseEntity.ok(companyService.doesCompanyIdExist(companyId));
     }
 
 }

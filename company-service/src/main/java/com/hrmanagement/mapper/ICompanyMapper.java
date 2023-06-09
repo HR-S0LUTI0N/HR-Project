@@ -1,8 +1,8 @@
 package com.hrmanagement.mapper;
 
+import com.hrmanagement.dto.request.SaveCompanyRequestDto;
 import com.hrmanagement.dto.response.CompanyInformationResponseDto;
 import com.hrmanagement.dto.response.PersonnelCompanyInformationResponseDto;
-import com.hrmanagement.dto.response.SaveCompanyResponseDto;
 import com.hrmanagement.dto.response.VisitorCompanyInformations;
 import com.hrmanagement.repository.entity.Company;
 import org.mapstruct.Mapper;
@@ -13,7 +13,7 @@ import org.mapstruct.factory.Mappers;
 public interface ICompanyMapper {
     ICompanyMapper INSTANCE = Mappers.getMapper(ICompanyMapper.class);
 
-    Company fromSaveCompanyResponseDtoToCompany(final SaveCompanyResponseDto dto);
+    Company fromSaveCompanyResponseDtoToCompany(final SaveCompanyRequestDto dto);
 
     CompanyInformationResponseDto fromCompanyToCompanyInformationResponseDto(final Company company);
 

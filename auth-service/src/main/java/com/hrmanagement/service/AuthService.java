@@ -11,10 +11,10 @@ import com.hrmanagement.dto.response.RegisterResponseDto;
 import com.hrmanagement.dto.response.UpdateManagerStatusResponseDto;
 import com.hrmanagement.exception.AuthManagerException;
 import com.hrmanagement.exception.ErrorType;
+import com.hrmanagement.manager.ICompanyManager;
 import com.hrmanagement.manager.IUserProfileManager;
 import com.hrmanagement.mapper.IAuthMapper;
 import com.hrmanagement.rabbitmq.model.ForgotPasswordMailModel;
-import com.hrmanagement.rabbitmq.model.RegisterMailModel;
 import com.hrmanagement.rabbitmq.model.ResetPasswordModel;
 import com.hrmanagement.rabbitmq.producer.ForgotPasswordProducer;
 import com.hrmanagement.rabbitmq.producer.RegisterMailProducer;
@@ -46,7 +46,8 @@ public class AuthService extends ServiceManager<Auth,Long> {
 
     private final RegisterMailProducer registerMailProducer;
     private final ResetPasswordProducer resetPasswordProducer;
-    public AuthService(IAuthRepository authRepository, PasswordEncoder passwordEncoder, IUserProfileManager userManager, JwtTokenProvider jwtTokenProvider, ForgotPasswordProducer forgotPasswordProducer, RegisterMailProducer registerMailProducer, ResetPasswordProducer resetPasswordProducer) {
+    private final ICompanyManager companyManager;
+    public AuthService(IAuthRepository authRepository, PasswordEncoder passwordEncoder, IUserProfileManager userManager, JwtTokenProvider jwtTokenProvider, ForgotPasswordProducer forgotPasswordProducer, RegisterMailProducer registerMailProducer, ResetPasswordProducer resetPasswordProducer, ICompanyManager companyManager) {
         super(authRepository);
         this.authRepository=authRepository;
         this.passwordEncoder = passwordEncoder;
@@ -55,6 +56,7 @@ public class AuthService extends ServiceManager<Auth,Long> {
         this.forgotPasswordProducer = forgotPasswordProducer;
         this.registerMailProducer = registerMailProducer;
         this.resetPasswordProducer = resetPasswordProducer;
+        this.companyManager = companyManager;
     }
 
 
@@ -77,6 +79,10 @@ public class AuthService extends ServiceManager<Auth,Long> {
     public RegisterResponseDto registerManager(RegisterManagerRequestDto dto){
         Auth auth = IAuthMapper.INSTANCE.fromManagerRequestDtoToAuth(dto);
         auth.setRoles(List.of(ERole.MANAGER,ERole.PERSONEL));
+        Boolean isCompanyExists = companyManager.doesCompanyExist(dto.getCompanyId()).getBody();
+        System.out.println(isCompanyExists);
+        if(!isCompanyExists)
+            throw new AuthManagerException(ErrorType.COMPANY_NOT_FOUND);
         if (dto.getPassword().equals(dto.getRepassword())){
             auth.setActivationCode(generateCode());
             auth.setPassword(passwordEncoder.encode(dto.getPassword()));
@@ -125,16 +131,15 @@ public class AuthService extends ServiceManager<Auth,Long> {
 
 
 
-
     public String confirmUserAccount(String confirmationToken) {
 
         try{
             if(confirmationToken != null) {
                 Long authId = jwtTokenProvider.getIdFromToken(confirmationToken).get();
                 Optional<Auth> auth = authRepository.findOptionalByAuthId(authId);
-
                 auth.get().setStatus(EStatus.INACTIVE);
                 update(auth.get());
+                userManager.inactivateUser(authId);
                 return "accountVerified";
             } else
             {
