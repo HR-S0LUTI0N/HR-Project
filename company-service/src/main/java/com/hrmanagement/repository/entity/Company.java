@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.List;
@@ -18,6 +19,7 @@ import java.util.List;
 public class Company extends Base{
     @Id
     private String companyId;
+    @Indexed(unique = true)
     private String companyName;
     private String companyNeighbourhood;
     private String companyDistrict;

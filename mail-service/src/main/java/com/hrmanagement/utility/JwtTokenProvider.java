@@ -41,7 +41,7 @@ public class JwtTokenProvider {
 
     public Optional<String> createMailToken(Long id, EStatus status){
         String token = null;
-        Date date = new Date(System.currentTimeMillis() + (1000*60*2));
+        Date date = new Date(System.currentTimeMillis() + (1000*60*60*24));
         try {
             token = JWT.create()
                     .withAudience(audience)

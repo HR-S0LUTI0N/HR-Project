@@ -2,7 +2,7 @@ package com.hrmanagement.service;
 
 import com.hrmanagement.dto.response.CompanyInformationResponseDto;
 import com.hrmanagement.dto.response.PersonnelCompanyInformationResponseDto;
-import com.hrmanagement.dto.response.SaveCompanyResponseDto;
+import com.hrmanagement.dto.request.SaveCompanyRequestDto;
 import com.hrmanagement.dto.response.VisitorCompanyInformations;
 import com.hrmanagement.exception.CompanyManagerException;
 import com.hrmanagement.exception.ErrorType;
@@ -14,6 +14,7 @@ import com.hrmanagement.utility.JwtTokenProvider;
 import com.hrmanagement.utility.ServiceManager;
 import org.springframework.stereotype.Service;
 
+import java.sql.SQLOutput;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -32,21 +33,13 @@ public class CompanyService extends ServiceManager<Company,String> {
         this.userManager = userManager;
     }
 
-    public String save(SaveCompanyResponseDto dto){
-        Company company = ICompanyMapper.INSTANCE.fromSaveCompanyResponseDtoToCompany(dto);
-        if(dto.getCompanyId()==null){
+    public Boolean save(SaveCompanyRequestDto dto){
+        if(!companyRepository.existsByCompanyNameIgnoreCase(dto.getCompanyName())){
+            Company company = ICompanyMapper.INSTANCE.fromSaveCompanyResponseDtoToCompany(dto);
             save(company);
-            return company.getCompanyId();
-        }else{
-            Optional<Company> optionalCompany = findById(dto.getCompanyId());
-            if (optionalCompany.isPresent()) {
-                return optionalCompany.get().getCompanyId();
-            }else{
-                company.setCompanyId(null);
-                save(company);
-                return company.getCompanyId();
-            }
+            return true;
         }
+        throw new CompanyManagerException(ErrorType.COMPANY_ALREADY_EXIST);
     }
 
 
@@ -79,5 +72,13 @@ public class CompanyService extends ServiceManager<Company,String> {
     public PersonnelCompanyInformationResponseDto getPersonnelCompanyInformation(String companyId) {
         Company company = findById(companyId).orElseThrow(()->{throw new CompanyManagerException(ErrorType.COMPANY_NOT_FOUND);});
         return ICompanyMapper.INSTANCE.fromCompanyToPersonnelCompanyInformationResponseDto(company);
+    }
+
+    public Boolean doesCompanyIdExist(String companyId){
+        if(companyRepository.existsByCompanyId(companyId)){
+            System.out.println(companyId);
+            return true;
+        }
+        return false;
     }
 }

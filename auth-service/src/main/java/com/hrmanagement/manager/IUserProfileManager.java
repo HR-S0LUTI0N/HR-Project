@@ -20,4 +20,7 @@ public interface IUserProfileManager {
 
     @PutMapping("/forgot-password")
     public ResponseEntity<Boolean> forgotPassword(@RequestBody ForgotPasswordUserRequestDto dto);
+
+    @PutMapping("/inactivate-user/{authId}")
+    public ResponseEntity<Boolean> inactivateUser(@PathVariable Long authId);
 }
