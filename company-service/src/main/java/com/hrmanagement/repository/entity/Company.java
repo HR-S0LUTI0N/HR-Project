@@ -33,5 +33,6 @@ public class Company extends Base{
     private String taxNumber;
     private String title;
     private String sector;
+    private String description;
     private List<Long> holidayDates;
 }
