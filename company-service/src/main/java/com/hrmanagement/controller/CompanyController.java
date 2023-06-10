@@ -1,6 +1,5 @@
 package com.hrmanagement.controller;
 
-import com.hrmanagement.dto.response.CompanyDetailedInformationResponseDto;
 import com.hrmanagement.dto.response.CompanyInformationResponseDto;
 import com.hrmanagement.dto.response.PersonnelCompanyInformationResponseDto;
 import com.hrmanagement.dto.request.SaveCompanyRequestDto;
@@ -31,10 +30,9 @@ public class CompanyController {
         return ResponseEntity.ok(companyService.showCompanyInformation(token));
     }
 
-    @CrossOrigin(origins = "*", allowedHeaders = "*")
-    @GetMapping("/find-all-company-preview-information")
+    @GetMapping("/find-all-company-informations")
     public ResponseEntity<List<VisitorCompanyInformations>> findAllCompanyInformations(){
-        return ResponseEntity.ok(companyService.findAllCompanyPreviewInformation());
+        return ResponseEntity.ok(companyService.findAllCompanyInformations());
     }
     @GetMapping("/find-all")
     public ResponseEntity<List<Company>> findAll(){
@@ -49,12 +47,6 @@ public class CompanyController {
     @GetMapping("/does-company-exists/{companyId}")
     public ResponseEntity<Boolean> doesCompanyExist(@PathVariable String companyId){
         return ResponseEntity.ok(companyService.doesCompanyIdExist(companyId));
-    }
-    //Basılınca ilgili şirketin detaylarını getirme
-    @CrossOrigin(origins = "*", allowedHeaders = "*")
-    @GetMapping("/find-company-detailed-information/{token}/{companyId}")
-    public ResponseEntity<CompanyDetailedInformationResponseDto> findCompanyDetailedInformation(@PathVariable String token, @PathVariable String companyId){
-        return ResponseEntity.ok(companyService.findCompanyDetailedInformation(token,companyId));
     }
 
 }

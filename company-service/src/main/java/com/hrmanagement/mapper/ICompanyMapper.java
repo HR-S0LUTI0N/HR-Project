@@ -1,7 +1,6 @@
 package com.hrmanagement.mapper;
 
 import com.hrmanagement.dto.request.SaveCompanyRequestDto;
-import com.hrmanagement.dto.response.CompanyDetailedInformationResponseDto;
 import com.hrmanagement.dto.response.CompanyInformationResponseDto;
 import com.hrmanagement.dto.response.PersonnelCompanyInformationResponseDto;
 import com.hrmanagement.dto.response.VisitorCompanyInformations;
@@ -21,6 +20,4 @@ public interface ICompanyMapper {
     VisitorCompanyInformations fromCompanyToVisitorCompanyInformations(final Company company);
 
     PersonnelCompanyInformationResponseDto fromCompanyToPersonnelCompanyInformationResponseDto(final Company company);
-
-    CompanyDetailedInformationResponseDto fromCompanyToCompanyDetailedInformationResponseDto(final Company company);
 }
