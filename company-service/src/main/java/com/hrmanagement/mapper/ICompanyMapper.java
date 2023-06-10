@@ -1,13 +1,12 @@
 package com.hrmanagement.mapper;
 
 import com.hrmanagement.dto.request.SaveCompanyRequestDto;
-import com.hrmanagement.dto.response.CompanyInformationResponseDto;
-import com.hrmanagement.dto.response.PersonnelCompanyInformationResponseDto;
-import com.hrmanagement.dto.response.VisitorCompanyInformations;
+import com.hrmanagement.dto.response.*;
 import com.hrmanagement.repository.entity.Company;
-import org.mapstruct.Mapper;
-import org.mapstruct.ReportingPolicy;
+import org.mapstruct.*;
 import org.mapstruct.factory.Mappers;
+
+import java.util.List;
 
 @Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface ICompanyMapper {
@@ -20,4 +19,8 @@ public interface ICompanyMapper {
     VisitorCompanyInformations fromCompanyToVisitorCompanyInformations(final Company company);
 
     PersonnelCompanyInformationResponseDto fromCompanyToPersonnelCompanyInformationResponseDto(final Company company);
+
+    VisitorDetailedCompanyInformationResponse fromCompanyToVisitorDetailedCompanyInformationResponse(final Company company);
+
+
 }

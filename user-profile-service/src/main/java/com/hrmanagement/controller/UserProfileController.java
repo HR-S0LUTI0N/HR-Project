@@ -1,10 +1,7 @@
 package com.hrmanagement.controller;
 
 import com.hrmanagement.dto.request.CreateUserProfileRequestDto;
-import com.hrmanagement.dto.response.ForgotPasswordUserResponseDto;
-import com.hrmanagement.dto.response.NewCreateManagerUserResponseDto;
-import com.hrmanagement.dto.response.NewCreateVisitorUserResponseDto;
-import com.hrmanagement.dto.response.PersonnelInformationResponseDto;
+import com.hrmanagement.dto.response.*;
 import com.hrmanagement.repository.entity.UserProfile;
 import com.hrmanagement.service.UserProfileService;
 import io.swagger.v3.oas.annotations.Hidden;
@@ -81,6 +78,12 @@ public class UserProfileController {
     @GetMapping("/find-all")
     public ResponseEntity<List<UserProfile>> findAll(){
         return ResponseEntity.ok(userProfileService.findAll());
+    }
+
+    @Hidden
+    @GetMapping("/get-userprofile-comment-information/{authId}")
+    public ResponseEntity<UserProfileCommentResponseDto> getUserProfileCommentInformation(@PathVariable Long authId){
+        return ResponseEntity.ok(userProfileService.getUserProfileCommentInformation(authId));
     }
 
 }

@@ -77,7 +77,6 @@ public class AuthService extends ServiceManager<Auth,Long> {
         Auth auth = IAuthMapper.INSTANCE.fromManagerRequestDtoToAuth(dto);
         auth.setRoles(List.of(ERole.MANAGER,ERole.PERSONEL));
         Boolean isCompanyExists = companyManager.doesCompanyExist(dto.getCompanyId()).getBody();
-        System.out.println(isCompanyExists);
         if(!isCompanyExists)
             throw new AuthManagerException(ErrorType.COMPANY_NOT_FOUND);
         if (dto.getPassword().equals(dto.getRepassword())){
@@ -98,7 +97,6 @@ public class AuthService extends ServiceManager<Auth,Long> {
 
 
     public LoginResponseDto login(LoginRequestDto dto){
-        System.out.println(dto);
         Optional<Auth> auth=authRepository.findOptionalByEmail(dto.getEmail());
         if(auth.isEmpty()||!passwordEncoder.matches(dto.getPassword(), auth.get().getPassword())){
             throw new AuthManagerException(ErrorType.LOGIN_ERROR);
@@ -160,11 +158,8 @@ public class AuthService extends ServiceManager<Auth,Long> {
     }
 
     public Long managerCreatePersonelUserProfile(AuthCreatePersonnelProfileResponseDto dto){
-        System.out.println(dto);
         Auth auth = IAuthMapper.INSTANCE.fromCreatePersonelProfileDtotoAuth(dto);
-        System.out.println(auth);
         save(auth);
-        System.out.println(auth);
         return auth.getAuthId();
     }
 
