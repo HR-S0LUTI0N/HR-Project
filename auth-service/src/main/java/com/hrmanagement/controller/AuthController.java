@@ -4,10 +4,7 @@ import com.hrmanagement.dto.request.LoginRequestDto;
 import com.hrmanagement.dto.request.RegisterManagerRequestDto;
 import com.hrmanagement.dto.request.RegisterVisitorRequestDto;
 
-import com.hrmanagement.dto.response.AuthCreatePersonnelProfileResponseDto;
-import com.hrmanagement.dto.response.DeletePersonnelFromAuthResponseDto;
-import com.hrmanagement.dto.response.RegisterResponseDto;
-import com.hrmanagement.dto.response.UpdateManagerStatusResponseDto;
+import com.hrmanagement.dto.response.*;
 import com.hrmanagement.repository.entity.Auth;
 import com.hrmanagement.service.AuthService;
 import io.swagger.v3.oas.annotations.Hidden;
@@ -38,7 +35,7 @@ public class AuthController {
     }
     @CrossOrigin(origins = "*", allowedHeaders = "*")
     @PostMapping(LOGIN)
-    public ResponseEntity<String> login(@RequestBody LoginRequestDto dto){
+    public ResponseEntity<LoginResponseDto> login(@RequestBody LoginRequestDto dto){
         return ResponseEntity.ok(authService.login(dto));
     }
 
