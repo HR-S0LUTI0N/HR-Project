@@ -8,6 +8,7 @@ import com.hrmanagement.manager.IUserManager;
 import com.hrmanagement.mapper.ICompanyMapper;
 import com.hrmanagement.repository.ICompanyRepository;
 import com.hrmanagement.repository.entity.Company;
+import com.hrmanagement.repository.entity.enums.ERole;
 import com.hrmanagement.utility.JwtTokenProvider;
 import com.hrmanagement.utility.ServiceManager;
 import org.springframework.stereotype.Service;
@@ -33,13 +34,19 @@ public class CompanyService extends ServiceManager<Company,String> {
         this.commentService = commentService;
     }
 
-    public Boolean save(SaveCompanyRequestDto dto){
+    public Boolean save(String token, SaveCompanyRequestDto dto){
+        List<String> roles = jwtTokenProvider.getRoleFromToken(token);
+        if(roles.isEmpty())
+            throw new CompanyManagerException(ErrorType.INVALID_TOKEN);
+        if(roles.contains(ERole.ADMIN.toString())){
         if(!companyRepository.existsByCompanyNameIgnoreCase(dto.getCompanyName())){
             Company company = ICompanyMapper.INSTANCE.fromSaveCompanyResponseDtoToCompany(dto);
             save(company);
             return true;
         }
         throw new CompanyManagerException(ErrorType.COMPANY_ALREADY_EXIST);
+        }
+        throw new CompanyManagerException(ErrorType.NO_AUTHORIZATION);
     }
 
     //İlgili müdür için hazırlanan şirket bilgileri getir metodudur. Role'le kontrol ypaılacak

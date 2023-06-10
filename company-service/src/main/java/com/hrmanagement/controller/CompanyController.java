@@ -21,9 +21,9 @@ import static com.hrmanagement.constants.ApiUrls.*;
 public class CompanyController {
     private final CompanyService companyService;
 
-    @PostMapping("/save")
-    public ResponseEntity<Boolean> saveCompanyRequestDto(@RequestBody SaveCompanyRequestDto dto){
-        return ResponseEntity.ok(companyService.save(dto));
+    @PostMapping("/save/{token}")
+    public ResponseEntity<Boolean> saveCompanyRequestDto(@PathVariable String token, @RequestBody SaveCompanyRequestDto dto){
+        return ResponseEntity.ok(companyService.save(token,dto));
     }
 
     @GetMapping("/show-company-information/{token}")
