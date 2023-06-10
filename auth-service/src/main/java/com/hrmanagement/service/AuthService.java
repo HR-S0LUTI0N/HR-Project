@@ -5,10 +5,7 @@ import com.hrmanagement.dto.request.LoginRequestDto;
 import com.hrmanagement.dto.request.RegisterManagerRequestDto;
 import com.hrmanagement.dto.request.RegisterVisitorRequestDto;
 
-import com.hrmanagement.dto.response.AuthCreatePersonnelProfileResponseDto;
-import com.hrmanagement.dto.response.DeletePersonnelFromAuthResponseDto;
-import com.hrmanagement.dto.response.RegisterResponseDto;
-import com.hrmanagement.dto.response.UpdateManagerStatusResponseDto;
+import com.hrmanagement.dto.response.*;
 import com.hrmanagement.exception.AuthManagerException;
 import com.hrmanagement.exception.ErrorType;
 import com.hrmanagement.manager.ICompanyManager;
@@ -100,7 +97,7 @@ public class AuthService extends ServiceManager<Auth,Long> {
 
 
 
-    public String login(LoginRequestDto dto){
+    public LoginResponseDto login(LoginRequestDto dto){
         System.out.println(dto);
         Optional<Auth> auth=authRepository.findOptionalByEmail(dto.getEmail());
         if(auth.isEmpty()||!passwordEncoder.matches(dto.getPassword(), auth.get().getPassword())){
@@ -110,10 +107,12 @@ public class AuthService extends ServiceManager<Auth,Long> {
             throw new AuthManagerException(ErrorType.ACTIVATE_CODE_ERROR);
         }
         List<String> roleList = auth.get().getRoles().stream().map(x -> x.toString()).collect(Collectors.toList());
-        return jwtTokenProvider.createToken(auth.get().getAuthId(),roleList)
+
+        String token = jwtTokenProvider.createToken(auth.get().getAuthId(),roleList)
                 .orElseThrow(()->{
                     throw new AuthManagerException(ErrorType.TOKEN_NOT_CREATED);
                 });
+        return LoginResponseDto.builder().roles(roleList).token(token).build();
     }
 
     public Boolean forgotPasswordRequest(String email){
