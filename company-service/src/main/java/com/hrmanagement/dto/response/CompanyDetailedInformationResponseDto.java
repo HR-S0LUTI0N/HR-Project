@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+
 @AllArgsConstructor
 @Builder
 @Data
@@ -23,5 +24,6 @@ public class CompanyDetailedInformationResponseDto {
     private String title;
     private String sector;
     private String description;
-
+    private String companyPhone;
+    private String companyEmail;
 }
