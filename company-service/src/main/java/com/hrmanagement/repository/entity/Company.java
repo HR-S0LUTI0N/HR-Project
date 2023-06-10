@@ -8,6 +8,7 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import javax.validation.constraints.NotBlank;
 import java.util.List;
 
 
@@ -34,4 +35,7 @@ public class Company extends Base{
     private String title;
     private String sector;
     private List<Long> holidayDates;
+    private String description;
+    private String companyPhone;
+    private String companyMail;
 }

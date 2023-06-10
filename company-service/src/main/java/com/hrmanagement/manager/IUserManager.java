@@ -1,5 +1,6 @@
 package com.hrmanagement.manager;
 
+import com.hrmanagement.dto.response.UserProfileCommentResponseDto;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,4 +16,7 @@ public interface IUserManager {
 
     @GetMapping("/get-manager-names/{companyId}")
     public ResponseEntity<List<String>> getManagerNames(@PathVariable String companyId);
+
+    @GetMapping("/get-userprofile-comment-information/{authId}")
+    public ResponseEntity<UserProfileCommentResponseDto> getUserProfileCommentInformation(@PathVariable Long authId);
 }

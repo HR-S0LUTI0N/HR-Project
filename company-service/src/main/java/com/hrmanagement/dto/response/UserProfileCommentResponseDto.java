@@ -5,17 +5,13 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
-
 @AllArgsConstructor
 @Builder
 @Data
 @NoArgsConstructor
-public class VisitorCompanyInformations {
+public class UserProfileCommentResponseDto {
+    private String userId;
+    private String name;
+    private String surname;
     private String companyId;
-    private String title;
-    private String logo;
-    private String companyName;
-    private String companyProvince;
-    private String companyCountry;
 }

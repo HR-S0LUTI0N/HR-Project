@@ -218,6 +218,15 @@ public class UserProfileService extends ServiceManager<UserProfile, String> {
         System.out.println(optionalUserProfile);
         return true;
     }
+
+    public UserProfileCommentResponseDto getUserProfileCommentInformation(Long authId) {
+        System.out.println(authId);
+        Optional<UserProfile> optionalUserProfile = userProfileRepository.findByAuthId(authId);
+        System.out.println(optionalUserProfile.get());
+        if(optionalUserProfile.isEmpty())
+            throw new UserProfileManagerException(ErrorType.USER_NOT_FOUND);
+        return IUserProfileMapper.INSTANCE.fromUserProfileToUserProfileCommentResponseDto(optionalUserProfile.get());
+    }
 }
 
 

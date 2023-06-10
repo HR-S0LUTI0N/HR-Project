@@ -1,10 +1,7 @@
 package com.hrmanagement.mapper;
 
 import com.hrmanagement.dto.request.*;
-import com.hrmanagement.dto.response.NewCreateManagerUserResponseDto;
-import com.hrmanagement.dto.response.NewCreateVisitorUserResponseDto;
-import com.hrmanagement.dto.response.PersonnelCompanyInformationResponseDto;
-import com.hrmanagement.dto.response.PersonnelInformationResponseDto;
+import com.hrmanagement.dto.response.*;
 import com.hrmanagement.rabbitmq.model.PersonnelPasswordModel;
 import com.hrmanagement.repository.entity.UserProfile;
 import org.mapstruct.*;
@@ -38,5 +35,9 @@ public interface IUserProfileMapper {
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     PersonnelInformationResponseDto fromPersonnelCompanyInformationResponseDtoToPersonnelInformationResponseDto(PersonnelCompanyInformationResponseDto dto,
                                                                                                                 @MappingTarget PersonnelInformationResponseDto dtoMain);
+    UserProfileCommentResponseDto fromUserProfileToUserProfileCommentResponseDto(final UserProfile userProfile);
+
+
+
 
 }
