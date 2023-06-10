@@ -39,7 +39,4 @@ public class SaveCompanyRequestDto {
     private String title;
     @NotBlank
     private String sector;
-    @NotBlank
-    private String description;
-
 }

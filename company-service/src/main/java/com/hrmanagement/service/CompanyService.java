@@ -1,6 +1,5 @@
 package com.hrmanagement.service;
 
-import com.hrmanagement.dto.response.CompanyDetailedInformationResponseDto;
 import com.hrmanagement.dto.response.CompanyInformationResponseDto;
 import com.hrmanagement.dto.response.PersonnelCompanyInformationResponseDto;
 import com.hrmanagement.dto.request.SaveCompanyRequestDto;
@@ -11,11 +10,9 @@ import com.hrmanagement.manager.IUserManager;
 import com.hrmanagement.mapper.ICompanyMapper;
 import com.hrmanagement.repository.ICompanyRepository;
 import com.hrmanagement.repository.entity.Company;
-import com.hrmanagement.repository.entity.enums.ERole;
 import com.hrmanagement.utility.JwtTokenProvider;
 import com.hrmanagement.utility.ServiceManager;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestBody;
 
 import java.sql.SQLOutput;
 import java.util.ArrayList;
@@ -45,7 +42,7 @@ public class CompanyService extends ServiceManager<Company,String> {
         throw new CompanyManagerException(ErrorType.COMPANY_ALREADY_EXIST);
     }
 
-    //company Information için manager'ın role eklenecek
+
     public CompanyInformationResponseDto showCompanyInformation(String token){
         List<String> roles = jwtTokenProvider.getRoleFromToken(token);
         Optional<Long> authId = jwtTokenProvider.getIdFromToken(token);
@@ -59,23 +56,16 @@ public class CompanyService extends ServiceManager<Company,String> {
         return ICompanyMapper.INSTANCE.fromCompanyToCompanyInformationResponseDto(company);
     }
 
-    public List<VisitorCompanyInformations> findAllCompanyPreviewInformation(){
+    public List<VisitorCompanyInformations> findAllCompanyInformations(){
         List<Company> companyList = companyRepository.findAll();
         List<VisitorCompanyInformations> companyInformationsList = new ArrayList<>();
         companyList.forEach(company -> {
+            List<String> managerList = userManager.getManagerNames(company.getCompanyId()).getBody();
             VisitorCompanyInformations dto = ICompanyMapper.INSTANCE.fromCompanyToVisitorCompanyInformations(company);
+            dto.setManagerNames(managerList);
             companyInformationsList.add(dto);
         });
         return companyInformationsList;
-    }
-
-    public CompanyDetailedInformationResponseDto findCompanyDetailedInformation(String token, String companyId){
-        List<String> roles = jwtTokenProvider.getRoleFromToken(token);
-        if(roles.contains(ERole.VISITOR.toString())){
-            Company company = findById(companyId).orElseThrow(()->{throw new CompanyManagerException(ErrorType.COMPANY_NOT_FOUND);});
-            return ICompanyMapper.INSTANCE.fromCompanyToCompanyDetailedInformationResponseDto(company);
-        }
-        throw new CompanyManagerException(ErrorType.NO_AUTHORIZATION);
     }
 
 

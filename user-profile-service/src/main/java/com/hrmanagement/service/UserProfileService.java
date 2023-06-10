@@ -218,14 +218,6 @@ public class UserProfileService extends ServiceManager<UserProfile, String> {
         System.out.println(optionalUserProfile);
         return true;
     }
-
-    public UserProfileAvatarResponseDto getProfileAvatar(String token){
-        Long authId = jwtTokenProvider.getIdFromToken(token).orElseThrow(()->{throw new UserProfileManagerException(ErrorType.USER_NOT_FOUND);});
-        Optional<UserProfile> optionalUserProfile = userProfileRepository.findByAuthId(authId);
-        if(optionalUserProfile.isEmpty())
-            throw new UserProfileManagerException(ErrorType.USER_NOT_FOUND);
-        return UserProfileAvatarResponseDto.builder().avatar(optionalUserProfile.get().getAvatar()).build();
-    }
 }
 
 

@@ -1,7 +1,10 @@
 package com.hrmanagement.controller;
 
 import com.hrmanagement.dto.request.CreateUserProfileRequestDto;
-import com.hrmanagement.dto.response.*;
+import com.hrmanagement.dto.response.ForgotPasswordUserResponseDto;
+import com.hrmanagement.dto.response.NewCreateManagerUserResponseDto;
+import com.hrmanagement.dto.response.NewCreateVisitorUserResponseDto;
+import com.hrmanagement.dto.response.PersonnelInformationResponseDto;
 import com.hrmanagement.repository.entity.UserProfile;
 import com.hrmanagement.service.UserProfileService;
 import io.swagger.v3.oas.annotations.Hidden;
@@ -71,13 +74,8 @@ public class UserProfileController {
 
     @PutMapping("/inactivate-user/{authId}")
     public ResponseEntity<Boolean> inactivateUser(@PathVariable Long authId){
+        System.out.println("burdayım");
         return ResponseEntity.ok(userProfileService.inactivateUser(authId));
-    }
-
-    @CrossOrigin(origins = "*", allowedHeaders = "*")
-    @GetMapping("/get-profile-avatar/{token}")
-    public ResponseEntity<UserProfileAvatarResponseDto> getProfileAvatar(@PathVariable String token){
-        return ResponseEntity.ok(userProfileService.getProfileAvatar(token));
     }
 
     @GetMapping("/find-all")
