@@ -50,8 +50,6 @@ public class CommentService extends ServiceManager<Comment,String> {
 
     public List<FindCompanyCommentsResponseDto> findCompanyComments(String companyId){
         List<Comment> commentList = commentRepository.findByCompanyId(companyId);
-        if(commentList.isEmpty())
-            throw new CompanyManagerException(ErrorType.COMPANY_NOT_FOUND);
         List<FindCompanyCommentsResponseDto> companyComments = commentList.stream().map(x ->
                 ICommentMapper.INSTANCE.fromCompanyToFindCompanyCommentsResponseDto(x)).collect(Collectors.toList());
         return companyComments;
