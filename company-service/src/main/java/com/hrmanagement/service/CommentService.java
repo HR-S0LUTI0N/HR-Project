@@ -9,6 +9,7 @@ import com.hrmanagement.manager.IUserManager;
 import com.hrmanagement.mapper.ICommentMapper;
 import com.hrmanagement.repository.ICommentRepository;
 import com.hrmanagement.repository.entity.Comment;
+import com.hrmanagement.repository.entity.enums.ECommentStatus;
 import com.hrmanagement.repository.entity.enums.ERole;
 import com.hrmanagement.utility.JwtTokenProvider;
 import com.hrmanagement.utility.ServiceManager;
@@ -42,7 +43,6 @@ public class CommentService extends ServiceManager<Comment,String> {
             Comment comment = ICommentMapper.INSTANCE.fromUserProfileCommentResponseDtoToComment(userProfileCommentResponseDto);
             comment.setComment(dto.getComment());
             save(comment);
-            System.out.println(comment);
             return true;
         }
         throw new CompanyManagerException(ErrorType.NO_AUTHORIZATION);
@@ -50,7 +50,8 @@ public class CommentService extends ServiceManager<Comment,String> {
 
     public List<FindCompanyCommentsResponseDto> findCompanyComments(String companyId){
         List<Comment> commentList = commentRepository.findByCompanyId(companyId);
-        List<FindCompanyCommentsResponseDto> companyComments = commentList.stream().map(x ->
+        List<FindCompanyCommentsResponseDto> companyComments = commentList.stream().filter(y->
+                y.getECommentStatus() == ECommentStatus.ACTIVE).map(x ->
                 ICommentMapper.INSTANCE.fromCompanyToFindCompanyCommentsResponseDto(x)).collect(Collectors.toList());
         return companyComments;
     }

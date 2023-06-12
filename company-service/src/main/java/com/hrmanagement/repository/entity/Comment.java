@@ -1,5 +1,6 @@
 package com.hrmanagement.repository.entity;
 
+import com.hrmanagement.repository.entity.enums.ECommentStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -19,4 +20,6 @@ public class Comment extends Base {
     private String name;
     private String surname;
     private String companyId;
+    @Builder.Default
+    private ECommentStatus eCommentStatus = ECommentStatus.PENDING;
 }
