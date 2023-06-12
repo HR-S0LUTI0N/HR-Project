@@ -220,7 +220,18 @@ public class UserProfileService extends ServiceManager<UserProfile, String> {
             throw new UserProfileManagerException(ErrorType.USER_NOT_FOUND);
         return IUserProfileMapper.INSTANCE.fromUserProfileToUserProfileCommentResponseDto(optionalUserProfile.get());
     }
-
+    public List<FindAllManagerResponseDto> findAllInactiveManager(String token) {
+        Optional<Long> authId = jwtTokenProvider.getIdFromToken(token);
+        if (authId.isEmpty())
+            throw new UserProfileManagerException(ErrorType.INVALID_TOKEN);
+        Optional<UserProfile> userProfile = userProfileRepository.findByAuthId(authId.get());
+        if (userProfile.get().getRole().toString().contains("ADMIN")) {
+            List<FindAllManagerResponseDto> inactiveManagerList = userProfileRepository.findAllByStatus(EStatus.INACTIVE);
+            //TODO manager ile companyName alınacak. UNUTMA!!
+            return inactiveManagerList;
+        }
+        throw new RuntimeException("Admin değilsin");
+    }
 }
 
 
