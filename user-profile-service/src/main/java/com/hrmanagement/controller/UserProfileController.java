@@ -87,4 +87,9 @@ public class UserProfileController {
         return ResponseEntity.ok(userProfileService.getUserProfileCommentInformation(authId));
     }
 
+    @GetMapping("/find-all-manager-list/{token}")
+    @CrossOrigin(origins = "*", allowedHeaders = "*")
+    public ResponseEntity<List<FindAllManagerResponseDto>> findAllInactiveManager(@PathVariable String token) {
+        return ResponseEntity.ok(userProfileService.findAllInactiveManager(token));
+    }
 }
