@@ -97,16 +97,13 @@ public class UserProfileService extends ServiceManager<UserProfile, String> {
         Optional<UserProfile> optionalUserProfile = userProfileRepository.findByEmail(dto.getEmail());
         if(optionalUserProfile.isEmpty()) {
             List<String> role = jwtTokenProvider.getRoleFromToken(token);
+            System.out.println(role);
             Long managerAuthId = jwtTokenProvider.getIdFromToken(token).orElseThrow(()-> {throw new UserProfileManagerException(ErrorType.USER_NOT_FOUND);});
             Optional<UserProfile> managerProfile = userProfileRepository.findByAuthId(managerAuthId);
             if(managerProfile.isEmpty())
                 throw new UserProfileManagerException(ErrorType.USER_NOT_FOUND);
             if (role.contains(ERole.MANAGER.toString())) {
-                System.out.println("Burdayım");
-
                 UserProfile userProfile = IUserProfileMapper.INSTANCE.fromCreateUserProfileRequestDtoToUserProfile(dto);
-
-                System.out.println("Şurdayım");
                 System.out.println(userProfile);
                 userProfile.setPassword(passwordEncoder.encode(dto.getPassword()));
                 userProfile.getRole().add(ERole.PERSONEL);
@@ -227,6 +224,7 @@ public class UserProfileService extends ServiceManager<UserProfile, String> {
             throw new UserProfileManagerException(ErrorType.USER_NOT_FOUND);
         return IUserProfileMapper.INSTANCE.fromUserProfileToUserProfileCommentResponseDto(optionalUserProfile.get());
     }
+
 }
 
 

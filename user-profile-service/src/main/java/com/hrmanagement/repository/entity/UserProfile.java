@@ -34,7 +34,7 @@ public class UserProfile extends Base {
     private Long dateOfBirth;
     private String birthPlace;
     private String identificationNumber;
-    private List<ERole> role;
+    private List<ERole> role = new ArrayList<>();
     private EStatus status;
     private EGender gender;
     private String phone;
