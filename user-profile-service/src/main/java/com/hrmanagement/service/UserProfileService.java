@@ -1,6 +1,7 @@
 package com.hrmanagement.service;
 
 import com.hrmanagement.dto.request.AuthCreatePersonnelProfileRequestDto;
+import com.hrmanagement.dto.request.ChangeManagerStatusRequestDto;
 import com.hrmanagement.dto.request.CreateUserProfileRequestDto;
 import com.hrmanagement.dto.response.*;
 import com.hrmanagement.exception.ErrorType;
@@ -55,12 +56,10 @@ public class UserProfileService extends ServiceManager<UserProfile, String> {
      * İlgili kişinin firmasından acacak
      * AdminActiveManager refactor olacak
      * @param token
-     * @param userId
-     * @param action
      * @return
      */
     //çift butonlu olacaktır
-    public Boolean adminChangeManagerStatus(String token, String userId, Boolean action) {
+    public Boolean adminChangeManagerStatus(String token, ChangeManagerStatusRequestDto dto) {
         Long authId = jwtTokenProvider.getIdFromToken(token).orElseThrow(() -> {throw new UserProfileManagerException(ErrorType.INVALID_TOKEN);});
         Optional<UserProfile> optionalAdminProfile = userProfileRepository.findByAuthId(authId);
         List<String> role = jwtTokenProvider.getRoleFromToken(token);
@@ -68,9 +67,9 @@ public class UserProfileService extends ServiceManager<UserProfile, String> {
         if(role.contains(ERole.ADMIN.toString())) {
             if (optionalAdminProfile.isEmpty())
                 throw new UserProfileManagerException(ErrorType.USER_NOT_FOUND);
-            Optional<UserProfile> user = findById(userId);
+            Optional<UserProfile> user = findById(dto.getUserId());
             if (user.get().getRole().contains(ERole.MANAGER)) {
-                if (action) {
+                if (dto.getAction()) {
                     user.get().setStatus(EStatus.ACTIVE);
                 } else {
                     user.get().setStatus(EStatus.BANNED);
@@ -79,7 +78,7 @@ public class UserProfileService extends ServiceManager<UserProfile, String> {
                 authManager.updateManagerStatus(IUserProfileMapper.INSTANCE.fromUserProfileToUpdateManagerStatusRequestDto(user.get()));
                 return true;
             }
-            throw new RuntimeException("NO MANAGER");
+            throw new UserProfileManagerException(ErrorType.USER_NOT_FOUND);
         }
         throw new UserProfileManagerException(ErrorType.AUTHORIZATION_ERROR);
     }
