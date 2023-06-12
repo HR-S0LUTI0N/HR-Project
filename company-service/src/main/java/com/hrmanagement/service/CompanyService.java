@@ -76,10 +76,7 @@ public class CompanyService extends ServiceManager<Company,String> {
     //Detaylı company sayfası için metot
     public VisitorDetailedCompanyInformationResponse findCompanyDetailedInformation(String companyId){
         Company company = findById(companyId).orElseThrow(()->{throw new CompanyManagerException(ErrorType.COMPANY_NOT_FOUND);});
-        System.out.println(company);
         VisitorDetailedCompanyInformationResponse dto = ICompanyMapper.INSTANCE.fromCompanyToVisitorDetailedCompanyInformationResponse(company);
-        System.out.println(dto);
-
         List<FindCompanyCommentsResponseDto> dtoCommentList = commentService.findCompanyComments(companyId);
         System.out.println(dtoCommentList);
         dto.setCompanyComments(dtoCommentList);
