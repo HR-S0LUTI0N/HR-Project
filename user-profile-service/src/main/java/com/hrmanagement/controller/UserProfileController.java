@@ -1,5 +1,6 @@
 package com.hrmanagement.controller;
 
+import com.hrmanagement.dto.request.ChangeManagerStatusRequestDto;
 import com.hrmanagement.dto.request.CreateUserProfileRequestDto;
 import com.hrmanagement.dto.response.*;
 import com.hrmanagement.repository.entity.UserProfile;
@@ -22,9 +23,9 @@ import static com.hrmanagement.constant.ApiUrls.ADMINCHANGEVISITORSTATUS;
 public class UserProfileController {
 
     private final UserProfileService userProfileService;
-    @PutMapping(ADMINCHANGEVISITORSTATUS)
-    public ResponseEntity<Boolean> adminChangeManagerStatus(String token,String userId, Boolean action) {
-        return ResponseEntity.ok(userProfileService.adminChangeManagerStatus(token,userId, action));
+    @PutMapping(ADMINCHANGEVISITORSTATUS+"/{token}")
+    public ResponseEntity<Boolean> adminChangeManagerStatus(@PathVariable String token, @RequestBody ChangeManagerStatusRequestDto dto) {
+        return ResponseEntity.ok(userProfileService.adminChangeManagerStatus(token,dto));
     }
 
     @PutMapping(FORGOT_PASSWORD)
