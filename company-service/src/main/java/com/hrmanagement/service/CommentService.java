@@ -1,5 +1,6 @@
 package com.hrmanagement.service;
 
+import com.hrmanagement.dto.request.ChangeCommentStatusRequestDto;
 import com.hrmanagement.dto.request.PersonnelCommentRequestDto;
 import com.hrmanagement.dto.response.FindCompanyCommentsResponseDto;
 import com.hrmanagement.dto.response.UserProfileCommentResponseDto;
@@ -57,6 +58,25 @@ public class CommentService extends ServiceManager<Comment,String> {
     }
 
 
+    public Boolean changeCommentStatus(String token, ChangeCommentStatusRequestDto dto){
+        List<String> roles = jwtTokenProvider.getRoleFromToken(token);
+        if(roles.isEmpty())
+            throw new CompanyManagerException(ErrorType.INVALID_TOKEN);
+        if(roles.contains(ERole.ADMIN.toString())){
+            Comment comment = findById(dto.getCommentId()).orElseThrow(()->{throw new CompanyManagerException(ErrorType.COMMENT_NOT_FOUND);});
+            if(comment.getECommentStatus()==ECommentStatus.PENDING) {
+                if (dto.getAction()) {
+                    comment.setECommentStatus(ECommentStatus.ACTIVE);
+                } else {
+                    comment.setECommentStatus(ECommentStatus.DELETED);
+                }
+                update(comment);
+                return true;
+            }
+            throw new CompanyManagerException(ErrorType.COMMENT_NOT_PENDING);
+        }
+        throw new CompanyManagerException(ErrorType.NO_AUTHORIZATION);
+    }
 
 
 
