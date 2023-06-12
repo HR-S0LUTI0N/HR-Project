@@ -22,6 +22,7 @@ import org.springframework.stereotype.Service;
 import javax.management.relation.Role;
 import java.sql.SQLOutput;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -97,23 +98,19 @@ public class UserProfileService extends ServiceManager<UserProfile, String> {
         Optional<UserProfile> optionalUserProfile = userProfileRepository.findByEmail(dto.getEmail());
         if(optionalUserProfile.isEmpty()) {
             List<String> role = jwtTokenProvider.getRoleFromToken(token);
-            System.out.println(role);
             Long managerAuthId = jwtTokenProvider.getIdFromToken(token).orElseThrow(()-> {throw new UserProfileManagerException(ErrorType.USER_NOT_FOUND);});
             Optional<UserProfile> managerProfile = userProfileRepository.findByAuthId(managerAuthId);
             if(managerProfile.isEmpty())
                 throw new UserProfileManagerException(ErrorType.USER_NOT_FOUND);
             if (role.contains(ERole.MANAGER.toString())) {
                 UserProfile userProfile = IUserProfileMapper.INSTANCE.fromCreateUserProfileRequestDtoToUserProfile(dto);
-                System.out.println(userProfile);
                 userProfile.setPassword(passwordEncoder.encode(dto.getPassword()));
-                userProfile.getRole().add(ERole.PERSONEL);
-                System.out.println(ERole.PERSONEL);
+                userProfile.setRole(Arrays.asList(ERole.PERSONEL));
                 userProfile.setStatus(EStatus.ACTIVE);
                 userProfile.setCompanyId(managerProfile.get().getCompanyId());
                 AuthCreatePersonnelProfileRequestDto authDto = IUserProfileMapper.INSTANCE.fromUserProfileToAuthCreatePersonelProfileRequestDto(userProfile);
                 Long personnelAuthId = authManager.managerCreatePersonnelUserProfile(authDto).getBody();
                 userProfile.setAuthId(personnelAuthId);
-                System.out.println(userProfile);
                 save(userProfile);
                 PersonnelPasswordModel personnelPasswordModel = IUserProfileMapper.INSTANCE.fromUserProfileToPersonnelPasswordModel(userProfile);
                 personnelPasswordModel.setPassword(dto.getPassword());
