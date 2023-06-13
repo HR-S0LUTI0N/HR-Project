@@ -1,6 +1,7 @@
 package com.hrmanagement.mapper;
 
 import com.hrmanagement.dto.response.FindCompanyCommentsResponseDto;
+import com.hrmanagement.dto.response.PersonnelActiveCompanyCommentsResponseDto;
 import com.hrmanagement.dto.response.UserProfileCommentResponseDto;
 import com.hrmanagement.repository.entity.Comment;
 import org.mapstruct.Mapper;
@@ -14,5 +15,7 @@ public interface ICommentMapper {
     Comment fromUserProfileCommentResponseDtoToComment(final UserProfileCommentResponseDto dto);
 
     FindCompanyCommentsResponseDto fromCompanyToFindCompanyCommentsResponseDto(final Comment comment);
+
+    PersonnelActiveCompanyCommentsResponseDto fromCommentToPersonnelActiveCompanyCommentsResponseDto(final Comment comment);
 
 }

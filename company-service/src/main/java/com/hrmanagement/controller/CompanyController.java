@@ -1,11 +1,8 @@
 package com.hrmanagement.controller;
 
 import com.hrmanagement.dto.request.FindPendingCommentWithCompanyName;
-import com.hrmanagement.dto.response.CompanyInformationResponseDto;
-import com.hrmanagement.dto.response.PersonnelCompanyInformationResponseDto;
+import com.hrmanagement.dto.response.*;
 import com.hrmanagement.dto.request.SaveCompanyRequestDto;
-import com.hrmanagement.dto.response.VisitorCompanyInformations;
-import com.hrmanagement.dto.response.VisitorDetailedCompanyInformationResponse;
 import com.hrmanagement.repository.entity.Company;
 import com.hrmanagement.service.CompanyService;
 import io.swagger.v3.oas.annotations.Hidden;
@@ -71,4 +68,12 @@ public class CompanyController {
     public ResponseEntity<String> getCompanyNameWithCompanyId(@PathVariable String companyId) {
         return ResponseEntity.ok(companyService.getCompanyNameWithCompanyId(companyId));
     }
+
+    @CrossOrigin(origins = "*", allowedHeaders = "*")
+    @GetMapping("get-personnel-dashboard-information/{token}")
+    public ResponseEntity<PersonnelDashboardResponseDto>getPersonnelDashboardInformation(@PathVariable String token){
+        return ResponseEntity.ok(companyService.getPersonnelDashboardInformation(token));
+    }
+
+
 }

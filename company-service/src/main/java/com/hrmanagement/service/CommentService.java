@@ -2,8 +2,7 @@ package com.hrmanagement.service;
 
 import com.hrmanagement.dto.request.ChangeCommentStatusRequestDto;
 import com.hrmanagement.dto.request.PersonnelCommentRequestDto;
-import com.hrmanagement.dto.response.FindCompanyCommentsResponseDto;
-import com.hrmanagement.dto.response.UserProfileCommentResponseDto;
+import com.hrmanagement.dto.response.*;
 import com.hrmanagement.exception.CompanyManagerException;
 import com.hrmanagement.exception.ErrorType;
 import com.hrmanagement.manager.IUserManager;
@@ -93,5 +92,39 @@ public class CommentService extends ServiceManager<Comment, String> {
         });
         return pendingComment;
     }
+
+    public List<PersonnelActiveCompanyCommentsResponseDto> findAllActiveCompanyComments(String token){
+        Long authId = jwtTokenProvider.getIdFromToken(token).orElseThrow(()->{throw new CompanyManagerException(ErrorType.USER_NOT_FOUND);});
+        List<String> roles = jwtTokenProvider.getRoleFromToken(token);
+        if(roles.isEmpty())
+            throw new CompanyManagerException(ErrorType.USER_NOT_FOUND);
+        if(roles.contains(ERole.PERSONEL.toString())) {
+            PersonnelDashboardCommentResponseDto dto = userManager.findAllActiveCompanyComments(authId).getBody();
+            List<Comment> commentList = commentRepository.findByCompanyId(dto.getCompanyId());
+            System.out.println(commentList);
+            List<Comment> filteredComments= new ArrayList<>();
+                    commentList.stream().forEach(x -> {
+                if(x.getECommentStatus() == ECommentStatus.ACTIVE)
+                    filteredComments.add(x);
+            });
+            List<PersonnelActiveCompanyCommentsResponseDto> activeCompanyCommentsResponseDtos =
+                    filteredComments.stream().map(comment -> {
+                        PersonnelActiveCompanyCommentsResponseDto dto1 = ICommentMapper.INSTANCE.fromCommentToPersonnelActiveCompanyCommentsResponseDto(comment);
+                        String avatar = userManager.getUserAvatarByUserId(comment.getUserId()).getBody();
+                        dto1.setAvatar(avatar);
+                        return dto1;
+                    }).collect(Collectors.toList());
+            System.out.println(activeCompanyCommentsResponseDtos);
+            return activeCompanyCommentsResponseDtos;
+        }
+        throw new CompanyManagerException(ErrorType.NO_AUTHORIZATION);
+
+    }
+
+
+
+
+
+
 
 }

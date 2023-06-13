@@ -37,6 +37,10 @@ public interface IUserProfileMapper {
                                                                                                                 @MappingTarget PersonnelInformationResponseDto dtoMain);
     UserProfileCommentResponseDto fromUserProfileToUserProfileCommentResponseDto(final UserProfile userProfile);
 
+    UserProfilePersonnelDashboardRequestDto fromUserProfileToUserProfilePersonnelDashboardRequestDto(final UserProfile userProfile);
+
+    PersonnelDashboardCommentRequestDto fromUserProfileToPersonnelDashboardCommentRequestDto(final UserProfile userProfile);
+
 
 
 

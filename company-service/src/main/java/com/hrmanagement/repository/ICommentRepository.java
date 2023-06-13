@@ -10,4 +10,6 @@ public interface ICommentRepository extends MongoRepository<Comment, String> {
     List<Comment> findByCompanyId(String companyId);
 
     List<Comment> findByECommentStatus(String status);
+
+    List<Comment> findByCompanyId(String commentStatus,String companyId);
 }

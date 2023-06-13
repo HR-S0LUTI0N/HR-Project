@@ -1,8 +1,6 @@
 package com.hrmanagement.service;
 
-import com.hrmanagement.dto.request.AuthCreatePersonnelProfileRequestDto;
-import com.hrmanagement.dto.request.ChangeManagerStatusRequestDto;
-import com.hrmanagement.dto.request.CreateUserProfileRequestDto;
+import com.hrmanagement.dto.request.*;
 import com.hrmanagement.dto.response.*;
 import com.hrmanagement.exception.ErrorType;
 import com.hrmanagement.exception.UserProfileManagerException;
@@ -243,6 +241,20 @@ public class UserProfileService extends ServiceManager<UserProfile, String> {
     public String getUserAvatarByUserId(String userId) {
         Optional<UserProfile> userProfile = findById(userId);
         return userProfile.get().getAvatar();
+    }
+
+    public UserProfilePersonnelDashboardRequestDto getUserProfilePersonnelDashboardInformation(Long authId) {
+        UserProfile userProfile = userProfileRepository.findByAuthId(authId).orElseThrow(()->{throw new UserProfileManagerException(ErrorType.USER_NOT_FOUND);});
+        UserProfilePersonnelDashboardRequestDto dto = IUserProfileMapper.INSTANCE.fromUserProfileToUserProfilePersonnelDashboardRequestDto(userProfile);
+        System.out.println(dto);
+        return dto;
+    }
+
+    public PersonnelDashboardCommentRequestDto findAllActiveCompanyComments(Long authId) {
+        UserProfile userProfile = userProfileRepository.findByAuthId(authId).orElseThrow(()->{throw new UserProfileManagerException(ErrorType.USER_NOT_FOUND);});
+        PersonnelDashboardCommentRequestDto dto = IUserProfileMapper.INSTANCE.fromUserProfileToPersonnelDashboardCommentRequestDto(userProfile);
+        System.out.println(dto);
+        return dto;
     }
 }
 

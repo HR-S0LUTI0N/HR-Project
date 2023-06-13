@@ -86,6 +86,7 @@ public class AuthService extends ServiceManager<Auth,Long> {
             save(auth);
             NewCreateManagerUserRequestDto managerUserDto = IAuthMapper.INSTANCE.fromRegisterManagerRequestDtoToNewCreateManagerUserRequestDto(dto);
             managerUserDto.setAuthId(auth.getAuthId());
+            managerUserDto.setPassword(auth.getPassword());
             userManager.createManagerUser(managerUserDto);
             registerMailProducer.sendActivationCode(IAuthMapper.INSTANCE.fromAuthToRegisterMailModel(auth));
         }else {
