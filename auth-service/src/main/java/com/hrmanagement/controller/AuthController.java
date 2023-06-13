@@ -28,7 +28,7 @@ public class AuthController {
     public ResponseEntity<Boolean> registerVisitor(@RequestBody @Valid RegisterVisitorRequestDto dto){
         return ResponseEntity.ok(authService.registerVisitor(dto));
     }
-
+    @CrossOrigin(origins = "*", allowedHeaders = "*")
     @PostMapping(REGISTER_MANAGER)
     public ResponseEntity<RegisterResponseDto> registerManager(@RequestBody @Valid RegisterManagerRequestDto dto){
         return ResponseEntity.ok(authService.registerManager(dto));

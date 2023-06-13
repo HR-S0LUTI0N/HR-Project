@@ -43,7 +43,7 @@ public class CompanyController {
         return ResponseEntity.ok(companyService.findCompanyDetailedInformation(companyId));
     }
 
-
+    @CrossOrigin(origins = "*", allowedHeaders = "*")
     @GetMapping("/find-all")
     public ResponseEntity<List<Company>> findAll(){
         return ResponseEntity.ok(companyService.findAll());

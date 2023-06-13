@@ -15,6 +15,7 @@ import static com.hrmanagement.constants.ApiUrls.*;
 public class CommentController {
     private final CommentService commentService;
 
+    @CrossOrigin(origins = "*", allowedHeaders = "*")
     @PostMapping("/personnel-make-comment/{token}")
     public ResponseEntity<Boolean> personnelMakeComment(@PathVariable String token, @RequestBody PersonnelCommentRequestDto dto){
         return ResponseEntity.ok(commentService.personnelMakeComment(token,dto));
