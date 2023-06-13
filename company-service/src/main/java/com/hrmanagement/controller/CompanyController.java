@@ -61,6 +61,7 @@ public class CompanyController {
     }
 
     @GetMapping("/find-comments-with-company-name-by-status/{token}")
+    @CrossOrigin(origins = "*", allowedHeaders = "*")
     public ResponseEntity<List<FindPendingCommentWithCompanyName>> findCommentWithCompanyNameByStatus(@PathVariable String token) {
         return ResponseEntity.ok(companyService.findCommentWithCompanyNameByStatus(token));
     }
