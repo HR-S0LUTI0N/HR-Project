@@ -130,4 +130,11 @@ public class CompanyService extends ServiceManager<Company, String> {
         throw new RuntimeException("Admin olmayan göremez");
     }
 
+    public String getCompanyNameWithCompanyId(String companyId) {
+        Optional<Company> optionalCompany = findById(companyId);
+        if (optionalCompany.isEmpty())
+            throw new CompanyManagerException(ErrorType.COMPANY_NOT_FOUND);
+        System.out.println(optionalCompany.get().getCompanyName());
+        return optionalCompany.get().getCompanyName();
+    }
 }

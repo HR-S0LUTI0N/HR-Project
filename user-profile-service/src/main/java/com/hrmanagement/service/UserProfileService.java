@@ -225,9 +225,16 @@ public class UserProfileService extends ServiceManager<UserProfile, String> {
         if (authId.isEmpty())
             throw new UserProfileManagerException(ErrorType.INVALID_TOKEN);
         Optional<UserProfile> userProfile = userProfileRepository.findByAuthId(authId.get());
+        if (userProfile.isEmpty())
+            throw new UserProfileManagerException(ErrorType.USER_NOT_FOUND);
+
         if (userProfile.get().getRole().toString().contains("ADMIN")) {
-            List<FindAllManagerResponseDto> inactiveManagerList = userProfileRepository.findAllByStatus(EStatus.INACTIVE);
+            List<FindAllManagerResponseDto> inactiveManagerList = userProfileRepository.findAllByStatusAndRole(EStatus.INACTIVE,ERole.MANAGER);
             //TODO manager ile companyName alınacak. UNUTMA!!
+            inactiveManagerList.forEach(x -> {
+                String companyName =companyManager.getCompanyNameWithCompanyId(x.getCompanyId()).getBody();
+                x.setCompanyName(companyName);
+            });
             return inactiveManagerList;
         }
         throw new RuntimeException("Admin değilsin");

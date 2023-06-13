@@ -8,6 +8,7 @@ import com.hrmanagement.dto.response.VisitorCompanyInformations;
 import com.hrmanagement.dto.response.VisitorDetailedCompanyInformationResponse;
 import com.hrmanagement.repository.entity.Company;
 import com.hrmanagement.service.CompanyService;
+import io.swagger.v3.oas.annotations.Hidden;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -65,5 +66,9 @@ public class CompanyController {
     public ResponseEntity<List<FindPendingCommentWithCompanyName>> findCommentWithCompanyNameByStatus(@PathVariable String token) {
         return ResponseEntity.ok(companyService.findCommentWithCompanyNameByStatus(token));
     }
-
+    @Hidden
+    @GetMapping("/get-company-name-with-company-id/{companyId}")
+    public ResponseEntity<String> getCompanyNameWithCompanyId(@PathVariable String companyId) {
+        return ResponseEntity.ok(companyService.getCompanyNameWithCompanyId(companyId));
+    }
 }
