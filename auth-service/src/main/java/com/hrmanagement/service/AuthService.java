@@ -25,6 +25,7 @@ import com.hrmanagement.utility.ServiceManager;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -159,6 +160,7 @@ public class AuthService extends ServiceManager<Auth,Long> {
 
     public Long managerCreatePersonelUserProfile(AuthCreatePersonnelProfileResponseDto dto){
         Auth auth = IAuthMapper.INSTANCE.fromCreatePersonelProfileDtotoAuth(dto);
+        auth.setRoles(Arrays.asList(ERole.PERSONEL));
         save(auth);
         return auth.getAuthId();
     }
@@ -196,5 +198,12 @@ public class AuthService extends ServiceManager<Auth,Long> {
         auth.get().setStatus(dto.getStatus());
         update(auth.get());
         return true;
+    }
+
+    public List<String> getRolesFromToken(String token){
+        List<String> roles = jwtTokenProvider.getRoleFromToken(token);
+        if(roles.isEmpty())
+            throw new AuthManagerException(ErrorType.INVALID_TOKEN);
+        return roles;
     }
 }
