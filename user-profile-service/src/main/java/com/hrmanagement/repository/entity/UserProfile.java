@@ -53,4 +53,7 @@ public class UserProfile extends Base {
     private String department;
     private Long jobStartingDate;
     private Long jobEndingDate;
+    private String jobBreak;
+    private String jobShift;
+
 }

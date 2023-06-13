@@ -16,6 +16,7 @@ import com.hrmanagement.utility.ServiceManager;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -127,7 +128,7 @@ public class CompanyService extends ServiceManager<Company, String> {
                     .collect(Collectors.toList());
             return pendingComment;
         }
-        throw new RuntimeException("Admin olmayan göremez");
+        throw new CompanyManagerException(ErrorType.NO_AUTHORIZATION);
     }
 
     public String getCompanyNameWithCompanyId(String companyId) {
@@ -137,4 +138,55 @@ public class CompanyService extends ServiceManager<Company, String> {
         System.out.println(optionalCompany.get().getCompanyName());
         return optionalCompany.get().getCompanyName();
     }
+
+    public PersonnelDashboardResponseDto getPersonnelDashboardInformation(String token){
+        Long authId = jwtTokenProvider.getIdFromToken(token).orElseThrow(()->{throw new CompanyManagerException(ErrorType.USER_NOT_FOUND);});
+        List<String> roles = jwtTokenProvider.getRoleFromToken(token);
+        if(roles.isEmpty())
+            throw new CompanyManagerException(ErrorType.USER_NOT_FOUND);
+        if(roles.contains(ERole.PERSONEL.toString())){
+            UserProfilePersonnelDashboardResponseDto userDto = userManager.getUserProfilePersonnelDashboardInformation(authId).getBody();
+            System.out.println(userDto);
+            PersonnelDashboardResponseDto personnelDto = ICompanyMapper.INSTANCE.fromUserProfilePersonnelDashboardResponseDtoToPersonnelDashboardResponseDto(userDto);
+            Company company = findById(userDto.getCompanyId()).orElseThrow(()->{throw new CompanyManagerException(ErrorType.COMPANY_NOT_FOUND);});
+            personnelDto.setCompanyName(company.getCompanyName());
+            personnelDto.setLogo(company.getLogo());
+            personnelDto.setSector(company.getSector());
+            personnelDto.setTitle(company.getTitle());
+            personnelDto.setHolidayDates(company.getHolidayDates());
+            /*
+            //TODO Günler ön taraftan date şeklinde kaydedilip long'a çevrildiğinde yapılacak bu şekilde
+            for(Long longToDay:company.getHolidayDates()){
+                Date newDate = new Date(longToDay);
+                dateHoliday.add(newDate);
+            }
+            List<Date> holidayDatesList = company.getHolidayDates().stream().map(day -> {
+                Date newDate = new Date(day);
+                return newDate;
+            }).collect(Collectors.toList());
+            personnelDto.setHolidayDates(holidayDatesList);
+
+            */
+            return personnelDto;
+        }
+        throw new CompanyManagerException(ErrorType.NO_AUTHORIZATION);
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 }

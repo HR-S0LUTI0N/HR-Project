@@ -23,4 +23,5 @@ public interface ICompanyMapper {
 
     VisitorDetailedCompanyInformationResponse fromCompanyToVisitorDetailedCompanyInformationResponse(final Company company);
 
+    PersonnelDashboardResponseDto fromUserProfilePersonnelDashboardResponseDtoToPersonnelDashboardResponseDto(final UserProfilePersonnelDashboardResponseDto dto);
 }

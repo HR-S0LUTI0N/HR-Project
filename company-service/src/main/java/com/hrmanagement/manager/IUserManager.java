@@ -1,6 +1,8 @@
 package com.hrmanagement.manager;
 
+import com.hrmanagement.dto.response.PersonnelDashboardCommentResponseDto;
 import com.hrmanagement.dto.response.UserProfileCommentResponseDto;
+import com.hrmanagement.dto.response.UserProfilePersonnelDashboardResponseDto;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,4 +23,10 @@ public interface IUserManager {
     public ResponseEntity<UserProfileCommentResponseDto> getUserProfileCommentInformation(@PathVariable Long authId);
     @GetMapping("/get-userprofile-avatar-by-user-id/{userId}")
     ResponseEntity<String> getUserAvatarByUserId(@PathVariable String userId);
+
+    @GetMapping("/get-userprofile-personnel-dashboard-information/{authId}")
+    ResponseEntity<UserProfilePersonnelDashboardResponseDto> getUserProfilePersonnelDashboardInformation(@PathVariable Long authId);
+
+    @GetMapping("/find-all-active-company-comments/{authId}")
+    ResponseEntity<PersonnelDashboardCommentResponseDto> findAllActiveCompanyComments(@PathVariable Long authId);
 }
