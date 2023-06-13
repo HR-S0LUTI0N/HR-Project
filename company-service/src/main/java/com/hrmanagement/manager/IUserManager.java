@@ -19,4 +19,6 @@ public interface IUserManager {
 
     @GetMapping("/get-userprofile-comment-information/{authId}")
     public ResponseEntity<UserProfileCommentResponseDto> getUserProfileCommentInformation(@PathVariable Long authId);
+    @GetMapping("/get-userprofile-avatar-by-user-id/{userId}")
+    ResponseEntity<String> getUserAvatarByUserId(@PathVariable String userId);
 }

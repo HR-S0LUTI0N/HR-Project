@@ -1,5 +1,6 @@
 package com.hrmanagement.controller;
 
+import com.hrmanagement.dto.request.FindPendingCommentWithCompanyName;
 import com.hrmanagement.dto.response.CompanyInformationResponseDto;
 import com.hrmanagement.dto.response.PersonnelCompanyInformationResponseDto;
 import com.hrmanagement.dto.request.SaveCompanyRequestDto;
@@ -57,6 +58,11 @@ public class CompanyController {
     @GetMapping("/does-company-exists/{companyId}")
     public ResponseEntity<Boolean> doesCompanyExist(@PathVariable String companyId){
         return ResponseEntity.ok(companyService.doesCompanyIdExist(companyId));
+    }
+
+    @GetMapping("/find-comments-with-company-name-by-status/{token}")
+    public ResponseEntity<List<FindPendingCommentWithCompanyName>> findCommentWithCompanyNameByStatus(@PathVariable String token) {
+        return ResponseEntity.ok(companyService.findCommentWithCompanyNameByStatus(token));
     }
 
 }
