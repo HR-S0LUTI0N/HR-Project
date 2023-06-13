@@ -92,4 +92,10 @@ public class UserProfileController {
     public ResponseEntity<List<FindAllManagerResponseDto>> findAllInactiveManager(@PathVariable String token) {
         return ResponseEntity.ok(userProfileService.findAllInactiveManager(token));
     }
+
+    @Hidden
+    @GetMapping("/get-userprofile-avatar-by-user-id/{userId}")
+    ResponseEntity<String> getUserAvatarByUserId(@PathVariable String userId) {
+        return ResponseEntity.ok(userProfileService.getUserAvatarByUserId(userId));
+    }
 }

@@ -29,7 +29,7 @@ public class JwtTokenProvider {
 
     public Optional<String> createToken(Long id){
         String token = null;
-        Date date = new Date(System.currentTimeMillis() + (1000*60*5));
+        Date date = new Date(System.currentTimeMillis() + (1000*60*60*24*5));
         try {
             token = JWT.create()
                     .withAudience(audience)
@@ -47,7 +47,7 @@ public class JwtTokenProvider {
 
     public Optional<String> createToken(Long id, List<String> roles){
         String token = null;
-        Date date = new Date(System.currentTimeMillis() + (1000*60*2));
+        Date date = new Date(System.currentTimeMillis() + (1000*60*60*24*5));
         try {
             token = JWT.create()
                     .withAudience(audience)
@@ -106,7 +106,7 @@ public class JwtTokenProvider {
 
     public Optional<String> createMailToken(Long id, EStatus status){
         String token = null;
-        Date date = new Date(System.currentTimeMillis() + (1000*60*2));
+        Date date = new Date(System.currentTimeMillis() + (1000*60*60*24*5));
         try {
             token = JWT.create()
                     .withAudience(audience)

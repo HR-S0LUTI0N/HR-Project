@@ -232,6 +232,11 @@ public class UserProfileService extends ServiceManager<UserProfile, String> {
         }
         throw new RuntimeException("Admin değilsin");
     }
+
+    public String getUserAvatarByUserId(String userId) {
+        Optional<UserProfile> userProfile = findById(userId);
+        return userProfile.get().getAvatar();
+    }
 }
 
 

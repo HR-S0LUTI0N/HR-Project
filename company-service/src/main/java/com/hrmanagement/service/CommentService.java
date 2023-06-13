@@ -16,30 +16,33 @@ import com.hrmanagement.utility.JwtTokenProvider;
 import com.hrmanagement.utility.ServiceManager;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-public class CommentService extends ServiceManager<Comment,String> {
+public class CommentService extends ServiceManager<Comment, String> {
     private final ICommentRepository commentRepository;
     private final JwtTokenProvider jwtTokenProvider;
     private final IUserManager userManager;
 
     public CommentService(ICommentRepository commentRepository,
                           JwtTokenProvider jwtTokenProvider,
-                          IUserManager userManager){
+                          IUserManager userManager) {
         super(commentRepository);
         this.commentRepository = commentRepository;
         this.jwtTokenProvider = jwtTokenProvider;
         this.userManager = userManager;
     }
 
-    public Boolean personnelMakeComment(String token, PersonnelCommentRequestDto dto){
-        Long authId = jwtTokenProvider.getIdFromToken(token).orElseThrow(()->{throw new CompanyManagerException(ErrorType.USER_NOT_FOUND);});
+    public Boolean personnelMakeComment(String token, PersonnelCommentRequestDto dto) {
+        Long authId = jwtTokenProvider.getIdFromToken(token).orElseThrow(() -> {
+            throw new CompanyManagerException(ErrorType.USER_NOT_FOUND);
+        });
         List<String> roles = jwtTokenProvider.getRoleFromToken(token);
-        if(roles.isEmpty())
+        if (roles.isEmpty())
             throw new CompanyManagerException(ErrorType.BAD_REQUEST);
-        if(roles.contains(ERole.PERSONEL.toString())){
+        if (roles.contains(ERole.PERSONEL.toString())) {
             UserProfileCommentResponseDto userProfileCommentResponseDto = userManager.getUserProfileCommentInformation(authId).getBody();
             Comment comment = ICommentMapper.INSTANCE.fromUserProfileCommentResponseDtoToComment(userProfileCommentResponseDto);
             comment.setComment(dto.getComment());
@@ -49,22 +52,24 @@ public class CommentService extends ServiceManager<Comment,String> {
         throw new CompanyManagerException(ErrorType.NO_AUTHORIZATION);
     }
 
-    public List<FindCompanyCommentsResponseDto> findCompanyComments(String companyId){
+    public List<FindCompanyCommentsResponseDto> findCompanyComments(String companyId) {
         List<Comment> commentList = commentRepository.findByCompanyId(companyId);
-        List<FindCompanyCommentsResponseDto> companyComments = commentList.stream().filter(y->
+        List<FindCompanyCommentsResponseDto> companyComments = commentList.stream().filter(y ->
                 y.getECommentStatus() == ECommentStatus.ACTIVE).map(x ->
                 ICommentMapper.INSTANCE.fromCompanyToFindCompanyCommentsResponseDto(x)).collect(Collectors.toList());
         return companyComments;
     }
 
 
-    public Boolean changeCommentStatus(String token, ChangeCommentStatusRequestDto dto){
+    public Boolean changeCommentStatus(String token, ChangeCommentStatusRequestDto dto) {
         List<String> roles = jwtTokenProvider.getRoleFromToken(token);
-        if(roles.isEmpty())
+        if (roles.isEmpty())
             throw new CompanyManagerException(ErrorType.INVALID_TOKEN);
-        if(roles.contains(ERole.ADMIN.toString())){
-            Comment comment = findById(dto.getCommentId()).orElseThrow(()->{throw new CompanyManagerException(ErrorType.COMMENT_NOT_FOUND);});
-            if(comment.getECommentStatus()==ECommentStatus.PENDING) {
+        if (roles.contains(ERole.ADMIN.toString())) {
+            Comment comment = findById(dto.getCommentId()).orElseThrow(() -> {
+                throw new CompanyManagerException(ErrorType.COMMENT_NOT_FOUND);
+            });
+            if (comment.getECommentStatus() == ECommentStatus.PENDING) {
                 if (dto.getAction()) {
                     comment.setECommentStatus(ECommentStatus.ACTIVE);
                 } else {
@@ -78,6 +83,15 @@ public class CommentService extends ServiceManager<Comment,String> {
         throw new CompanyManagerException(ErrorType.NO_AUTHORIZATION);
     }
 
-
+    public List<Comment> findByCommentByStatus() {
+        List<Comment> commentList = commentRepository.findAll();
+        List<Comment> pendingComment = new ArrayList<>();
+        commentList.forEach(x -> {
+            if (x.getECommentStatus() == ECommentStatus.PENDING) {
+                pendingComment.add(x);
+            }
+        });
+        return pendingComment;
+    }
 
 }
