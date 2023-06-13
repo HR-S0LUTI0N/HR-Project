@@ -17,6 +17,7 @@ public interface ICompanyManager {
 
     @GetMapping("/get-personnel-company-information/{companyId}")
     public ResponseEntity<PersonnelCompanyInformationResponseDto> getPersonnelCompanyInformation(@PathVariable String companyId);
-
+    @GetMapping("/get-company-name-with-company-id/{companyId}")
+    ResponseEntity<String> getCompanyNameWithCompanyId(@PathVariable String companyId);
 
 }

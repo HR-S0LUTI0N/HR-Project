@@ -22,4 +22,5 @@ public class FindAllManagerResponseDto {
     private String surname;
     private String avatar;
     private String companyId;
+    private String companyName;
 }
