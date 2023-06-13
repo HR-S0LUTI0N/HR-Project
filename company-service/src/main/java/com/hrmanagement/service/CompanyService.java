@@ -103,61 +103,31 @@ public class CompanyService extends ServiceManager<Company, String> {
         }
         return false;
     }
-/*
+
     public List<FindPendingCommentWithCompanyName> findCommentWithCompanyNameByStatus(String token) {
         List<String> userRoles = jwtTokenProvider.getRoleFromToken(token);
-        List<Company> companyList = new ArrayList<>();
-        List<FindPendingCommentWithCompanyName> pendingComment = new ArrayList<>();
         if (userRoles.contains(ERole.ADMIN.toString())) {
             List<Comment> commentList = commentService.findByCommentByStatus();
-            commentList.forEach(a -> {
-                System.out.println(a);
-                Optional<Company> optionalCompany = companyRepository.findById(a.getCompanyId());
-                String userAvatar = userManager.getUserAvatarByUserId(a.getUserId()).getBody();
-                companyList.add(optionalCompany.get());
-                companyList.forEach(b -> {
-                    if (a.getCompanyId().equals(b.getCompanyId())) {
-                        pendingComment.forEach(c -> {
-                            c.setAvatar(userAvatar);
-                            c.setCompanyName(b.getCompanyName());
-                            c.setECommentStatus(a.getECommentStatus());
-                            c.setComment(a.getComment());
-                            c.setName(a.getName());
-                            c.setSurname(a.getSurname());
-                            pendingComment.add(c);
-                        });
-                    }
-                });
-            });
-            System.out.println(pendingComment);
+            List<FindPendingCommentWithCompanyName> pendingComment = commentList.stream()
+                    .map(comment -> {
+                        Company company = findById(comment.getCompanyId())
+                                .orElseThrow(() -> new RuntimeException("Şirket bulunamadı"));
+                        String userAvatar = userManager.getUserAvatarByUserId(comment.getUserId()).getBody();
+                        FindPendingCommentWithCompanyName pending = FindPendingCommentWithCompanyName.builder()
+                                .commentId(comment.getCommentId())
+                                .avatar(userAvatar)
+                                .companyName(company.getCompanyName())
+                                .eCommentStatus(comment.getECommentStatus())
+                                .comment(comment.getComment())
+                                .name(comment.getName())
+                                .surname(comment.getSurname())
+                                .build();
+                        return pending;
+                    })
+                    .collect(Collectors.toList());
             return pendingComment;
         }
         throw new RuntimeException("Admin olmayan göremez");
-    } */
-public List<FindPendingCommentWithCompanyName> findCommentWithCompanyNameByStatus(String token) {
-    List<String> userRoles = jwtTokenProvider.getRoleFromToken(token);
-    if (userRoles.contains(ERole.ADMIN.toString())) {
-        List<Comment> commentList = commentService.findByCommentByStatus();
-        List<FindPendingCommentWithCompanyName> pendingComment = commentList.stream()
-                .map(comment -> {
-                    Company company = findById(comment.getCompanyId())
-                            .orElseThrow(() -> new RuntimeException("Şirket bulunamadı"));
-                    String userAvatar = userManager.getUserAvatarByUserId(comment.getUserId()).getBody();
-                    FindPendingCommentWithCompanyName pending = FindPendingCommentWithCompanyName.builder()
-                            .commentId(comment.getCommentId())
-                            .avatar(userAvatar)
-                            .companyName(company.getCompanyName())
-                            .eCommentStatus(comment.getECommentStatus())
-                            .comment(comment.getComment())
-                            .name(comment.getName())
-                            .surname(comment.getSurname())
-                            .build();
-                    return pending;
-                })
-                .collect(Collectors.toList());
-        return pendingComment;
     }
-    throw new RuntimeException("Admin olmayan göremez");
-}
 
 }
