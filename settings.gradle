@@ -3,4 +3,6 @@ include 'user-profile-service'
 include 'auth-service'
 include 'company-service'
 include 'mail-service'
+include 'config-server'
+include 'config-server-git'
 

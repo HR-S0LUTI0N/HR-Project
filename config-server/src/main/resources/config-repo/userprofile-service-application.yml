@@ -1,0 +1,28 @@
+server:
+  port: 9080
+
+spring:
+  zipkin:
+    enabled: true
+    base-url: http://localhost:9411
+    service:
+      name: userprofile-service
+  data:
+    mongodb:
+      host: localhost
+      port: 27017
+      database: hrManagementDB
+      username: hrUser
+      password: root
+      auto-index-creation: true
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: java7
+    password: root
+
+
+rabbitmq:
+  user-exchange: user-exchange
+  personnelPasswordKey: personnel-password-key
+  queuePersonnelPassword: queue-personnel-password

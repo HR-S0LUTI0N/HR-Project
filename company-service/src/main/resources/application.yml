@@ -1,18 +1,8 @@
-server:
-  port: 9070
-
 spring:
-  data:
-    mongodb:
-      host: localhost
-      port: 27017
-      database: hrManagementDB
-      username: hrUser
-      password: root
-      auto-index-creation: true
-
-
-jwt:
-  secretkey: ${secretkey}
-  audience: ${audience}
-  issuer: ${issuer}
+  cloud:
+    config:
+      uri: ${CONFIG_SERVER}
+  config:
+    import: "configserver:"
+  application:
+    name: company-service-application
