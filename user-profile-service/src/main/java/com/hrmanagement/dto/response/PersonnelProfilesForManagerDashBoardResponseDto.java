@@ -15,15 +15,16 @@ import java.util.List;
 public class PersonnelProfilesForManagerDashBoardResponseDto {
 
     private String userId;
+    private String avatar;
     private String name;
     private String middleName;
     private String surname;
     private String companyName;             //Company Service
-    private String Role;    //Role'ü
+    private String roleString;    //Role'ü
     private String department;
     private String wage;
     private String wageDate;
-    private List<Long> employeeLeaves;
+    private int remainingDayOffs;
     private Long dateOfBirth;   //verified yerine koyulacak
     private EStatus eStatus;
 

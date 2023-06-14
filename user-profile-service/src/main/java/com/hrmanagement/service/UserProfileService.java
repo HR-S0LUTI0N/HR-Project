@@ -272,14 +272,13 @@ public class UserProfileService extends ServiceManager<UserProfile, String> {
                 PersonnelProfilesForManagerDashBoardResponseDto dto = IUserProfileMapper.INSTANCE.fromUserProfileToPersonnelProfilesForManagerDashBoardResponseDto(userProfile);
                 dto.setCompanyName(companyName);
                 if( user.getRole().contains(ERole.MANAGER)){
-                    dto.setRole("MANAGER");
+                    dto.setRoleString("MANAGER");
                 }else{
-                    dto.setRole("PERSONNEL");
+                    dto.setRoleString("PERSONNEL");
                 }
                 dto.setEStatus(user.getStatus());
                 return dto;
             }).collect(Collectors.toList());
-
             return dtoList;
         }
         throw new UserProfileManagerException(ErrorType.AUTHORIZATION_ERROR);
