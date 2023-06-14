@@ -3,30 +3,10 @@ server:
 
 
 spring:
-  mail:
-    username: ${mailUsername}
-    password: ${mailPassword}
-    host: smtp.gmail.com
-    port: 587
-    properties:
-      mail:
-        smtp:
-          auth: true
-          starttls:
-            enable: true
-  rabbitmq:
-    host: localhost
-    port: 5672
-    username: java7
-    password: root
-
-jwt:
-  secretkey: ${secretkey}
-  audience: ${audience}
-  issuer: ${issuer}
-
-rabbitmq:
-  queueForgotPassword: forgot-password-mail-queue
-  registerMailQueue: mail-queue
-  queueResetPassword: reset-password-mail-queue
-  queuePersonnelPassword: queue-personnel-password
+  cloud:
+    config:
+      uri: ${CONFIG_SERVER}
+  config:
+    import: "configserver:"
+  application:
+    name: mail-service-application

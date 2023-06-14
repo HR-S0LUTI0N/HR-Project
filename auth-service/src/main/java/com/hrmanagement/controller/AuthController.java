@@ -77,6 +77,7 @@ public class AuthController {
     public ResponseEntity<Boolean> managerDeletePersonnel(@RequestBody DeletePersonnelFromAuthResponseDto dto){
         return ResponseEntity.ok(authService.managerDeletePersonnel(dto));
     }
+
     @CrossOrigin(origins = "*", allowedHeaders = "*")
     @GetMapping("/get-roles-from-token/{token}")
     public ResponseEntity<List<String>> getRolesFromToken(@PathVariable String token){
