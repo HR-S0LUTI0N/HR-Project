@@ -256,6 +256,16 @@ public class UserProfileService extends ServiceManager<UserProfile, String> {
         System.out.println(dto);
         return dto;
     }
+
+    public UserProfileManagerDashboardRequestDto getUserProfileManagerDashboard(Long authId) {
+        UserProfile userProfile = userProfileRepository.findByAuthId(authId).orElseThrow(()->{throw new UserProfileManagerException(ErrorType.USER_NOT_FOUND);});
+        Integer companyPersonnelCount = userProfileRepository.countByCompanyId(userProfile.getCompanyId());
+        UserProfileManagerDashboardRequestDto dto = UserProfileManagerDashboardRequestDto.builder()
+                .companyId(userProfile.getCompanyId())
+                .companyPersonnelCount(companyPersonnelCount)
+                .build();
+        return dto;
+    }
 }
 
 
