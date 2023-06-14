@@ -111,10 +111,15 @@ public class UserProfileController {
         return ResponseEntity.ok(userProfileService.findAllActiveCompanyComments(authId));
     }
 
+    @GetMapping("/get-personnel-profiles-for-manager-dashboard/{token}")
+    ResponseEntity<List<PersonnelProfilesForManagerDashBoardResponseDto>> getPersonnelProfilesForManagerDashBoard(@PathVariable String token){
+        return ResponseEntity.ok(userProfileService.getPersonnelProfilesForManagerDashBoard(token));
+    }
 
 
 
 
+    @Hidden
     @GetMapping("/get-userprofile-manager-dashboard/{authId}")
     ResponseEntity<UserProfileManagerDashboardRequestDto> getUserProfileManagerDashboard(@PathVariable Long authId){
         return ResponseEntity.ok(userProfileService.getUserProfileManagerDashboard(authId));

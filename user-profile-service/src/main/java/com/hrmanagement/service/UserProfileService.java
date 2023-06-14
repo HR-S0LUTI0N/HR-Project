@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class UserProfileService extends ServiceManager<UserProfile, String> {
@@ -188,9 +189,7 @@ public class UserProfileService extends ServiceManager<UserProfile, String> {
         if(roles.contains(ERole.PERSONEL.toString())){
             UserProfile userProfile = userProfileRepository.findByAuthId(authId).orElseThrow(()->{throw new UserProfileManagerException(ErrorType.USER_NOT_FOUND);});
             PersonnelInformationResponseDto dto = IUserProfileMapper.INSTANCE.fromUserProfileToPersonnelInformationResponseDto(userProfile);
-            System.out.println(dto);
             PersonnelCompanyInformationResponseDto companyDto = companyManager.getPersonnelCompanyInformation(userProfile.getCompanyId()).getBody();
-            System.out.println(companyDto);
             return IUserProfileMapper.INSTANCE.fromPersonnelCompanyInformationResponseDtoToPersonnelInformationResponseDto(companyDto,dto);
         }
         throw new UserProfileManagerException(ErrorType.AUTHORIZATION_ERROR);
@@ -198,22 +197,15 @@ public class UserProfileService extends ServiceManager<UserProfile, String> {
 
     public Boolean inactivateUser(Long authId) {
         Optional<UserProfile> optionalUserProfile = userProfileRepository.findByAuthId(authId);
-        System.out.println("şurdayım");
-        System.out.println(optionalUserProfile);
         if(optionalUserProfile.isEmpty())
             throw new UserProfileManagerException(ErrorType.USER_NOT_FOUND);
-        System.out.println("şurdayım");
         optionalUserProfile.get().setStatus(EStatus.INACTIVE);
-        System.out.println("şurdayım");
         update(optionalUserProfile.get());
-        System.out.println(optionalUserProfile);
         return true;
     }
 
     public UserProfileCommentResponseDto getUserProfileCommentInformation(Long authId) {
-        System.out.println(authId);
         Optional<UserProfile> optionalUserProfile = userProfileRepository.findByAuthId(authId);
-        System.out.println(optionalUserProfile.get());
         if(optionalUserProfile.isEmpty())
             throw new UserProfileManagerException(ErrorType.USER_NOT_FOUND);
         return IUserProfileMapper.INSTANCE.fromUserProfileToUserProfileCommentResponseDto(optionalUserProfile.get());
@@ -266,6 +258,33 @@ public class UserProfileService extends ServiceManager<UserProfile, String> {
                 .build();
         return dto;
     }
+
+    public List<PersonnelProfilesForManagerDashBoardResponseDto> getPersonnelProfilesForManagerDashBoard(String token){
+        Long authId = jwtTokenProvider.getIdFromToken(token).orElseThrow(()->{throw new UserProfileManagerException(ErrorType.USER_NOT_FOUND);});
+        List<String> roles = jwtTokenProvider.getRoleFromToken(token);
+        if (roles.isEmpty())
+            throw new UserProfileManagerException(ErrorType.INVALID_TOKEN);
+        if (roles.contains(ERole.MANAGER.toString())) {
+            UserProfile userProfile = userProfileRepository.findByAuthId(authId).orElseThrow(()->{throw new UserProfileManagerException(ErrorType.USER_NOT_FOUND);});
+            String companyName = companyManager.getCompanyNameWithCompanyId(userProfile.getCompanyId()).getBody();
+            List<UserProfile> userProfileList = userProfileRepository.findByCompanyId(userProfile.getCompanyId());
+            List<PersonnelProfilesForManagerDashBoardResponseDto> dtoList = userProfileList.stream().map(user->{
+                PersonnelProfilesForManagerDashBoardResponseDto dto = IUserProfileMapper.INSTANCE.fromUserProfileToPersonnelProfilesForManagerDashBoardResponseDto(userProfile);
+                dto.setCompanyName(companyName);
+                if( user.getRole().contains(ERole.MANAGER)){
+                    dto.setRole("MANAGER");
+                }else{
+                    dto.setRole("PERSONNEL");
+                }
+                dto.setEStatus(user.getStatus());
+                return dto;
+            }).collect(Collectors.toList());
+
+            return dtoList;
+        }
+        throw new UserProfileManagerException(ErrorType.AUTHORIZATION_ERROR);
+    }
+
 }
 
 
