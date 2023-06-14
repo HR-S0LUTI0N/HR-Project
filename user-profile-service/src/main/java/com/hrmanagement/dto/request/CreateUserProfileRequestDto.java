@@ -29,13 +29,11 @@ public class CreateUserProfileRequestDto {
     private String middleName;
     @NotBlank
     private String surname;
-    @NotNull
-    private Long dateOfBirth;
     @NotBlank
     private String birthPlace;
     @NotBlank
     private String identificationNumber;
-    @NotNull
+    private Long dateOfBirth;
     private EGender gender;
     @NotBlank
     private String phone;
@@ -43,7 +41,6 @@ public class CreateUserProfileRequestDto {
     private Double wage;
     @NotNull
     private Long wageDate;
-    @NotBlank
     private String avatar;
     @NotBlank
     private String neighbourhood;
@@ -59,8 +56,6 @@ public class CreateUserProfileRequestDto {
     private Integer apartmentNumber;
     @NotNull
     private Integer postalCode;
-    private String companyId;
-    private List<Long> employeeLeaves;
     @NotBlank
     private String department;
     @NotNull

@@ -45,16 +45,16 @@ public class UserProfileService extends ServiceManager<UserProfile, String> {
     }
 
     /**
-     * Create personnel methoduna
-     * Password encoder kurulacak,
-     * userId gelmiyor bakılması lzm
-     * Manager'le status güncellemesi yapmalıdır.
-     * Status active etme diğer tarafta güncellenmelidir.
-     * Dto sunda mail mi değil mi validasyonla bakılacak
-     * Personnel eklenince STATUS'u null geliyor
+     *  Personnel Create methodunda dateOfBirth için takvim etkinleştirmesi bakılacak
+     *  Gender combobox'ından değer çekilme bakılacak
+     *  Base64 formatında avatar ekleme koyulamalıdır.
+     *
+     *
+     *
+     *
      * Şifre validasyonu
-     * İlgili kişinin firmasından acacak
-     * AdminActiveManager refactor olacak
+     *
+     *
      * @param token
      * @return
      */

@@ -33,6 +33,7 @@ public class UserProfileController {
         return ResponseEntity.ok(userProfileService.forgotPassword(dto));
     }
 
+    @CrossOrigin(origins = "*", allowedHeaders = "*")
     @PostMapping(CREATE_PERSONAL+"/{token}")
     public ResponseEntity<Boolean> managerCreatePersonelUserProfile(@PathVariable String token, @RequestBody @Valid CreateUserProfileRequestDto dto){
 
