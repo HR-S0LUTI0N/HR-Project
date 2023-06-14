@@ -26,6 +26,7 @@ public class UserProfileController {
 
     private final UserProfileService userProfileService;
     @PutMapping(ADMINCHANGEVISITORSTATUS+"/{token}")
+    @CrossOrigin(origins = "*", allowedHeaders = "*")
     public ResponseEntity<Boolean> adminChangeManagerStatus(@PathVariable String token, @RequestBody ChangeManagerStatusRequestDto dto) {
         return ResponseEntity.ok(userProfileService.adminChangeManagerStatus(token,dto));
     }
