@@ -75,5 +75,10 @@ public class CompanyController {
         return ResponseEntity.ok(companyService.getPersonnelDashboardInformation(token));
     }
 
+    @CrossOrigin(origins = "*", allowedHeaders = "*")
+    @GetMapping("get-manager-dashboard-information/{token}")
+    public ResponseEntity<ManagerDashboardResponseDto> getManagerDashboardInformation(@PathVariable String token){
+        return ResponseEntity.ok(companyService.getManagerDashboardInformation(token));
+    }
 
 }

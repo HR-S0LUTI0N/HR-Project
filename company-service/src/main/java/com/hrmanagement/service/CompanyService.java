@@ -85,7 +85,6 @@ public class CompanyService extends ServiceManager<Company, String> {
         });
         VisitorDetailedCompanyInformationResponse dto = ICompanyMapper.INSTANCE.fromCompanyToVisitorDetailedCompanyInformationResponse(company);
         List<FindCompanyCommentsResponseDto> dtoCommentList = commentService.findCompanyComments(companyId);
-        System.out.println(dtoCommentList);
         dto.setCompanyComments(dtoCommentList);
         return dto;
     }
@@ -135,7 +134,6 @@ public class CompanyService extends ServiceManager<Company, String> {
         Optional<Company> optionalCompany = findById(companyId);
         if (optionalCompany.isEmpty())
             throw new CompanyManagerException(ErrorType.COMPANY_NOT_FOUND);
-        System.out.println(optionalCompany.get().getCompanyName());
         return optionalCompany.get().getCompanyName();
     }
 
@@ -146,7 +144,6 @@ public class CompanyService extends ServiceManager<Company, String> {
             throw new CompanyManagerException(ErrorType.USER_NOT_FOUND);
         if(roles.contains(ERole.PERSONEL.toString())){
             UserProfilePersonnelDashboardResponseDto userDto = userManager.getUserProfilePersonnelDashboardInformation(authId).getBody();
-            System.out.println(userDto);
             PersonnelDashboardResponseDto personnelDto = ICompanyMapper.INSTANCE.fromUserProfilePersonnelDashboardResponseDtoToPersonnelDashboardResponseDto(userDto);
             Company company = findById(userDto.getCompanyId()).orElseThrow(()->{throw new CompanyManagerException(ErrorType.COMPANY_NOT_FOUND);});
             personnelDto.setCompanyName(company.getCompanyName());
@@ -168,6 +165,21 @@ public class CompanyService extends ServiceManager<Company, String> {
 
             */
             return personnelDto;
+        }
+        throw new CompanyManagerException(ErrorType.NO_AUTHORIZATION);
+    }
+
+    public ManagerDashboardResponseDto getManagerDashboardInformation(String token){
+        Long authId = jwtTokenProvider.getIdFromToken(token).orElseThrow(()->{throw new CompanyManagerException(ErrorType.USER_NOT_FOUND);});
+        List<String> roles = jwtTokenProvider.getRoleFromToken(token);
+        if(roles.isEmpty())
+            throw new CompanyManagerException(ErrorType.USER_NOT_FOUND);
+        if(roles.contains(ERole.MANAGER.toString())){
+            UserProfileManagerDashboardResponseDto dtoUser = userManager.getUserProfileManagerDashboard(authId).getBody();
+            Company company = findById(dtoUser.getCompanyId()).orElseThrow(()->{throw new CompanyManagerException(ErrorType.COMPANY_NOT_FOUND);});
+            ManagerDashboardResponseDto managerDto = ICompanyMapper.INSTANCE.fromCompanyToManagerDashboardResponseDto(company);
+            managerDto.setCompanyPersonnelCount(dtoUser.getCompanyPersonnelCount());
+            return managerDto;
         }
         throw new CompanyManagerException(ErrorType.NO_AUTHORIZATION);
     }

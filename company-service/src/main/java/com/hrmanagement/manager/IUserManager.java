@@ -2,6 +2,7 @@ package com.hrmanagement.manager;
 
 import com.hrmanagement.dto.response.PersonnelDashboardCommentResponseDto;
 import com.hrmanagement.dto.response.UserProfileCommentResponseDto;
+import com.hrmanagement.dto.response.UserProfileManagerDashboardResponseDto;
 import com.hrmanagement.dto.response.UserProfilePersonnelDashboardResponseDto;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.ResponseEntity;
@@ -29,4 +30,8 @@ public interface IUserManager {
 
     @GetMapping("/find-all-active-company-comments/{authId}")
     ResponseEntity<PersonnelDashboardCommentResponseDto> findAllActiveCompanyComments(@PathVariable Long authId);
+
+    @GetMapping("/get-userprofile-manager-dashboard/{authId}")
+    ResponseEntity<UserProfileManagerDashboardResponseDto> getUserProfileManagerDashboard(@PathVariable Long authId);
+
 }

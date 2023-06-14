@@ -19,30 +19,51 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class CreateUserProfileRequestDto {
+    @NotBlank
     private String password;
     @Indexed(unique = true)
+    @Email
     private String email;
+    @NotBlank
     private String name;
     private String middleName;
+    @NotBlank
     private String surname;
+    @NotNull
     private Long dateOfBirth;
+    @NotBlank
     private String birthPlace;
+    @NotBlank
     private String identificationNumber;
+    @NotNull
     private EGender gender;
+    @NotBlank
     private String phone;
+    @NotNull
     private Double wage;
+    @NotNull
     private Long wageDate;
+    @NotBlank
     private String avatar;
+    @NotBlank
     private String neighbourhood;
+    @NotBlank
     private String district;
+    @NotBlank
     private String province;
+    @NotBlank
     private String country;
+    @NotNull
     private Integer buildingNumber;
+    @NotNull
     private Integer apartmentNumber;
+    @NotNull
     private Integer postalCode;
     private String companyId;
     private List<Long> employeeLeaves;
+    @NotBlank
     private String department;
+    @NotNull
     private Long jobStartingDate;
 
 }

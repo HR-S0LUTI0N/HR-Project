@@ -1,9 +1,6 @@
 package com.hrmanagement.controller;
 
-import com.hrmanagement.dto.request.ChangeManagerStatusRequestDto;
-import com.hrmanagement.dto.request.CreateUserProfileRequestDto;
-import com.hrmanagement.dto.request.PersonnelDashboardCommentRequestDto;
-import com.hrmanagement.dto.request.UserProfilePersonnelDashboardRequestDto;
+import com.hrmanagement.dto.request.*;
 import com.hrmanagement.dto.response.*;
 import com.hrmanagement.repository.entity.UserProfile;
 import com.hrmanagement.service.UserProfileService;
@@ -112,4 +109,16 @@ public class UserProfileController {
     ResponseEntity<PersonnelDashboardCommentRequestDto> findAllActiveCompanyComments(@PathVariable Long authId){
         return ResponseEntity.ok(userProfileService.findAllActiveCompanyComments(authId));
     }
+
+
+
+
+
+    @GetMapping("/get-userprofile-manager-dashboard/{authId}")
+    ResponseEntity<UserProfileManagerDashboardRequestDto> getUserProfileManagerDashboard(@PathVariable Long authId){
+        return ResponseEntity.ok(userProfileService.getUserProfileManagerDashboard(authId));
+    }
+
+
+
 }
