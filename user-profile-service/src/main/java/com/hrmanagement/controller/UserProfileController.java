@@ -111,6 +111,7 @@ public class UserProfileController {
         return ResponseEntity.ok(userProfileService.findAllActiveCompanyComments(authId));
     }
 
+    @CrossOrigin(origins = "*", allowedHeaders = "*")
     @GetMapping("/get-personnel-profiles-for-manager-dashboard/{token}")
     ResponseEntity<List<PersonnelProfilesForManagerDashBoardResponseDto>> getPersonnelProfilesForManagerDashBoard(@PathVariable String token){
         return ResponseEntity.ok(userProfileService.getPersonnelProfilesForManagerDashBoard(token));
