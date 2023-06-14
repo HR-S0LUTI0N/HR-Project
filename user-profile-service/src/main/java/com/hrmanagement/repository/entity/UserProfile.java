@@ -50,6 +50,7 @@ public class UserProfile extends Base {
     private Integer postalCode;
     private String companyId;
     private List<Long> employeeLeaves;
+    private int remainingDayOffs;
     private String department;
     private Long jobStartingDate;
     private Long jobEndingDate;

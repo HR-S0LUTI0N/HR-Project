@@ -41,6 +41,8 @@ public interface IUserProfileMapper {
 
     PersonnelDashboardCommentRequestDto fromUserProfileToPersonnelDashboardCommentRequestDto(final UserProfile userProfile);
 
+    PersonnelProfilesForManagerDashBoardResponseDto fromUserProfileToPersonnelProfilesForManagerDashBoardResponseDto(final UserProfile userProfile);
+
 
 
 
