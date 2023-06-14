@@ -24,6 +24,7 @@ public class CommentController {
         return ResponseEntity.ok(commentService.personnelMakeComment(token,dto));
     }
 
+    @CrossOrigin(origins = "*", allowedHeaders = "*")
     @PutMapping("/change-comment-status/{token}")
     public ResponseEntity<Boolean> changeCommentStatus(@PathVariable String token, @RequestBody ChangeCommentStatusRequestDto dto){
         return ResponseEntity.ok(commentService.changeCommentStatus(token,dto));
