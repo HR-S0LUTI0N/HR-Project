@@ -3,6 +3,7 @@ package com.hrmanagement.mapper;
 import com.hrmanagement.dto.request.*;
 import com.hrmanagement.dto.response.AuthCreatePersonnelProfileResponseDto;
 import com.hrmanagement.dto.response.RegisterResponseDto;
+import com.hrmanagement.rabbitmq.model.RegisterMailHelloModel;
 import com.hrmanagement.rabbitmq.model.RegisterMailModel;
 import com.hrmanagement.repository.entity.Auth;
 import org.mapstruct.Mapper;
@@ -22,6 +23,8 @@ public interface IAuthMapper {
     Auth fromManagerRequestDtoToAuth(final RegisterManagerRequestDto dto);
 
     ForgotPasswordUserRequestDto fromAuthToForgotPasswordUserRequestDto(final Auth auth);
+
+    RegisterMailHelloModel fromAuthToRegisterMailHelloModel(final Auth auth);
 
     Auth fromCreatePersonelProfileDtotoAuth(final AuthCreatePersonnelProfileResponseDto dto);
 

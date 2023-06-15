@@ -46,6 +46,23 @@ public class RabbitMqConfig {
         return BindingBuilder.bind(registerMailQueue).to(exchangeAuth).with(registerMailBindingKey);
     }
 
+    //Visitor Hello
+
+    @Value("${rabbitmq.registerMailHelloQueue}")
+    private String registerMailHelloQueue;
+    @Value("${rabbitmq.registerMailHelloBindingKey}")
+    private String registerMailHelloBindingKey;
+
+    @Bean
+    Queue registerMailHelloQueue(){
+        return new Queue(registerMailHelloQueue);
+    }
+
+    @Bean
+    public Binding bindingRegisterHelloMail(final Queue registerMailHelloQueue, final DirectExchange exchangeAuthHello){
+        return BindingBuilder.bind(registerMailHelloQueue).to(exchangeAuthHello).with(registerMailHelloBindingKey);
+    }
+
     //ResetPassword
     @Value("${rabbitmq.queueResetPassword}")
     private String queueResetPassword;

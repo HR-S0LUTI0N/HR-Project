@@ -36,6 +36,8 @@ rabbitmq:
   queueRegister: register-queue
   registerMailQueue: mail-queue
   registerMailBindingKey: register-mail-key
+  registerMailHelloQueue: mail-hello-queue
+  registerMailHelloBindingKey: register-mail-key-hello
   queueForgotPassword: forgot-password-mail-queue
   forgotPasswordMailBindingKey: forgot-password-mail-key
   queueResetPassword: reset-password-mail-queue

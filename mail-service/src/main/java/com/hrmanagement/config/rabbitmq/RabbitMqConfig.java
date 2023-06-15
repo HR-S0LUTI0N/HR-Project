@@ -26,6 +26,15 @@ public class RabbitMqConfig {
         return new Queue(registerMailQueue);
     }
 
+    //Visitor hello mail
+    @Value("${rabbitmq.registerMailHelloQueue}")
+    private String registerMailHelloQueue;
+
+    @Bean
+    Queue registerMailHelloQueue(){
+        return new Queue(registerMailHelloQueue);
+    }
+
     //reset Password Mail
     @Value("${rabbitmq.queueResetPassword}")
     private String queueResetPassword;

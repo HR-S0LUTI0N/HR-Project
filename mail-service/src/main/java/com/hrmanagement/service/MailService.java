@@ -1,9 +1,6 @@
 package com.hrmanagement.service;
 
-import com.hrmanagement.rabbitmq.model.ForgotPasswordMailModel;
-import com.hrmanagement.rabbitmq.model.PersonnelPasswordModel;
-import com.hrmanagement.rabbitmq.model.RegisterMailModel;
-import com.hrmanagement.rabbitmq.model.ResetPasswordModel;
+import com.hrmanagement.rabbitmq.model.*;
 import com.hrmanagement.utility.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.mail.SimpleMailMessage;
@@ -67,7 +64,18 @@ public class MailService {
         javaMailSender.send(mailMessage);
     }
 
+    public void sendHelloMail(RegisterMailHelloModel registerMailHelloModel) {
+        SimpleMailMessage mailMessage = new SimpleMailMessage();
+        mailMessage.setFrom("${spring.mail.username}");
+        mailMessage.setTo(registerMailHelloModel.getEmail());
+        mailMessage.setSubject("AKTIVASYON KODU");
+        mailMessage.setText(
+                "Hello visitor, " +  registerMailHelloModel.getName() +" "+ registerMailHelloModel.getSurname()+" you have successfully registered\n"
+                        +   "email: " + registerMailHelloModel.getEmail()
 
+        );
+        javaMailSender.send(mailMessage);
+    }
 
 
 
