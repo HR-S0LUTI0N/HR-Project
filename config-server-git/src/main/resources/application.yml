@@ -8,7 +8,7 @@ spring:
     config:
       server:
         git:
-          uri: ${java7configurl}
+          uri: ${java7configurl}  #https://github.com/HR-S0LUTI0N/HR-ProjectConfigServerGit.git
           default-label: main
           skip-ssl-validation: true
           username: ${java7configusername}
