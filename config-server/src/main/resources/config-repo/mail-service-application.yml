@@ -28,5 +28,6 @@ jwt:
 rabbitmq:
   queueForgotPassword: forgot-password-mail-queue
   registerMailQueue: mail-queue
+  registerMailHelloQueue: mail-hello-queue
   queueResetPassword: reset-password-mail-queue
   queuePersonnelPassword: queue-personnel-password

@@ -14,6 +14,7 @@ import com.hrmanagement.mapper.IAuthMapper;
 import com.hrmanagement.rabbitmq.model.ForgotPasswordMailModel;
 import com.hrmanagement.rabbitmq.model.ResetPasswordModel;
 import com.hrmanagement.rabbitmq.producer.ForgotPasswordProducer;
+import com.hrmanagement.rabbitmq.producer.RegisterMailHelloProducer;
 import com.hrmanagement.rabbitmq.producer.RegisterMailProducer;
 import com.hrmanagement.rabbitmq.producer.ResetPasswordProducer;
 import com.hrmanagement.repository.IAuthRepository;
@@ -38,6 +39,8 @@ public class AuthService extends ServiceManager<Auth,Long> {
     private final IAuthRepository authRepository;
     private final PasswordEncoder passwordEncoder;
 
+    private final RegisterMailHelloProducer registerMailHelloProducer;
+
     private final IUserProfileManager userManager;
     private final JwtTokenProvider jwtTokenProvider;
     private final ForgotPasswordProducer forgotPasswordProducer;
@@ -45,10 +48,11 @@ public class AuthService extends ServiceManager<Auth,Long> {
     private final RegisterMailProducer registerMailProducer;
     private final ResetPasswordProducer resetPasswordProducer;
     private final ICompanyManager companyManager;
-    public AuthService(IAuthRepository authRepository, PasswordEncoder passwordEncoder, IUserProfileManager userManager, JwtTokenProvider jwtTokenProvider, ForgotPasswordProducer forgotPasswordProducer, RegisterMailProducer registerMailProducer, ResetPasswordProducer resetPasswordProducer, ICompanyManager companyManager) {
+    public AuthService(IAuthRepository authRepository, PasswordEncoder passwordEncoder, RegisterMailHelloProducer registerMailHelloProducer, IUserProfileManager userManager, JwtTokenProvider jwtTokenProvider, ForgotPasswordProducer forgotPasswordProducer, RegisterMailProducer registerMailProducer, ResetPasswordProducer resetPasswordProducer, ICompanyManager companyManager) {
         super(authRepository);
         this.authRepository=authRepository;
         this.passwordEncoder = passwordEncoder;
+        this.registerMailHelloProducer = registerMailHelloProducer;
         this.userManager = userManager;
         this.jwtTokenProvider = jwtTokenProvider;
         this.forgotPasswordProducer = forgotPasswordProducer;
@@ -69,6 +73,7 @@ public class AuthService extends ServiceManager<Auth,Long> {
             auth.setStatus(EStatus.ACTIVE);
             save(auth);
             userManager.createVisitorUser(IAuthMapper.INSTANCE.fromAuthNewCreateVisitorUserRequestDto(auth));
+            registerMailHelloProducer.sendHello(IAuthMapper.INSTANCE.fromAuthToRegisterMailHelloModel(auth));
             return true;
         }
         throw new AuthManagerException(ErrorType.PASSWORD_ERROR);
