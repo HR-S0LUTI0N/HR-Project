@@ -44,6 +44,7 @@ public interface IUserProfileMapper {
     PersonnelProfilesForManagerDashBoardResponseDto fromUserProfileToPersonnelProfilesForManagerDashBoardResponseDto(final UserProfile userProfile);
 
     UserProfileAvatarAndNameResponseDto fromUserProfileToUserProfileAvatarAndNameResponseDto(final UserProfile userProfile);
+    UserProfileAvatarAndNameAndSurnameResponseDto fromUserProfileToUserProfileAvatarAndNameAndSurnameResponseDto(final UserProfile userProfile);
 
 
 }

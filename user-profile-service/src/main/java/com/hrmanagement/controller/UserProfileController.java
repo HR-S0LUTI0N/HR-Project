@@ -130,6 +130,11 @@ public class UserProfileController {
     public ResponseEntity<UserProfileAvatarAndNameResponseDto> getUserProfileAvatarAndName(@PathVariable String token){
         return ResponseEntity.ok(userProfileService.getUserProfileAvatarAndName(token));
     }
+    @CrossOrigin(origins = "*", allowedHeaders = "*")
+    @GetMapping("/get-userprofile-avatar-and-name-and-surname/{token}")
+    public ResponseEntity<UserProfileAvatarAndNameAndSurnameResponseDto> getUserProfileAvatarAndNameAndSurname(@PathVariable String token){
+        return ResponseEntity.ok(userProfileService.getUserProfileAvatarAndNameAndSurname(token));
+    }
 
 
 }
