@@ -96,37 +96,40 @@ public class UserProfileController {
 
     @Hidden
     @GetMapping("/get-userprofile-avatar-by-user-id/{userId}")
-    ResponseEntity<String> getUserAvatarByUserId(@PathVariable String userId) {
+    public ResponseEntity<String> getUserAvatarByUserId(@PathVariable String userId) {
         return ResponseEntity.ok(userProfileService.getUserAvatarByUserId(userId));
     }
 
     @Hidden
     @GetMapping("/get-userprofile-personnel-dashboard-information/{authId}")
-    ResponseEntity<UserProfilePersonnelDashboardRequestDto> getUserProfilePersonnelDashboardInformation(@PathVariable Long authId){
+    public ResponseEntity<UserProfilePersonnelDashboardRequestDto> getUserProfilePersonnelDashboardInformation(@PathVariable Long authId){
         return ResponseEntity.ok(userProfileService.getUserProfilePersonnelDashboardInformation(authId));
     }
 
     @Hidden
     @GetMapping("/find-all-active-company-comments/{authId}")
-    ResponseEntity<PersonnelDashboardCommentRequestDto> findAllActiveCompanyComments(@PathVariable Long authId){
+    public ResponseEntity<PersonnelDashboardCommentRequestDto> findAllActiveCompanyComments(@PathVariable Long authId){
         return ResponseEntity.ok(userProfileService.findAllActiveCompanyComments(authId));
     }
 
     @CrossOrigin(origins = "*", allowedHeaders = "*")
     @GetMapping("/get-personnel-profiles-for-manager-dashboard/{token}")
-    ResponseEntity<List<PersonnelProfilesForManagerDashBoardResponseDto>> getPersonnelProfilesForManagerDashBoard(@PathVariable String token){
+    public ResponseEntity<List<PersonnelProfilesForManagerDashBoardResponseDto>> getPersonnelProfilesForManagerDashBoard(@PathVariable String token){
         return ResponseEntity.ok(userProfileService.getPersonnelProfilesForManagerDashBoard(token));
     }
 
 
-
-
     @Hidden
     @GetMapping("/get-userprofile-manager-dashboard/{authId}")
-    ResponseEntity<UserProfileManagerDashboardRequestDto> getUserProfileManagerDashboard(@PathVariable Long authId){
+    public ResponseEntity<UserProfileManagerDashboardRequestDto> getUserProfileManagerDashboard(@PathVariable Long authId){
         return ResponseEntity.ok(userProfileService.getUserProfileManagerDashboard(authId));
     }
 
+    @CrossOrigin(origins = "*", allowedHeaders = "*")
+    @GetMapping("/get-userprofile-avatar-and-name/{token}")
+    public ResponseEntity<UserProfileAvatarAndNameResponseDto> getUserProfileAvatarAndName(@PathVariable String token){
+        return ResponseEntity.ok(userProfileService.getUserProfileAvatarAndName(token));
+    }
 
 
 }

@@ -284,6 +284,12 @@ public class UserProfileService extends ServiceManager<UserProfile, String> {
         throw new UserProfileManagerException(ErrorType.AUTHORIZATION_ERROR);
     }
 
+    public UserProfileAvatarAndNameResponseDto getUserProfileAvatarAndName(String token) {
+        Long authId = jwtTokenProvider.getIdFromToken(token).orElseThrow(()->{throw new UserProfileManagerException(ErrorType.USER_NOT_FOUND);});
+        UserProfile userProfile = userProfileRepository.findByAuthId(authId).orElseThrow(()->{throw new UserProfileManagerException(ErrorType.USER_NOT_FOUND);});
+        UserProfileAvatarAndNameResponseDto dto = IUserProfileMapper.INSTANCE.fromUserProfileToUserProfileAvatarAndNameResponseDto(userProfile);
+        return dto;
+    }
 }
 
 

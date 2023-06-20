@@ -20,6 +20,7 @@ import static com.hrmanagement.constants.ApiUrls.*;
 public class CompanyController {
     private final CompanyService companyService;
 
+    @CrossOrigin(origins = "*", allowedHeaders = "*")
     @PostMapping("/save/{token}")
     public ResponseEntity<Boolean> saveCompanyRequestDto(@PathVariable String token, @RequestBody SaveCompanyRequestDto dto){
         return ResponseEntity.ok(companyService.save(token,dto));
@@ -80,5 +81,19 @@ public class CompanyController {
     public ResponseEntity<ManagerDashboardResponseDto> getManagerDashboardInformation(@PathVariable String token){
         return ResponseEntity.ok(companyService.getManagerDashboardInformation(token));
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 }
