@@ -1,8 +1,6 @@
 package com.hrmanagement.manager;
 
-import com.hrmanagement.dto.request.AuthCreatePersonnelProfileRequestDto;
-import com.hrmanagement.dto.request.DeletePersonnelFromAuthRequestDto;
-import com.hrmanagement.dto.request.UpdateManagerStatusRequestDto;
+import com.hrmanagement.dto.request.*;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -20,4 +18,10 @@ public interface IAuthManager {
 
     @PutMapping("/manager-delete-personnel")
     public ResponseEntity<Boolean> managerDeletePersonnel(@RequestBody DeletePersonnelFromAuthRequestDto dto);
-}
+
+
+
+    @PutMapping("/update-userprofile-to-auth")
+    public Boolean updatePersonel(@RequestBody PersonelUpdateUserProfileToAuthRequestDto dto);
+
+    }

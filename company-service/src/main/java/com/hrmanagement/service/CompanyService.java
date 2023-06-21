@@ -183,7 +183,13 @@ public class CompanyService extends ServiceManager<Company, String> {
         }
         throw new CompanyManagerException(ErrorType.NO_AUTHORIZATION);
     }
-
+    public AllCompanyInfosForUserProfileResponseDto getAllInfosCompanyWithCompanyId(String companyId) {
+        Optional<Company> companyInfos = findById(companyId);
+        if (companyInfos.isEmpty())
+            throw new CompanyManagerException(ErrorType.COMPANY_NOT_FOUND);
+        AllCompanyInfosForUserProfileResponseDto dto=ICompanyMapper.INSTANCE.fromCompanyToAllCompanyInfosForUserProfileResponseDto(companyInfos.get());
+        return dto;
+    }
 
 
 

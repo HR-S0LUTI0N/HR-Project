@@ -46,5 +46,7 @@ public interface IUserProfileMapper {
     UserProfileAvatarAndNameResponseDto fromUserProfileToUserProfileAvatarAndNameResponseDto(final UserProfile userProfile);
     UserProfileAvatarAndNameAndSurnameResponseDto fromUserProfileToUserProfileAvatarAndNameAndSurnameResponseDto(final UserProfile userProfile);
 
-
+    UserProfileSendingInfosResponseDto userProfileToUserProfileSendingInfosResponseDto(final UserProfile userProfile);
+    UserProfileSendingInfosResponseDto companyInfosToUserProfileSendingInfosResponseDto(final AllCompanyInfosForUserProfileResponseDto dto);
+    PersonelUpdateUserProfileToAuthRequestDto fromPersonelUpdateRequestDtoToPersonelUpdateUserProfileToAuthRequestDto (final PersonelUpdateRequestDto dto);
 }

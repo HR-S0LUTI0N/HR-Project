@@ -1,6 +1,7 @@
 package com.hrmanagement.controller;
 
 import com.hrmanagement.dto.request.LoginRequestDto;
+import com.hrmanagement.dto.request.PersonelUpdateUserProfileToAuthRequestDto;
 import com.hrmanagement.dto.request.RegisterManagerRequestDto;
 import com.hrmanagement.dto.request.RegisterVisitorRequestDto;
 
@@ -82,6 +83,11 @@ public class AuthController {
     @GetMapping("/get-roles-from-token/{token}")
     public ResponseEntity<List<String>> getRolesFromToken(@PathVariable String token){
         return ResponseEntity.ok(authService.getRolesFromToken(token));
+    }
+    @Hidden
+    @PutMapping("/update-userprofile-to-auth")
+    public ResponseEntity<Boolean> updatePersonel(@RequestBody PersonelUpdateUserProfileToAuthRequestDto dto){
+        return ResponseEntity.ok(authService.updateBecauseOfUserProfile(dto));
     }
 
 }

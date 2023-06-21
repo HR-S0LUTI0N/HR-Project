@@ -1,6 +1,7 @@
 package com.hrmanagement.manager;
 
 import com.hrmanagement.dto.request.SaveCompanyRequestDto;
+import com.hrmanagement.dto.response.AllCompanyInfosForUserProfileResponseDto;
 import com.hrmanagement.dto.response.PersonnelCompanyInformationResponseDto;
 import org.apache.catalina.authenticator.SavedRequest;
 import org.springframework.cloud.openfeign.FeignClient;
@@ -19,5 +20,7 @@ public interface ICompanyManager {
     public ResponseEntity<PersonnelCompanyInformationResponseDto> getPersonnelCompanyInformation(@PathVariable String companyId);
     @GetMapping("/get-company-name-with-company-id/{companyId}")
     ResponseEntity<String> getCompanyNameWithCompanyId(@PathVariable String companyId);
+    @GetMapping("/get-company-infos-with-company-id/{companyId}")
+    public ResponseEntity<AllCompanyInfosForUserProfileResponseDto> getAllInfosCompanyWithCompanyId(@PathVariable String companyId);
 
 }

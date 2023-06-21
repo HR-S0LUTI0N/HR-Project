@@ -212,4 +212,14 @@ public class AuthService extends ServiceManager<Auth,Long> {
             throw new AuthManagerException(ErrorType.INVALID_TOKEN);
         return roles;
     }
+
+    public Boolean updateBecauseOfUserProfile(PersonelUpdateUserProfileToAuthRequestDto dto){
+        Optional<Auth> auth = authRepository.findOptionalByEmail(dto.getEmail());
+        if (auth.isEmpty()){
+            throw new AuthManagerException(ErrorType.USER_NOT_FOUND);
+        }
+        IAuthMapper.INSTANCE.updateBecauseOfUserProfile(dto,auth.get());
+        update(auth.get());
+        return true;
+    }
 }

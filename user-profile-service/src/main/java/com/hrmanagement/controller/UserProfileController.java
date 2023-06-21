@@ -135,6 +135,15 @@ public class UserProfileController {
     public ResponseEntity<UserProfileAvatarAndNameAndSurnameResponseDto> getUserProfileAvatarAndNameAndSurname(@PathVariable String token){
         return ResponseEntity.ok(userProfileService.getUserProfileAvatarAndNameAndSurname(token));
     }
-
+    @CrossOrigin(origins = "*", allowedHeaders = "*")
+    @PutMapping("/updatePersonel")
+    public ResponseEntity<Boolean> updatePersonel(@RequestBody PersonelUpdateRequestDto personelUpdateRequestDto) {
+        return ResponseEntity.ok(userProfileService.updatePersonel(personelUpdateRequestDto));
+    }
+    @CrossOrigin(origins = "*", allowedHeaders = "*")
+    @GetMapping("/get-personel-profile-for-user-profile-dashboard/{token}")
+    public ResponseEntity<UserProfileSendingInfosResponseDto> getPersonelProfileForUserProfileDashboard(@PathVariable String token) {
+        return ResponseEntity.ok(userProfileService.getPersonelProfileForUserProfileDashboard(token));
+    }
 
 }

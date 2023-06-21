@@ -6,8 +6,7 @@ import com.hrmanagement.dto.response.RegisterResponseDto;
 import com.hrmanagement.rabbitmq.model.RegisterMailHelloModel;
 import com.hrmanagement.rabbitmq.model.RegisterMailModel;
 import com.hrmanagement.repository.entity.Auth;
-import org.mapstruct.Mapper;
-import org.mapstruct.ReportingPolicy;
+import org.mapstruct.*;
 import org.mapstruct.factory.Mappers;
 
 @Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
@@ -35,4 +34,6 @@ public interface IAuthMapper {
 
     NewCreateManagerUserRequestDto fromRegisterManagerRequestDtoToNewCreateManagerUserRequestDto(final RegisterManagerRequestDto dto);
 
+    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+    void updateBecauseOfUserProfile(PersonelUpdateUserProfileToAuthRequestDto dto, @MappingTarget Auth auth);
 }
