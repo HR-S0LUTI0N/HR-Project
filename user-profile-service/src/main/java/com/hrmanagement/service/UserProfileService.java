@@ -301,6 +301,63 @@ public class UserProfileService extends ServiceManager<UserProfile, String> {
         UserProfileAvatarAndNameAndSurnameResponseDto dto = IUserProfileMapper.INSTANCE.fromUserProfileToUserProfileAvatarAndNameAndSurnameResponseDto(userProfile);
         return dto;
     }
+    public Boolean updatePersonel(PersonelUpdateRequestDto personelUpdateRequestDto) {
+        Long authId = jwtTokenProvider.getIdFromToken(personelUpdateRequestDto.getToken())
+                .orElseThrow(() -> { throw new UserProfileManagerException(ErrorType.USER_NOT_FOUND); });
+        List<String> roles = jwtTokenProvider.getRoleFromToken(personelUpdateRequestDto.getToken());
+        Optional<UserProfile> personelprofile = userProfileRepository.findByAuthId(authId);
+
+        if (roles.isEmpty()) {
+            throw new UserProfileManagerException(ErrorType.USER_NOT_FOUND);
+        }
+
+        if (roles.contains(ERole.PERSONEL.toString())) {
+            if (personelprofile.isPresent()) {
+                UserProfile profile = personelprofile.get();
+                profile.setName(personelUpdateRequestDto.getName());
+                profile.setMiddleName(personelUpdateRequestDto.getMiddleName());
+                profile.setSurname(personelUpdateRequestDto.getSurname());
+                profile.setEmail(personelUpdateRequestDto.getEmail());
+                profile.setPhone(personelUpdateRequestDto.getPhone());
+
+                PersonelUpdateUserProfileToAuthRequestDto dto=IUserProfileMapper.INSTANCE.fromPersonelUpdateRequestDtoToPersonelUpdateUserProfileToAuthRequestDto(personelUpdateRequestDto);
+                authManager.updatePersonel(dto);
+                update(profile);
+                return true;
+            } else {
+                throw new UserProfileManagerException(ErrorType.USER_NOT_FOUND);
+            }
+        } else {
+            throw new UserProfileManagerException(ErrorType.NOT_PERSONEL);
+        }
+    }
+    public UserProfileSendingInfosResponseDto getPersonelProfileForUserProfileDashboard(String token) {
+        Long authId = jwtTokenProvider.getIdFromToken(token).orElseThrow(() -> {
+            throw new UserProfileManagerException(ErrorType.USER_NOT_FOUND);
+        });
+        List<String> roles = jwtTokenProvider.getRoleFromToken(token);
+        if (roles.isEmpty())
+            throw new UserProfileManagerException(ErrorType.INVALID_TOKEN);
+
+        UserProfile userProfile = userProfileRepository.findByAuthId(authId).orElseThrow(() -> {
+            throw new UserProfileManagerException(ErrorType.USER_NOT_FOUND);
+        });
+        AllCompanyInfosForUserProfileResponseDto companyInfos =
+                companyManager.getAllInfosCompanyWithCompanyId(userProfile.getCompanyId()).getBody();
+        System.out.println(companyInfos);
+        UserProfileSendingInfosResponseDto dto=IUserProfileMapper.INSTANCE.userProfileToUserProfileSendingInfosResponseDto(userProfile);
+        System.out.println(dto);
+        dto.setCompanyName(companyInfos.getCompanyName());
+        dto.setCompanyNeighbourhood(companyInfos.getCompanyNeighbourhood());
+        dto.setCompanyDistrict(companyInfos.getCompanyDistrict());
+        dto.setCompanyProvince(companyInfos.getCompanyProvince());
+        dto.setCompanyCountry(companyInfos.getCompanyCountry());
+        dto.setCompanyBuildingNumber(companyInfos.getCompanyBuildingNumber());
+        dto.setCompanyApartmentNumber(companyInfos.getCompanyApartmentNumber());
+        dto.setCompanyPostalCode(companyInfos.getCompanyPostalCode());
+        System.out.println(dto);
+        return dto;
+    }
 }
 
 

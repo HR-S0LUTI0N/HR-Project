@@ -81,19 +81,11 @@ public class CompanyController {
     public ResponseEntity<ManagerDashboardResponseDto> getManagerDashboardInformation(@PathVariable String token){
         return ResponseEntity.ok(companyService.getManagerDashboardInformation(token));
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
+    @Hidden
+    @GetMapping("/get-company-infos-with-company-id/{companyId}")
+    public ResponseEntity<AllCompanyInfosForUserProfileResponseDto> getAllInfosCompanyWithCompanyId(@PathVariable String companyId) {
+        return ResponseEntity.ok(companyService.getAllInfosCompanyWithCompanyId(companyId));
+    }
 
 
 }

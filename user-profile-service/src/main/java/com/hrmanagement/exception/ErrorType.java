@@ -21,8 +21,8 @@ public enum ErrorType {
     PASSWORD_ERROR(4900, "Girdiğiniz şifre ile eski şifreniz uyuşmamaktadır.", HttpStatus.BAD_REQUEST),
     INVALID_ACTION(5000,"Kullanıcı istenilen statüye geçirilemedi.",HttpStatus.BAD_REQUEST),
     USER_ALREADY_DELETED(5200,"Kullanıcı zaten silinmiştir.",HttpStatus.BAD_REQUEST),
-    DIFFERENT_COMPANY(5300,"Personel başka bir şirkette çalışmaktadır." , HttpStatus.BAD_REQUEST);
-
+    DIFFERENT_COMPANY(5300,"Personel başka bir şirkette çalışmaktadır." , HttpStatus.BAD_REQUEST),
+    NOT_PERSONEL(5400,"Bu işlemi yapabilmek için personel olmanız gerekmektedir.",HttpStatus.NOT_FOUND);
     private int code;
     private String message;
     HttpStatus httpStatus;

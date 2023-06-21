@@ -26,4 +26,5 @@ public interface ICompanyMapper {
     PersonnelDashboardResponseDto fromUserProfilePersonnelDashboardResponseDtoToPersonnelDashboardResponseDto(final UserProfilePersonnelDashboardResponseDto dto);
 
     ManagerDashboardResponseDto fromCompanyToManagerDashboardResponseDto(final Company company);
+    AllCompanyInfosForUserProfileResponseDto fromCompanyToAllCompanyInfosForUserProfileResponseDto(final Company company);
 }
