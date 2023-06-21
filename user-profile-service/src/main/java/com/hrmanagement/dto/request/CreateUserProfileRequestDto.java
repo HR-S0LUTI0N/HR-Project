@@ -60,5 +60,11 @@ public class CreateUserProfileRequestDto {
     private String department;
     @NotNull
     private Long jobStartingDate;
+    @NotBlank
+    private String jobShift;
+    @NotBlank
+    private String jobBreak;
+    @NotNull
+    private int employeeLeaves;
 
 }
