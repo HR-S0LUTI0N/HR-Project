@@ -421,7 +421,39 @@ public class UserProfileService extends ServiceManager<UserProfile, String> {
         System.out.println(dto);
         return dto;
     }
+    public Boolean updatePersonelAdress(PersonelAddressUpdateRequestDto personelUpdateRequestDto) {
+        System.out.println("updatePersonelAdress"+personelUpdateRequestDto.getToken());
+        Long authId = jwtTokenProvider.getIdFromToken(personelUpdateRequestDto.getToken())
+                .orElseThrow(() -> { throw new UserProfileManagerException(ErrorType.USER_NOT_FOUND); });
+        List<String> roles = jwtTokenProvider.getRoleFromToken(personelUpdateRequestDto.getToken());
+        Optional<UserProfile> personelprofile = userProfileRepository.findByAuthId(authId);
+
+        if (roles.isEmpty()) {
+            throw new UserProfileManagerException(ErrorType.USER_NOT_FOUND);
+        }
+
+        if (roles.contains(ERole.PERSONEL.toString())) {
+            if (personelprofile.isPresent()) {
+                UserProfile profile = personelprofile.get();
+                profile.setNeighbourhood(personelUpdateRequestDto.getNeighbourhood());
+                profile.setDistrict(personelUpdateRequestDto.getDistrict());
+                profile.setProvince(personelUpdateRequestDto.getProvince());
+                profile.setCountry(personelUpdateRequestDto.getCountry());
+                profile.setBuildingNumber(personelUpdateRequestDto.getBuildingNumber());
+                profile.setApartmentNumber(personelUpdateRequestDto.getApartmentNumber());
+                profile.setPostalCode(personelUpdateRequestDto.getPostalCode());
+
+                update(profile);
+                return true;
+            } else {
+                throw new UserProfileManagerException(ErrorType.USER_NOT_FOUND);
+            }
+        } else {
+            throw new UserProfileManagerException(ErrorType.NOT_PERSONEL);
+        }
+    }
 }
+
 
 
 

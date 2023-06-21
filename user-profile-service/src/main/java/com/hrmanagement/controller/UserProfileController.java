@@ -145,5 +145,10 @@ public class UserProfileController {
     public ResponseEntity<UserProfileSendingInfosResponseDto> getPersonelProfileForUserProfileDashboard(@PathVariable String token) {
         return ResponseEntity.ok(userProfileService.getPersonelProfileForUserProfileDashboard(token));
     }
+    @CrossOrigin(origins = "*", allowedHeaders = "*")
+    @PutMapping("/update-personel-address")
+    public ResponseEntity<Boolean> updatePersonelAdress(@RequestBody PersonelAddressUpdateRequestDto personelUpdateRequestDto) {
+        return ResponseEntity.ok(userProfileService.updatePersonelAdress(personelUpdateRequestDto));
+    }
 
 }
