@@ -6,13 +6,14 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.io.Serializable;
 import java.util.List;
 
 @AllArgsConstructor
 @Builder
 @Data
 @NoArgsConstructor
-public class PersonnelProfilesForManagerDashBoardResponseDto {
+public class PersonnelProfilesForManagerDashBoardResponseDto  {
 
     private String userId;
     private String avatar;
@@ -22,10 +23,11 @@ public class PersonnelProfilesForManagerDashBoardResponseDto {
     private String companyName;             //Company Service
     private String roleString;    //Role'ü
     private String department;
-    private String wage;
+    private Double wage;
     private String wageDate;
-    private int remainingDayOffs;
-    private Long dateOfBirth;   //verified yerine koyulacak
+    private int employeeLeaves;
+    private String dateOfBirth;
+    private String jobStartingDate;
     private EStatus eStatus;
 
 }

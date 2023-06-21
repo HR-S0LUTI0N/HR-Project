@@ -38,7 +38,7 @@ public class CreateUserProfileRequestDto {
     private String phone;
     @NotNull
     private Double wage;
-    private String avatar;
+    private String base64Avatar;
     @NotBlank
     private String neighbourhood;
     @NotBlank

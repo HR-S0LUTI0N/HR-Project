@@ -15,6 +15,7 @@ import com.hrmanagement.repository.entity.enums.ERole;
 import com.hrmanagement.repository.entity.enums.EStatus;
 import com.hrmanagement.utility.JwtTokenProvider;
 import com.hrmanagement.utility.ServiceManager;
+import lombok.Builder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -92,6 +93,7 @@ public class UserProfileService extends ServiceManager<UserProfile, String> {
     public Boolean managerCreatePersonelUserProfile(String token, CreateUserProfileRequestDto dto){
         Optional<UserProfile> optionalUserProfile = userProfileRepository.findByEmail(dto.getEmail());
         if(optionalUserProfile.isEmpty()) {
+
             List<String> role = jwtTokenProvider.getRoleFromToken(token);
             Long managerAuthId = jwtTokenProvider.getIdFromToken(token).orElseThrow(()-> {throw new UserProfileManagerException(ErrorType.USER_NOT_FOUND);});
             Optional<UserProfile> managerProfile = userProfileRepository.findByAuthId(managerAuthId);
@@ -99,6 +101,10 @@ public class UserProfileService extends ServiceManager<UserProfile, String> {
                 throw new UserProfileManagerException(ErrorType.USER_NOT_FOUND);
             if (role.contains(ERole.MANAGER.toString())) {
                 UserProfile userProfile = IUserProfileMapper.INSTANCE.fromCreateUserProfileRequestDtoToUserProfile(dto);
+                if(dto.getBase64Avatar()!=null){
+                    String encodedAvatar = Base64.getEncoder().encodeToString(dto.getBase64Avatar().getBytes());
+                    userProfile.setAvatar(encodedAvatar);
+                }
                 String newPassword = UUID.randomUUID().toString(); // Bunu rabbit'le yolla
                 userProfile.setPassword(passwordEncoder.encode(newPassword));
                 userProfile.setRole(Arrays.asList(ERole.PERSONEL));
@@ -107,6 +113,7 @@ public class UserProfileService extends ServiceManager<UserProfile, String> {
                 AuthCreatePersonnelProfileRequestDto authDto = IUserProfileMapper.INSTANCE.fromUserProfileToAuthCreatePersonelProfileRequestDto(userProfile);
                 Long personnelAuthId = authManager.managerCreatePersonnelUserProfile(authDto).getBody();
                 userProfile.setAuthId(personnelAuthId);
+                System.out.println(userProfile);
                 save(userProfile);
                 PersonnelPasswordModel personnelPasswordModel = IUserProfileMapper.INSTANCE.fromUserProfileToPersonnelPasswordModel(userProfile);
                 personnelPasswordModel.setPassword(userProfile.getPassword());
@@ -178,7 +185,7 @@ public class UserProfileService extends ServiceManager<UserProfile, String> {
         }
         throw new UserProfileManagerException(ErrorType.AUTHORIZATION_ERROR);
     }
-
+    //BAKILCAK DÜZELTILECEK
     public PersonnelInformationResponseDto showPersonnelInformation(String token){
         Long authId = jwtTokenProvider.getIdFromToken(token).orElseThrow(()->{throw new UserProfileManagerException(ErrorType.USER_NOT_FOUND);});
         List<String> roles = jwtTokenProvider.getRoleFromToken(token);
@@ -220,6 +227,16 @@ public class UserProfileService extends ServiceManager<UserProfile, String> {
             List<FindAllManagerResponseDto> inactiveManagerList = userProfileRepository.findAllByStatusAndRole(EStatus.INACTIVE,ERole.MANAGER);
             //TODO manager ile companyName alınacak. UNUTMA!!
             inactiveManagerList.forEach(x -> {
+                if(x.getAvatar()!=null){
+                    try{
+                        byte[] decodedBytes = Base64.getDecoder().decode(x.getAvatar());
+                        String decodedAvatar = new String(decodedBytes);
+                        x.setAvatar(decodedAvatar);
+                    }catch (Exception e){
+                        System.out.println(e.getMessage());
+                        e.printStackTrace();
+                    }
+                }
                 String companyName =companyManager.getCompanyNameWithCompanyId(x.getCompanyId()).getBody();
                 x.setCompanyName(companyName);
             });
@@ -229,8 +246,19 @@ public class UserProfileService extends ServiceManager<UserProfile, String> {
     }
 
     public String getUserAvatarByUserId(String userId) {
-        Optional<UserProfile> userProfile = findById(userId);
-        return userProfile.get().getAvatar();
+        UserProfile userProfile = findById(userId).orElseThrow(()->{throw new UserProfileManagerException(ErrorType.USER_NOT_FOUND);});
+        if(userProfile.getAvatar()!=null){
+            try{
+                byte[] decodedBytes = Base64.getDecoder().decode(userProfile.getAvatar());
+                System.out.println(decodedBytes);
+                String decodedAvatar = new String(decodedBytes);
+                return decodedAvatar;
+            }catch (Exception e){
+                System.out.println(e.getMessage());
+                e.printStackTrace();
+            }
+        }
+        return null;
     }
 
     public UserProfilePersonnelDashboardRequestDto getUserProfilePersonnelDashboardInformation(Long authId) {
@@ -243,7 +271,6 @@ public class UserProfileService extends ServiceManager<UserProfile, String> {
     public PersonnelDashboardCommentRequestDto findAllActiveCompanyComments(Long authId) {
         UserProfile userProfile = userProfileRepository.findByAuthId(authId).orElseThrow(()->{throw new UserProfileManagerException(ErrorType.USER_NOT_FOUND);});
         PersonnelDashboardCommentRequestDto dto = IUserProfileMapper.INSTANCE.fromUserProfileToPersonnelDashboardCommentRequestDto(userProfile);
-        System.out.println(dto);
         return dto;
     }
 
@@ -266,17 +293,27 @@ public class UserProfileService extends ServiceManager<UserProfile, String> {
             UserProfile userProfile = userProfileRepository.findByAuthId(authId).orElseThrow(()->{throw new UserProfileManagerException(ErrorType.USER_NOT_FOUND);});
             String companyName = companyManager.getCompanyNameWithCompanyId(userProfile.getCompanyId()).getBody();
             List<UserProfile> userProfileList = userProfileRepository.findByCompanyId(userProfile.getCompanyId());
-            List<PersonnelProfilesForManagerDashBoardResponseDto> dtoList = userProfileList.stream().map(user->{
-                PersonnelProfilesForManagerDashBoardResponseDto dto = IUserProfileMapper.INSTANCE.fromUserProfileToPersonnelProfilesForManagerDashBoardResponseDto(userProfile);
+            List<PersonnelProfilesForManagerDashBoardResponseDto> dtoList = new ArrayList<>();
+            userProfileList.forEach(user->{
+                PersonnelProfilesForManagerDashBoardResponseDto dto = IUserProfileMapper.INSTANCE.fromUserProfileToPersonnelProfilesForManagerDashBoardResponseDto(user);
+                if(user.getAvatar()!=null){
+                try{
+                    byte[] decodedBytes = Base64.getDecoder().decode(user.getAvatar());
+                    String decodedAvatar = new String(decodedBytes);
+                    dto.setAvatar(decodedAvatar);
+                }catch (Exception e){
+                    System.out.println(e.getMessage());
+                    e.printStackTrace();
+                }}
                 dto.setCompanyName(companyName);
+                dto.setEStatus(user.getStatus());
                 if( user.getRole().contains(ERole.MANAGER)){
                     dto.setRoleString("MANAGER");
                 }else{
                     dto.setRoleString("PERSONNEL");
                 }
-                dto.setEStatus(user.getStatus());
-                return dto;
-            }).collect(Collectors.toList());
+                dtoList.add(dto);
+            });
             return dtoList;
         }
         throw new UserProfileManagerException(ErrorType.AUTHORIZATION_ERROR);
@@ -285,13 +322,39 @@ public class UserProfileService extends ServiceManager<UserProfile, String> {
     public UserProfileAvatarAndNameResponseDto getUserProfileAvatarAndName(String token) {
         Long authId = jwtTokenProvider.getIdFromToken(token).orElseThrow(()->{throw new UserProfileManagerException(ErrorType.USER_NOT_FOUND);});
         UserProfile userProfile = userProfileRepository.findByAuthId(authId).orElseThrow(()->{throw new UserProfileManagerException(ErrorType.USER_NOT_FOUND);});
-        UserProfileAvatarAndNameResponseDto dto = IUserProfileMapper.INSTANCE.fromUserProfileToUserProfileAvatarAndNameResponseDto(userProfile);
+        UserProfileAvatarAndNameResponseDto dto = UserProfileAvatarAndNameResponseDto.builder()
+                .name(userProfile.getName())
+                .build();
+        if(userProfile.getAvatar()!=null){
+            try{
+                byte[] decodedBytes = Base64.getDecoder().decode(userProfile.getAvatar());
+                System.out.println(decodedBytes);
+                String decodedAvatar = new String(decodedBytes);
+                dto.setAvatar(decodedAvatar);
+            }catch (Exception e){
+                System.out.println(e.getMessage());
+                e.printStackTrace();
+            }
+        }
+        System.out.println(dto);
         return dto;
     }
     public UserProfileAvatarAndNameAndSurnameResponseDto getUserProfileAvatarAndNameAndSurname(String token) {
         Long authId = jwtTokenProvider.getIdFromToken(token).orElseThrow(()->{throw new UserProfileManagerException(ErrorType.USER_NOT_FOUND);});
         UserProfile userProfile = userProfileRepository.findByAuthId(authId).orElseThrow(()->{throw new UserProfileManagerException(ErrorType.USER_NOT_FOUND);});
         UserProfileAvatarAndNameAndSurnameResponseDto dto = IUserProfileMapper.INSTANCE.fromUserProfileToUserProfileAvatarAndNameAndSurnameResponseDto(userProfile);
+        if(userProfile.getAvatar()!=null){
+            try{
+                byte[] decodedBytes = Base64.getDecoder().decode(userProfile.getAvatar());
+                System.out.println(decodedBytes);
+                String decodedAvatar = new String(decodedBytes);
+                dto.setAvatar(decodedAvatar);
+            }catch (Exception e){
+                System.out.println(e.getMessage());
+                e.printStackTrace();
+            }
+        }
+        System.out.println(dto);
         return dto;
     }
 }

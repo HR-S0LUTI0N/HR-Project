@@ -65,11 +65,9 @@ public class JwtTokenProvider {
             Algorithm algorithm = Algorithm.HMAC512(secretKey);
             JWTVerifier verifier = JWT.require(algorithm).withAudience(audience).withIssuer(issuer).build();
             DecodedJWT decodedJWT = verifier.verify(token);
-            System.out.println(decodedJWT);
             if (decodedJWT == null){
                 throw new CompanyManagerException(ErrorType.INVALID_TOKEN);
             }
-            System.out.println(token);
             List<String> roles = decodedJWT.getClaim("roles").asList(String.class);
             return roles;
         }catch (Exception e){
