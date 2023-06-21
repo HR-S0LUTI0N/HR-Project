@@ -12,6 +12,7 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -49,7 +50,6 @@ public class UserProfile extends Base {
     private Integer postalCode;
     private String companyId;
     private int employeeLeaves;
-    private int remainingDayOffs;
     private String department;
     private Long jobEndingDate;
     private String jobBreak;

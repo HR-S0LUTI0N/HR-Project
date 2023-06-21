@@ -15,10 +15,9 @@ import java.util.List;
 public class PersonnelDashboardResponseDto {
     //company
     private String companyName;
-    private String title;
     private String logo;
     private String sector;
-    private List<Long> holidayDates;
+    private String holidayDates;
     //userprofile
     private String jobBreak;
     private String jobShift;
