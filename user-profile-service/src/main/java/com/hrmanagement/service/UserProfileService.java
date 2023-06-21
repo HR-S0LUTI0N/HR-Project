@@ -17,12 +17,10 @@ import com.hrmanagement.repository.entity.enums.ERole;
 import com.hrmanagement.repository.entity.enums.EStatus;
 import com.hrmanagement.utility.JwtTokenProvider;
 import com.hrmanagement.utility.ServiceManager;
-import lombok.Builder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Service
 public class UserProfileService extends ServiceManager<UserProfile, String> {
@@ -112,7 +110,7 @@ public class UserProfileService extends ServiceManager<UserProfile, String> {
                     String encodedAvatar = Base64.getEncoder().encodeToString(dto.getBase64Avatar().getBytes());
                     userProfile.setAvatar(encodedAvatar);
                 }
-                String newPassword = UUID.randomUUID().toString(); // Bunu rabbit'le yolla
+                String newPassword = UUID.randomUUID().toString();
                 userProfile.setPassword(passwordEncoder.encode(newPassword));
                 userProfile.setRole(Arrays.asList(ERole.PERSONEL));
                 userProfile.setStatus(EStatus.ACTIVE);
@@ -123,7 +121,7 @@ public class UserProfileService extends ServiceManager<UserProfile, String> {
                 System.out.println(userProfile);
                 save(userProfile);
                 PersonnelPasswordModel personnelPasswordModel = IUserProfileMapper.INSTANCE.fromUserProfileToPersonnelPasswordModel(userProfile);
-                personnelPasswordModel.setPassword(userProfile.getPassword());
+                personnelPasswordModel.setPassword(newPassword);
                 personelPasswordProducer.sendPersonnelPassword(personnelPasswordModel);
                 return true;
             }
