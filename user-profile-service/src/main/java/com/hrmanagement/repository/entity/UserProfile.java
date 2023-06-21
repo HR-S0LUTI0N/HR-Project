@@ -31,15 +31,14 @@ public class UserProfile extends Base {
     private String name;
     private String middleName;
     private String surname;
-    private Long dateOfBirth;
     private String birthPlace;
     private String identificationNumber;
+    @Builder.Default
     private List<ERole> role = new ArrayList<>();
     private EStatus status;
     private EGender gender;
     private String phone;
     private Double wage;
-    private Long wageDate;
     private String avatar;
     private String neighbourhood;
     private String district;
@@ -52,9 +51,12 @@ public class UserProfile extends Base {
     private int employeeLeaves;
     private int remainingDayOffs;
     private String department;
-    private Long jobStartingDate;
     private Long jobEndingDate;
     private String jobBreak;
     private String jobShift;
+    private String jobStartingDate;
+    private String dateOfBirth;
+    private String wageDate;
+
 
 }
