@@ -16,7 +16,7 @@ public class PersonnelInformationResponseDto {
     private Long wageDate;
     private String avatar;
     private String department;
-    private List<Long> employeeLeaves;
+    private int employeeLeaves;
     //Company Service
     private String companyName;
     private String logo;
