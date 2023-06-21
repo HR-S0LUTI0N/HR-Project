@@ -12,6 +12,7 @@ import org.springframework.data.mongodb.core.index.Indexed;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import java.util.Date;
 import java.util.List;
 
 @Data
@@ -19,8 +20,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class CreateUserProfileRequestDto {
-    @NotBlank
-    private String password;
+
     @Indexed(unique = true)
     @Email
     private String email;
@@ -33,14 +33,11 @@ public class CreateUserProfileRequestDto {
     private String birthPlace;
     @NotBlank
     private String identificationNumber;
-    private Long dateOfBirth;
     private EGender gender;
     @NotBlank
     private String phone;
     @NotNull
     private Double wage;
-    @NotNull
-    private Long wageDate;
     private String avatar;
     @NotBlank
     private String neighbourhood;
@@ -58,13 +55,15 @@ public class CreateUserProfileRequestDto {
     private Integer postalCode;
     @NotBlank
     private String department;
-    @NotNull
-    private Long jobStartingDate;
     @NotBlank
     private String jobShift;
     @NotBlank
     private String jobBreak;
     @NotNull
     private int employeeLeaves;
+    private String dateOfBirth;
+    private String jobStartingDate;
+    private String wageDate;
+
 
 }

@@ -20,10 +20,7 @@ import org.springframework.stereotype.Service;
 
 import javax.management.relation.Role;
 import java.sql.SQLOutput;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -102,7 +99,8 @@ public class UserProfileService extends ServiceManager<UserProfile, String> {
                 throw new UserProfileManagerException(ErrorType.USER_NOT_FOUND);
             if (role.contains(ERole.MANAGER.toString())) {
                 UserProfile userProfile = IUserProfileMapper.INSTANCE.fromCreateUserProfileRequestDtoToUserProfile(dto);
-                userProfile.setPassword(passwordEncoder.encode(dto.getPassword()));
+                String newPassword = UUID.randomUUID().toString(); // Bunu rabbit'le yolla
+                userProfile.setPassword(passwordEncoder.encode(newPassword));
                 userProfile.setRole(Arrays.asList(ERole.PERSONEL));
                 userProfile.setStatus(EStatus.ACTIVE);
                 userProfile.setCompanyId(managerProfile.get().getCompanyId());
@@ -111,7 +109,7 @@ public class UserProfileService extends ServiceManager<UserProfile, String> {
                 userProfile.setAuthId(personnelAuthId);
                 save(userProfile);
                 PersonnelPasswordModel personnelPasswordModel = IUserProfileMapper.INSTANCE.fromUserProfileToPersonnelPasswordModel(userProfile);
-                personnelPasswordModel.setPassword(dto.getPassword());
+                personnelPasswordModel.setPassword(userProfile.getPassword());
                 personelPasswordProducer.sendPersonnelPassword(personnelPasswordModel);
                 return true;
             }
