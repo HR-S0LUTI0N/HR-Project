@@ -78,6 +78,15 @@ public class MailService {
     }
 
 
-
-
+    public void sendInfoMailForManager(ManagerChangeStatusModel model) {
+        SimpleMailMessage mailMessage = new SimpleMailMessage();
+        mailMessage.setFrom("${spring.mail.username}");
+        mailMessage.setTo(model.getEmail());
+        mailMessage.setSubject("MANAGER ACTIVATION INFORMATION");
+        if (model.getStatus().equals("ACTIVE"))
+            mailMessage.setText("Welcome Dear "+model.getName()+";\n"+ "Your account has been ACTIVATED. Thank you for choosing us");
+        else
+            mailMessage.setText("Welcome Dear "+model.getName()+";\n" + "Your account has been BANNED.");
+        javaMailSender.send(mailMessage);
+    }
 }

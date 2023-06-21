@@ -50,7 +50,11 @@ public class RabbitMqConfig {
     @Bean
     Queue personnelPasswordQueue(){return new Queue(personnelPasswordQueue);}
 
-
+    //manager change status
+    @Value("${rabbitmq.queueManagerChangeStatus}")
+    private String managerChangeStatusQueue;
+    @Bean
+    Queue managerChangeStatusQueue() {return new Queue(managerChangeStatusQueue);}
 
 
 }

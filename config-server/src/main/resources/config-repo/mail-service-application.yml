@@ -31,3 +31,4 @@ rabbitmq:
   registerMailHelloQueue: mail-hello-queue
   queueResetPassword: reset-password-mail-queue
   queuePersonnelPassword: queue-personnel-password
+  queueManagerChangeStatus: queue-manager-change-status

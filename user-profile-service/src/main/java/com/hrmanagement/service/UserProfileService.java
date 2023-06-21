@@ -7,7 +7,9 @@ import com.hrmanagement.exception.UserProfileManagerException;
 import com.hrmanagement.manager.IAuthManager;
 import com.hrmanagement.manager.ICompanyManager;
 import com.hrmanagement.mapper.IUserProfileMapper;
+import com.hrmanagement.rabbitmq.model.ManagerChangeStatusModel;
 import com.hrmanagement.rabbitmq.model.PersonnelPasswordModel;
+import com.hrmanagement.rabbitmq.producer.ManagerChangeStatusProducer;
 import com.hrmanagement.rabbitmq.producer.PersonelPasswordProducer;
 import com.hrmanagement.repository.IUserProfileRepository;
 import com.hrmanagement.repository.entity.UserProfile;
@@ -18,8 +20,6 @@ import com.hrmanagement.utility.ServiceManager;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import javax.management.relation.Role;
-import java.sql.SQLOutput;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -31,7 +31,8 @@ public class UserProfileService extends ServiceManager<UserProfile, String> {
     private final PersonelPasswordProducer personelPasswordProducer;
     private final ICompanyManager companyManager;
     private final PasswordEncoder passwordEncoder;
-    private UserProfileService(IUserProfileRepository userProfileRepository, IAuthManager authManager, JwtTokenProvider jwtTokenProvider, PersonelPasswordProducer personelPasswordProducer, ICompanyManager companyManager, PasswordEncoder passwordEncoder){
+    private final ManagerChangeStatusProducer managerChangeStatusProducer;
+    private UserProfileService(IUserProfileRepository userProfileRepository, IAuthManager authManager, JwtTokenProvider jwtTokenProvider, PersonelPasswordProducer personelPasswordProducer, ICompanyManager companyManager, PasswordEncoder passwordEncoder, ManagerChangeStatusProducer managerChangeStatusProducer){
         super(userProfileRepository);
         this.userProfileRepository=userProfileRepository;
         this.authManager=authManager;
@@ -39,6 +40,7 @@ public class UserProfileService extends ServiceManager<UserProfile, String> {
         this.personelPasswordProducer = personelPasswordProducer;
         this.companyManager = companyManager;
         this.passwordEncoder = passwordEncoder;
+        this.managerChangeStatusProducer = managerChangeStatusProducer;
     }
 
     /**
@@ -73,6 +75,11 @@ public class UserProfileService extends ServiceManager<UserProfile, String> {
                 }
                 update(user.get());
                 authManager.updateManagerStatus(IUserProfileMapper.INSTANCE.fromUserProfileToUpdateManagerStatusRequestDto(user.get()));
+                managerChangeStatusProducer.sendInfoMailForManager(ManagerChangeStatusModel.builder()
+                        .email(user.get().getEmail())
+                        .name(user.get().getName())
+                        .status(user.get().getStatus().toString())
+                        .build());
                 return true;
             }
             throw new UserProfileManagerException(ErrorType.USER_NOT_FOUND);

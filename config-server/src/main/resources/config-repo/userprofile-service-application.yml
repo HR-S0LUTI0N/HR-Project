@@ -26,3 +26,5 @@ rabbitmq:
   user-exchange: user-exchange
   personnelPasswordKey: personnel-password-key
   queuePersonnelPassword: queue-personnel-password
+  managerChangeStatusKey: manager-change-status-key
+  queueManagerChangeStatus: queue-manager-change-status

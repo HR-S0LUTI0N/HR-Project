@@ -32,5 +32,17 @@ public class RabbitMqConfig {
         return BindingBuilder.bind(personnelPasswordQueue).to(exchange).with(personnelPasswordBindingKey);
     }
 
+    //manager change status
+    @Value("${rabbitmq.queueManagerChangeStatus}")
+    private String managerChangeStatusQueue;
+    @Value("${rabbitmq.managerChangeStatusKey}")
+    private String managerChangeStatusBindingKey;
+
+    @Bean
+    Queue managerChangeStatusQueue() {return new Queue(managerChangeStatusQueue);}
+    @Bean
+    public Binding bindingManagerChangeStatus(final Queue managerChangeStatusQueue, final DirectExchange exchange) {
+        return BindingBuilder.bind(managerChangeStatusQueue).to(exchange).with(managerChangeStatusBindingKey);
+    }
 
 }
