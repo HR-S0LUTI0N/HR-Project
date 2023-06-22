@@ -15,10 +15,7 @@ import com.hrmanagement.utility.JwtTokenProvider;
 import com.hrmanagement.utility.ServiceManager;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -46,6 +43,10 @@ public class CompanyService extends ServiceManager<Company, String> {
         if (roles.contains(ERole.ADMIN.toString())) {
             if (!companyRepository.existsByCompanyNameIgnoreCase(dto.getCompanyName())) {
                 Company company = ICompanyMapper.INSTANCE.fromSaveCompanyResponseDtoToCompany(dto);
+                if(dto.getBase64Logo()!=null){
+                    String encodedLogo = Base64.getEncoder().encodeToString(dto.getBase64Logo().getBytes());
+                    company.setLogo(encodedLogo);
+                }
                 save(company);
                 return true;
             }
@@ -73,6 +74,16 @@ public class CompanyService extends ServiceManager<Company, String> {
         List<VisitorCompanyInformations> companyInformationsList = new ArrayList<>();
         companyList.forEach(company -> {
             VisitorCompanyInformations dto = ICompanyMapper.INSTANCE.fromCompanyToVisitorCompanyInformations(company);
+            if(company.getLogo()!=null){
+                try{
+                    byte[] decodedBytes = Base64.getDecoder().decode(company.getLogo());
+                    String decodedLogo = new String(decodedBytes);
+                    dto.setLogo(decodedLogo);
+                }catch (Exception e){
+                    System.out.println(e.getMessage());
+                    e.printStackTrace();
+                }
+            }
             companyInformationsList.add(dto);
         });
         return companyInformationsList;
@@ -84,6 +95,16 @@ public class CompanyService extends ServiceManager<Company, String> {
             throw new CompanyManagerException(ErrorType.COMPANY_NOT_FOUND);
         });
         VisitorDetailedCompanyInformationResponse dto = ICompanyMapper.INSTANCE.fromCompanyToVisitorDetailedCompanyInformationResponse(company);
+        if(company.getLogo()!=null){
+            try{
+                byte[] decodedBytes = Base64.getDecoder().decode(company.getLogo());
+                String decodedLogo = new String(decodedBytes);
+                dto.setLogo(decodedLogo);
+            }catch (Exception e){
+                System.out.println(e.getMessage());
+                e.printStackTrace();
+            }
+        }
         List<FindCompanyCommentsResponseDto> dtoCommentList = commentService.findCompanyComments(companyId);
         dto.setCompanyComments(dtoCommentList);
         return dto;
@@ -94,7 +115,18 @@ public class CompanyService extends ServiceManager<Company, String> {
         Company company = findById(companyId).orElseThrow(() -> {
             throw new CompanyManagerException(ErrorType.COMPANY_NOT_FOUND);
         });
-        return ICompanyMapper.INSTANCE.fromCompanyToPersonnelCompanyInformationResponseDto(company);
+        PersonnelCompanyInformationResponseDto dto = ICompanyMapper.INSTANCE.fromCompanyToPersonnelCompanyInformationResponseDto(company);
+        if(company.getLogo()!=null){
+            try{
+                byte[] decodedBytes = Base64.getDecoder().decode(company.getLogo());
+                String decodedLogo = new String(decodedBytes);
+                dto.setLogo(decodedLogo);
+            }catch (Exception e){
+                System.out.println(e.getMessage());
+                e.printStackTrace();
+            }
+        }
+        return dto;
     }
 
     public Boolean doesCompanyIdExist(String companyId) {
@@ -148,7 +180,16 @@ public class CompanyService extends ServiceManager<Company, String> {
             PersonnelDashboardResponseDto personnelDto = ICompanyMapper.INSTANCE.fromUserProfilePersonnelDashboardResponseDtoToPersonnelDashboardResponseDto(userDto);
             Company company = findById(userDto.getCompanyId()).orElseThrow(()->{throw new CompanyManagerException(ErrorType.COMPANY_NOT_FOUND);});
             personnelDto.setCompanyName(company.getCompanyName());
-            personnelDto.setLogo(company.getLogo());
+            if(company.getLogo()!=null){
+                try{
+                    byte[] decodedBytes = Base64.getDecoder().decode(company.getLogo());
+                    String decodedLogo = new String(decodedBytes);
+                    personnelDto.setLogo(decodedLogo);
+                }catch (Exception e){
+                    System.out.println(e.getMessage());
+                    e.printStackTrace();
+                }
+            }
             personnelDto.setSector(company.getSector());
             personnelDto.setHolidayDates(company.getHolidayDates());
             /*
@@ -190,21 +231,6 @@ public class CompanyService extends ServiceManager<Company, String> {
         AllCompanyInfosForUserProfileResponseDto dto=ICompanyMapper.INSTANCE.fromCompanyToAllCompanyInfosForUserProfileResponseDto(companyInfos.get());
         return dto;
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 }

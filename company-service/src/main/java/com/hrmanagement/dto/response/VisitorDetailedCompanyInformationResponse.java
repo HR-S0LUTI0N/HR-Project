@@ -21,7 +21,6 @@ public class VisitorDetailedCompanyInformationResponse {
     private Integer companyApartmentNumber;
     private Integer companyPostalCode;
     private String logo;
-    private String title;
     private String sector;
     private String description;
     private String companyPhone;

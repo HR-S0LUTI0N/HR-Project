@@ -17,5 +17,5 @@ public class ManagerDashboardResponseDto {
     private Integer companyPersonnelCount;
     private String sector;
     private Double companyBalanceStatus;
-    private String holidayDates;
+    private List<String> holidayDates;
 }

@@ -14,5 +14,5 @@ import java.util.List;
 public class PersonnelCompanyInformationResponseDto {
     private String companyName;
     private String logo;
-    private String holidayDates;
+    private List<String> holidayDates;
 }
