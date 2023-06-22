@@ -61,8 +61,12 @@ public class AuthController {
             HttpHeaders httpHeaders = new HttpHeaders();
             httpHeaders.setLocation(forgotPasswordSuccessful);
             return new ResponseEntity<>(httpHeaders, HttpStatus.SEE_OTHER);
+        }else{
+            URI forgotPasswordSuccessful = new URI("http://localhost:3000/404");
+            HttpHeaders httpHeaders = new HttpHeaders();
+            httpHeaders.setLocation(forgotPasswordSuccessful);
+            return new ResponseEntity<>(httpHeaders, HttpStatus.SEE_OTHER);
         }
-        throw new AuthManagerException(ErrorType.INTERNAL_ERROR);
     }
 
     @GetMapping(FIND_ALL)
@@ -83,8 +87,13 @@ public class AuthController {
             HttpHeaders httpHeaders = new HttpHeaders();
             httpHeaders.setLocation(forgotPasswordSuccessful);
             return new ResponseEntity<>(httpHeaders, HttpStatus.SEE_OTHER);
+        }else{
+            URI forgotPasswordSuccessful = new URI("http://localhost:3000/404");
+            HttpHeaders httpHeaders = new HttpHeaders();
+            httpHeaders.setLocation(forgotPasswordSuccessful);
+            return new ResponseEntity<>(httpHeaders, HttpStatus.SEE_OTHER);
         }
-        throw new AuthManagerException(ErrorType.INTERNAL_ERROR);
+
     }
 
     @PutMapping("/update-manager-status")
