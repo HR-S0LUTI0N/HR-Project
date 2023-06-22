@@ -17,6 +17,18 @@ public class SaveCompanyRequestDto {
     @NotBlank
     private String companyName;
     @NotBlank
+    private String sector;
+    @NotBlank
+    private String taxNumber;
+    @NotNull
+    private double companyBalanceStatus;
+    @NotBlank
+    private String companyPhone;
+    @NotBlank
+    private String companyMail;
+    @NotBlank
+    private String description;
+    @NotBlank
     private String companyNeighbourhood;
     @NotBlank
     private String companyDistrict;
@@ -30,19 +42,8 @@ public class SaveCompanyRequestDto {
     private Integer companyApartmentNumber;
     @NotNull
     private Integer companyPostalCode;
-    private double companyBalanceStatus;
     @NotBlank
-    private String logo;
-    @NotBlank
-    private String taxNumber;
-    @NotBlank
-    private String title;
-    @NotBlank
-    private String sector;
-    @NotBlank
-    private String description;
-    @NotBlank
-    private String companyPhone;
-    @NotBlank
-    private String companyMail;
+    private String base64Logo;
+    @NotNull
+    private List<String> holidayDates;
 }

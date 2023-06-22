@@ -13,7 +13,6 @@ import java.util.List;
 @NoArgsConstructor
 public class VisitorCompanyInformations {
     private String companyId;
-    private String title;
     private String logo;
     private String companyName;
     private String companyProvince;

@@ -17,7 +17,7 @@ public class PersonnelDashboardResponseDto {
     private String companyName;
     private String logo;
     private String sector;
-    private String holidayDates;
+    private List<String> holidayDates;
     //userprofile
     private String jobBreak;
     private String jobShift;
