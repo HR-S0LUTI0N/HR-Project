@@ -135,24 +135,13 @@ public class AuthService extends ServiceManager<Auth,Long> {
 
 
 
-    public String confirmUserAccount(String confirmationToken) {
-
-        try{
-            if(confirmationToken != null) {
-                Long authId = jwtTokenProvider.getIdFromToken(confirmationToken).get();
+    public Boolean confirmUserAccount(String confirmationToken) {
+                Long authId = jwtTokenProvider.getIdFromToken(confirmationToken).orElseThrow(()->{throw new AuthManagerException(ErrorType.INVALID_TOKEN);});
                 Optional<Auth> auth = authRepository.findOptionalByAuthId(authId);
                 auth.get().setStatus(EStatus.INACTIVE);
                 update(auth.get());
                 userManager.inactivateUser(authId);
-                return "accountVerified";
-            } else
-            {
-                return "Error:"+" "+"The link is invalid or broken!";
-            }
-        }catch (Exception e){
-            throw new RuntimeException("Beklenmeyen bir hata oluştu.");
-        }
-
+                return true;
     }
 
     public List<Auth> findAll() {
