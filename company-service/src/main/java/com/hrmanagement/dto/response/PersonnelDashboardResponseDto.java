@@ -23,6 +23,6 @@ public class PersonnelDashboardResponseDto {
     private String jobShift;
     private String department;
     private Double wage;
-    private Long wageDate;
+    private String wageDate;
     private int employeeCount;
 }
