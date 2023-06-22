@@ -178,8 +178,10 @@ public class CompanyService extends ServiceManager<Company, String> {
             UserProfilePersonnelDashboardResponseDto userDto = userManager.getUserProfilePersonnelDashboardInformation(authId).getBody();
             System.out.println(userDto);
             PersonnelDashboardResponseDto personnelDto = ICompanyMapper.INSTANCE.fromUserProfilePersonnelDashboardResponseDtoToPersonnelDashboardResponseDto(userDto);
+            System.out.println(personnelDto);
             Company company = findById(userDto.getCompanyId()).orElseThrow(()->{throw new CompanyManagerException(ErrorType.COMPANY_NOT_FOUND);});
             personnelDto.setCompanyName(company.getCompanyName());
+            System.out.println(1);
             if(company.getLogo()!=null){
                 try{
                     byte[] decodedBytes = Base64.getDecoder().decode(company.getLogo());
@@ -190,6 +192,7 @@ public class CompanyService extends ServiceManager<Company, String> {
                     e.printStackTrace();
                 }
             }
+            System.out.println(2);
             personnelDto.setSector(company.getSector());
             personnelDto.setHolidayDates(company.getHolidayDates());
             /*
