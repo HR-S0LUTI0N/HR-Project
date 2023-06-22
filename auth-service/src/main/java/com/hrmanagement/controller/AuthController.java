@@ -6,15 +6,21 @@ import com.hrmanagement.dto.request.RegisterManagerRequestDto;
 import com.hrmanagement.dto.request.RegisterVisitorRequestDto;
 
 import com.hrmanagement.dto.response.*;
+import com.hrmanagement.exception.AuthManagerException;
+import com.hrmanagement.exception.ErrorType;
 import com.hrmanagement.repository.entity.Auth;
 import com.hrmanagement.service.AuthService;
 import io.swagger.v3.oas.annotations.Hidden;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.List;
 
 import static com.hrmanagement.constant.ApiUrls.*;
@@ -65,8 +71,14 @@ public class AuthController {
     }
 
     @GetMapping(FORGOT_PASSWORD + "/{token}")
-    public ResponseEntity<Boolean> forgotPassword(@PathVariable String token){
-        return ResponseEntity.ok(authService.forgotPassword(token));
+    public ResponseEntity<Object> forgotPassword(@PathVariable String token) throws URISyntaxException {
+        if(authService.forgotPassword(token)){
+            URI forgotPasswordSuccessful = new URI("http://localhost:3000/login");
+            HttpHeaders httpHeaders = new HttpHeaders();
+            httpHeaders.setLocation(forgotPasswordSuccessful);
+            return new ResponseEntity<>(httpHeaders, HttpStatus.SEE_OTHER);
+        }
+        throw new AuthManagerException(ErrorType.INTERNAL_ERROR);
     }
 
     @PutMapping("/update-manager-status")
