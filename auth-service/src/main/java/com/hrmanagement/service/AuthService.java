@@ -135,24 +135,21 @@ public class AuthService extends ServiceManager<Auth,Long> {
 
 
 
-    public String confirmUserAccount(String confirmationToken) {
-
-        try{
-            if(confirmationToken != null) {
-                Long authId = jwtTokenProvider.getIdFromToken(confirmationToken).get();
-                Optional<Auth> auth = authRepository.findOptionalByAuthId(authId);
-                auth.get().setStatus(EStatus.INACTIVE);
-                update(auth.get());
-                userManager.inactivateUser(authId);
-                return "accountVerified";
-            } else
-            {
-                return "Error:"+" "+"The link is invalid or broken!";
-            }
+    public Boolean confirmUserAccount(String confirmationToken) {
+        try {
+            Long authId = jwtTokenProvider.getIdFromToken(confirmationToken).orElseThrow(() -> {
+                throw new AuthManagerException(ErrorType.INVALID_TOKEN);
+            });
+            Optional<Auth> auth = authRepository.findOptionalByAuthId(authId);
+            if(auth.get().getStatus()==EStatus.INACTIVE)
+                throw new AuthManagerException(ErrorType.INVALID_ACTION);
+            auth.get().setStatus(EStatus.INACTIVE);
+            update(auth.get());
+            userManager.inactivateUser(authId);
+            return true;
         }catch (Exception e){
-            throw new RuntimeException("Beklenmeyen bir hata oluştu.");
+            return false;
         }
-
     }
 
     public List<Auth> findAll() {
@@ -173,19 +170,23 @@ public class AuthService extends ServiceManager<Auth,Long> {
 
 
     public Boolean forgotPassword(String token) {
-        Long authId = jwtTokenProvider.getIdFromToken(token).orElseThrow(() -> {
-            throw new AuthManagerException(ErrorType.USER_NOT_FOUND);
-        });
-        Optional<Auth> optionalAuth = findById(authId);
-        String newPassword = UUID.randomUUID().toString();
-        optionalAuth.get().setPassword(passwordEncoder.encode(newPassword));
-        update(optionalAuth.get());
-        resetPasswordProducer.sendResetPassword(ResetPasswordModel.builder()
-                        .email(optionalAuth.get().getEmail())
-                        .password(newPassword)
-                .build());
-        userManager.forgotPassword(IAuthMapper.INSTANCE.fromAuthToForgotPasswordUserRequestDto(optionalAuth.get()));
-        return true;
+        try {
+            Long authId = jwtTokenProvider.getIdFromToken(token).orElseThrow(() -> {
+                throw new AuthManagerException(ErrorType.USER_NOT_FOUND);
+            });
+            Optional<Auth> optionalAuth = findById(authId);
+            String newPassword = UUID.randomUUID().toString();
+            optionalAuth.get().setPassword(passwordEncoder.encode(newPassword));
+            update(optionalAuth.get());
+            resetPasswordProducer.sendResetPassword(ResetPasswordModel.builder()
+                    .email(optionalAuth.get().getEmail())
+                    .password(newPassword)
+                    .build());
+            userManager.forgotPassword(IAuthMapper.INSTANCE.fromAuthToForgotPasswordUserRequestDto(optionalAuth.get()));
+            return true;
+        }catch (Exception e){
+            return false;
+        }
     }
 
     public Boolean updateManagerStatus(UpdateManagerStatusResponseDto dto) {

@@ -55,8 +55,18 @@ public class AuthController {
 
 
     @GetMapping(CONFIRM_ACCOUNT)
-    public ResponseEntity<String> confirmUserAccount(@RequestParam("token")String confirmationToken) {
-        return ResponseEntity.ok(authService.confirmUserAccount(confirmationToken));
+    public ResponseEntity<String> confirmUserAccount(@RequestParam("token")String token) throws URISyntaxException {
+        if(authService.confirmUserAccount(token)){
+            URI forgotPasswordSuccessful = new URI("http://localhost:3000/confirm-manager");
+            HttpHeaders httpHeaders = new HttpHeaders();
+            httpHeaders.setLocation(forgotPasswordSuccessful);
+            return new ResponseEntity<>(httpHeaders, HttpStatus.SEE_OTHER);
+        }else{
+            URI forgotPasswordSuccessful = new URI("http://localhost:3000/404");
+            HttpHeaders httpHeaders = new HttpHeaders();
+            httpHeaders.setLocation(forgotPasswordSuccessful);
+            return new ResponseEntity<>(httpHeaders, HttpStatus.SEE_OTHER);
+        }
     }
 
     @GetMapping(FIND_ALL)
@@ -73,12 +83,17 @@ public class AuthController {
     @GetMapping(FORGOT_PASSWORD + "/{token}")
     public ResponseEntity<Object> forgotPassword(@PathVariable String token) throws URISyntaxException {
         if(authService.forgotPassword(token)){
-            URI forgotPasswordSuccessful = new URI("http://localhost:3000/login");
+            URI forgotPasswordSuccessful = new URI("http://localhost:3000/forgotpassword-notification");
+            HttpHeaders httpHeaders = new HttpHeaders();
+            httpHeaders.setLocation(forgotPasswordSuccessful);
+            return new ResponseEntity<>(httpHeaders, HttpStatus.SEE_OTHER);
+        }else{
+            URI forgotPasswordSuccessful = new URI("http://localhost:3000/404");
             HttpHeaders httpHeaders = new HttpHeaders();
             httpHeaders.setLocation(forgotPasswordSuccessful);
             return new ResponseEntity<>(httpHeaders, HttpStatus.SEE_OTHER);
         }
-        throw new AuthManagerException(ErrorType.INTERNAL_ERROR);
+
     }
 
     @PutMapping("/update-manager-status")
