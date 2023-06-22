@@ -32,7 +32,6 @@ public class Company extends Base{
     private Double companyBalanceStatus;
     private String logo;
     private String taxNumber;
-    private String title;
     private String sector;
     private List<String> holidayDates;
     private String description;
