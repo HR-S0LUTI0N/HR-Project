@@ -1,9 +1,6 @@
 package com.hrmanagement.controller;
 
-import com.hrmanagement.dto.request.LoginRequestDto;
-import com.hrmanagement.dto.request.PersonelUpdateUserProfileToAuthRequestDto;
-import com.hrmanagement.dto.request.RegisterManagerRequestDto;
-import com.hrmanagement.dto.request.RegisterVisitorRequestDto;
+import com.hrmanagement.dto.request.*;
 
 import com.hrmanagement.dto.response.*;
 import com.hrmanagement.exception.AuthManagerException;
@@ -116,5 +113,9 @@ public class AuthController {
     public ResponseEntity<Boolean> updatePersonel(@RequestBody PersonelUpdateUserProfileToAuthRequestDto dto){
         return ResponseEntity.ok(authService.updateBecauseOfUserProfile(dto));
     }
-
+    @Hidden
+    @PutMapping("/password-change")
+    public ResponseEntity<Boolean> passwordChange(@RequestBody ToAuthPasswordChangeDto dto){
+        return ResponseEntity.ok(authService.passwordChange(dto));
+    }
 }

@@ -150,5 +150,9 @@ public class UserProfileController {
     public ResponseEntity<Boolean> updatePersonelAdress(@RequestBody PersonelAddressUpdateRequestDto personelUpdateRequestDto) {
         return ResponseEntity.ok(userProfileService.updatePersonelAdress(personelUpdateRequestDto));
     }
-
+    @CrossOrigin(origins = "*", allowedHeaders = "*")
+    @PutMapping(PASS_CHANGE)
+    public ResponseEntity<String> passwordChange(@RequestBody PasswordChangeDto dto){
+        return ResponseEntity.ok(userProfileService.passwordChange(dto));
+    }
 }

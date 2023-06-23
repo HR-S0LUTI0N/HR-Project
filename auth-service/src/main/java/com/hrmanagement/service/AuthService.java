@@ -223,4 +223,13 @@ public class AuthService extends ServiceManager<Auth,Long> {
         update(auth.get());
         return true;
     }
+    public Boolean passwordChange(ToAuthPasswordChangeDto dto){
+        Optional<Auth> auth = authRepository.findById(dto.getAuthId());
+        if (auth.isEmpty()){
+            throw new AuthManagerException(ErrorType.USER_NOT_FOUND);
+        }
+        auth.get().setPassword(dto.getPassword());
+        update(auth.get());
+        return true;
+    }
 }
