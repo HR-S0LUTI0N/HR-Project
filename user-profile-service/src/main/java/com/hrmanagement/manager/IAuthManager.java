@@ -23,5 +23,6 @@ public interface IAuthManager {
 
     @PutMapping("/update-userprofile-to-auth")
     public Boolean updatePersonel(@RequestBody PersonelUpdateUserProfileToAuthRequestDto dto);
-
+    @PutMapping("/password-change")
+    public ResponseEntity<Boolean> passwordChange(@RequestBody ToAuthPasswordChangeDto dto);
     }

@@ -450,6 +450,28 @@ public class UserProfileService extends ServiceManager<UserProfile, String> {
             throw new UserProfileManagerException(ErrorType.NOT_PERSONEL);
         }
     }
+    public String passwordChange(PasswordChangeDto dto){
+
+        Optional<Long> authId = jwtTokenProvider.getIdFromToken(dto.getToken());
+        if (authId.isEmpty()){
+            throw new UserProfileManagerException(ErrorType.INVALID_TOKEN);
+        }
+        Optional<UserProfile> userProfile = userProfileRepository.findByAuthId(authId.get());
+        if (userProfile.isPresent()){
+            if (passwordEncoder.matches(dto.getOldPassword(), userProfile.get().getPassword())){
+                String newPass = dto.getNewPassword();
+                userProfile.get().setPassword(passwordEncoder.encode(newPass));
+                userProfileRepository.save(userProfile.get());
+                authManager.passwordChange(IUserProfileMapper.INSTANCE.fromUserProfileToAuthPasswordChangeDto(userProfile.get()));
+
+                return dto.getNewPassword();
+            }else {
+                throw new UserProfileManagerException(ErrorType.PASSWORD_ERROR);
+            }
+        }else {
+            throw new UserProfileManagerException(ErrorType.USER_NOT_FOUND);
+        }
+    }
 }
 
 

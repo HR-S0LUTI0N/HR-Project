@@ -49,4 +49,6 @@ public interface IUserProfileMapper {
     UserProfileSendingInfosResponseDto userProfileToUserProfileSendingInfosResponseDto(final UserProfile userProfile);
     UserProfileSendingInfosResponseDto companyInfosToUserProfileSendingInfosResponseDto(final AllCompanyInfosForUserProfileResponseDto dto);
     PersonelUpdateUserProfileToAuthRequestDto fromPersonelUpdateRequestDtoToPersonelUpdateUserProfileToAuthRequestDto (final PersonelUpdateRequestDto dto);
+    ToAuthPasswordChangeDto fromUserProfileToAuthPasswordChangeDto(final UserProfile userProfile);
+
 }
