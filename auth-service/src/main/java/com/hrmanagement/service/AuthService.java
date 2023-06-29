@@ -29,7 +29,6 @@ import org.springframework.stereotype.Service;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 import static com.hrmanagement.utility.CodeGenerator.generateCode;
@@ -169,24 +168,23 @@ public class AuthService extends ServiceManager<Auth,Long> {
     }
 
 
-    public Boolean forgotPassword(String token) {
-        try {
+    public Boolean forgotPassword(String token, ForgotPasswordChangePasswordRequestDto dto) {
+
             Long authId = jwtTokenProvider.getIdFromToken(token).orElseThrow(() -> {
                 throw new AuthManagerException(ErrorType.USER_NOT_FOUND);
             });
+            if(!dto.getPassword().equals(dto.getRepassword()))
+                throw new AuthManagerException(ErrorType.PASSWORD_ERROR);
             Optional<Auth> optionalAuth = findById(authId);
-            String newPassword = UUID.randomUUID().toString();
-            optionalAuth.get().setPassword(passwordEncoder.encode(newPassword));
+            optionalAuth.get().setPassword(passwordEncoder.encode(dto.getPassword()));
             update(optionalAuth.get());
             resetPasswordProducer.sendResetPassword(ResetPasswordModel.builder()
                     .email(optionalAuth.get().getEmail())
-                    .password(newPassword)
+                    .password(dto.getPassword())
                     .build());
             userManager.forgotPassword(IAuthMapper.INSTANCE.fromAuthToForgotPasswordUserRequestDto(optionalAuth.get()));
             return true;
-        }catch (Exception e){
-            return false;
-        }
+
     }
 
     public Boolean updateManagerStatus(UpdateManagerStatusResponseDto dto) {

@@ -77,20 +77,10 @@ public class AuthController {
         return ResponseEntity.ok(authService.managerCreatePersonelUserProfile(dto));
     }
 
-    @GetMapping(FORGOT_PASSWORD + "/{token}")
-    public ResponseEntity<Object> forgotPassword(@PathVariable String token) throws URISyntaxException {
-        if(authService.forgotPassword(token)){
-            URI forgotPasswordSuccessful = new URI("http://localhost:3000/forgotpassword-notification");
-            HttpHeaders httpHeaders = new HttpHeaders();
-            httpHeaders.setLocation(forgotPasswordSuccessful);
-            return new ResponseEntity<>(httpHeaders, HttpStatus.SEE_OTHER);
-        }else{
-            URI forgotPasswordSuccessful = new URI("http://localhost:3000/404");
-            HttpHeaders httpHeaders = new HttpHeaders();
-            httpHeaders.setLocation(forgotPasswordSuccessful);
-            return new ResponseEntity<>(httpHeaders, HttpStatus.SEE_OTHER);
-        }
-
+    @CrossOrigin(origins = "*", allowedHeaders = "*")
+    @PostMapping(FORGOT_PASSWORD + "/{token}")
+    public ResponseEntity<Boolean> forgotPassword(@PathVariable String token, @RequestBody @Valid ForgotPasswordChangePasswordRequestDto dto) {
+        return ResponseEntity.ok(authService.forgotPassword(token,dto));
     }
 
     @PutMapping("/update-manager-status")
