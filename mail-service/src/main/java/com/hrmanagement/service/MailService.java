@@ -29,7 +29,7 @@ public class MailService {
 
     public void forgotPasswordRequestMail(ForgotPasswordMailModel model){
         String token = jwtTokenProvider.createTokenForForgotPassword(model.getAuthId()).get();
-        String linkForgotPasswordLink = "http://localhost:9090/api/v1/auth/forgot-password/";
+        String linkForgotPasswordLink = "http://localhost:3000/forgotpassword-replace/";
         SimpleMailMessage mailMessage = new SimpleMailMessage();
         mailMessage.setTo(model.getEmail());
         mailMessage.setSubject("Forgot Password");
@@ -46,7 +46,7 @@ public class MailService {
         mailMessage.setSubject("New Password");
         mailMessage.setFrom("${spring.mail.username}");
         mailMessage.setText("Dear User,\n " +
-        "Your new password is: " + model.getPassword());
+        "Your new password is changed successfully! You can login with your new password: " + model.getPassword());
         javaMailSender.send(mailMessage);
 
     }
