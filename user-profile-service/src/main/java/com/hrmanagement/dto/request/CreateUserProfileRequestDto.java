@@ -63,7 +63,5 @@ public class CreateUserProfileRequestDto {
     private int employeeLeaves;
     private String dateOfBirth;
     private String jobStartingDate;
-    private String wageDate;
-
 
 }

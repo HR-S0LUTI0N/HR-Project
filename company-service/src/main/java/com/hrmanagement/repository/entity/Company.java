@@ -37,4 +37,6 @@ public class Company extends Base{
     private String description;
     private String companyPhone;
     private String companyMail;
+    private String wageDate;
+
 }
