@@ -15,6 +15,5 @@ public class UserProfilePersonnelDashboardResponseDto {
     private String jobShift;
     private String department;
     private Double wage;
-    private String wageDate;
     private String companyId;
 }

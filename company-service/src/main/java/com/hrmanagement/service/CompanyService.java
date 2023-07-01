@@ -1,5 +1,6 @@
 package com.hrmanagement.service;
 
+import com.hrmanagement.dto.request.CompanyNameAndWageDateRequestDto;
 import com.hrmanagement.dto.request.FindPendingCommentWithCompanyName;
 import com.hrmanagement.dto.response.*;
 import com.hrmanagement.dto.request.SaveCompanyRequestDto;
@@ -15,6 +16,7 @@ import com.hrmanagement.utility.JwtTokenProvider;
 import com.hrmanagement.utility.ServiceManager;
 import org.springframework.stereotype.Service;
 
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -181,18 +183,36 @@ public class CompanyService extends ServiceManager<Company, String> {
             System.out.println(personnelDto);
             Company company = findById(userDto.getCompanyId()).orElseThrow(()->{throw new CompanyManagerException(ErrorType.COMPANY_NOT_FOUND);});
             personnelDto.setCompanyName(company.getCompanyName());
-            System.out.println(1);
             if(company.getLogo()!=null){
                 try{
                     byte[] decodedBytes = Base64.getDecoder().decode(company.getLogo());
                     String decodedLogo = new String(decodedBytes);
                     personnelDto.setLogo(decodedLogo);
+                    //WageDate
+                    Date wageDate = new SimpleDateFormat("dd-MM-yyyy").parse(company.getWageDate());
+                    long millis = System.currentTimeMillis();
+                    java.sql.Date date = new java.sql.Date(millis);
+                    SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
+                    if (wageDate.before(date)) {
+                        Calendar calendar = Calendar.getInstance();
+                        calendar.setTime(wageDate);
+                        Calendar millisCalendar = Calendar.getInstance();
+                        millisCalendar.setTimeInMillis(millis);
+                        calendar.set(Calendar.MONTH, millisCalendar.get(Calendar.MONTH));
+                        calendar.set(Calendar.YEAR, millisCalendar.get(Calendar.YEAR));
+                        wageDate = calendar.getTime();
+                    }
+                    String formattedDate = dateFormat.format(wageDate);
+                    if(!formattedDate.equals(company.getWageDate())){
+                        company.setWageDate(formattedDate);
+                        update(company);
+                    }
+                    personnelDto.setWageDate(formattedDate);
                 }catch (Exception e){
                     System.out.println(e.getMessage());
                     e.printStackTrace();
                 }
             }
-            System.out.println(2);
             personnelDto.setSector(company.getSector());
             personnelDto.setHolidayDates(company.getHolidayDates());
             /*
@@ -236,4 +256,31 @@ public class CompanyService extends ServiceManager<Company, String> {
     }
 
 
+    public CompanyNameAndWageDateRequestDto getCompanyNameAndWageDateResponseDto(String companyId) {
+        Company company = findById(companyId).orElseThrow(()->{throw new CompanyManagerException(ErrorType.COMPANY_NOT_FOUND);});
+        try{
+            Date wageDate = new SimpleDateFormat("dd-MM-yyyy").parse(company.getWageDate());
+            long millis = System.currentTimeMillis();
+            java.sql.Date date = new java.sql.Date(millis);
+            SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
+            if (wageDate.before(date)) {
+                Calendar calendar = Calendar.getInstance();
+                calendar.setTime(wageDate);
+                Calendar millisCalendar = Calendar.getInstance();
+                millisCalendar.setTimeInMillis(millis);
+                calendar.set(Calendar.MONTH, millisCalendar.get(Calendar.MONTH));
+                calendar.set(Calendar.YEAR, millisCalendar.get(Calendar.YEAR));
+                wageDate = calendar.getTime();
+            }
+            String formattedDate = dateFormat.format(wageDate);
+            if(!formattedDate.equals(company.getWageDate())){
+                company.setWageDate(formattedDate);
+                update(company);
+            }
+        }catch (Exception e){
+            System.out.println(e.getMessage());
+            e.printStackTrace();
+        }
+        return ICompanyMapper.INSTANCE.fromCompanyToCompanyNameAndWageDateRequestDto(company);
+    }
 }

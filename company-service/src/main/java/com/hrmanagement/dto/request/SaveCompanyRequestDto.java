@@ -46,4 +46,6 @@ public class SaveCompanyRequestDto {
     private String base64Logo;
     @NotNull
     private List<String> holidayDates;
+    @NotNull
+    private String wageDate;
 }

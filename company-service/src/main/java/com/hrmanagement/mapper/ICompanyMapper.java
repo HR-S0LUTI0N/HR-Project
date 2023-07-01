@@ -1,5 +1,6 @@
 package com.hrmanagement.mapper;
 
+import com.hrmanagement.dto.request.CompanyNameAndWageDateRequestDto;
 import com.hrmanagement.dto.request.FindPendingCommentWithCompanyName;
 import com.hrmanagement.dto.request.SaveCompanyRequestDto;
 import com.hrmanagement.dto.response.*;
@@ -27,4 +28,5 @@ public interface ICompanyMapper {
 
     ManagerDashboardResponseDto fromCompanyToManagerDashboardResponseDto(final Company company);
     AllCompanyInfosForUserProfileResponseDto fromCompanyToAllCompanyInfosForUserProfileResponseDto(final Company company);
+    CompanyNameAndWageDateRequestDto fromCompanyToCompanyNameAndWageDateRequestDto(final Company company);
 }

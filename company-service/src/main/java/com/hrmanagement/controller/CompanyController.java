@@ -1,5 +1,6 @@
 package com.hrmanagement.controller;
 
+import com.hrmanagement.dto.request.CompanyNameAndWageDateRequestDto;
 import com.hrmanagement.dto.request.FindPendingCommentWithCompanyName;
 import com.hrmanagement.dto.response.*;
 import com.hrmanagement.dto.request.SaveCompanyRequestDto;
@@ -85,6 +86,12 @@ public class CompanyController {
     @GetMapping("/get-company-infos-with-company-id/{companyId}")
     public ResponseEntity<AllCompanyInfosForUserProfileResponseDto> getAllInfosCompanyWithCompanyId(@PathVariable String companyId) {
         return ResponseEntity.ok(companyService.getAllInfosCompanyWithCompanyId(companyId));
+    }
+
+    @Hidden
+    @GetMapping("/get-company-name-and-wagedate-with-company-id/{companyId}")
+    ResponseEntity<CompanyNameAndWageDateRequestDto> getCompanyNameAndWageDateResponseDto(@PathVariable String companyId){
+        return ResponseEntity.ok(companyService.getCompanyNameAndWageDateResponseDto(companyId));
     }
 
 

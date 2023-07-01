@@ -296,7 +296,7 @@ public class UserProfileService extends ServiceManager<UserProfile, String> {
             throw new UserProfileManagerException(ErrorType.INVALID_TOKEN);
         if (roles.contains(ERole.MANAGER.toString())) {
             UserProfile userProfile = userProfileRepository.findByAuthId(authId).orElseThrow(()->{throw new UserProfileManagerException(ErrorType.USER_NOT_FOUND);});
-            String companyName = companyManager.getCompanyNameWithCompanyId(userProfile.getCompanyId()).getBody();
+            CompanyNameAndWageDateResponseDto companyNameAndWageDateResponseDto = companyManager.getCompanyNameAndWageDateResponseDto(userProfile.getCompanyId()).getBody();
             List<UserProfile> userProfileList = userProfileRepository.findByCompanyId(userProfile.getCompanyId());
             List<PersonnelProfilesForManagerDashBoardResponseDto> dtoList = new ArrayList<>();
             userProfileList.forEach(user->{
@@ -310,7 +310,8 @@ public class UserProfileService extends ServiceManager<UserProfile, String> {
                     System.out.println(e.getMessage());
                     e.printStackTrace();
                 }}
-                dto.setCompanyName(companyName);
+                dto.setCompanyName(companyNameAndWageDateResponseDto.getCompanyName());
+                dto.setWageDate(companyNameAndWageDateResponseDto.getWageDate());
                 dto.setEStatus(user.getStatus());
                 if( user.getRole().contains(ERole.MANAGER)){
                     dto.setRoleString("MANAGER");

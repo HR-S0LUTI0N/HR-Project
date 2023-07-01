@@ -56,7 +56,6 @@ public class UserProfile extends Base {
     private String jobShift;
     private String jobStartingDate;
     private String dateOfBirth;
-    private String wageDate;
 
 
 }
