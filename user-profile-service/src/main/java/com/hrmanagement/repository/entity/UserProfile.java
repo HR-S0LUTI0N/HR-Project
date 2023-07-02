@@ -52,7 +52,7 @@ public class UserProfile extends Base {
     private int employeeLeaves;
     private String department;
     private Long jobEndingDate;
-    private String jobBreak;
+    private List<String> jobBreak;
     private String jobShift;
     private String jobStartingDate;
     private String dateOfBirth;

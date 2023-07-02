@@ -5,13 +5,15 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @AllArgsConstructor
 @Builder
 @Data
 @NoArgsConstructor
 public class UserProfilePersonnelDashboardRequestDto {
     private String userId;
-    private String jobBreak;
+    private List<String> jobBreak;
     private String jobShift;
     private String department;
     private Double wage;
