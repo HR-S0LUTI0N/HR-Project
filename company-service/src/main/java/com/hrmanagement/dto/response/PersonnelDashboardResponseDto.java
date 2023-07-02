@@ -19,7 +19,7 @@ public class PersonnelDashboardResponseDto {
     private String sector;
     private List<String> holidayDates;
     //userprofile
-    private String jobBreak;
+    private List<String> jobBreak;
     private String jobShift;
     private String department;
     private Double wage;

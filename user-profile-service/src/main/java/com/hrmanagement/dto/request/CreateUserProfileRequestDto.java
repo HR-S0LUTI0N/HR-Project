@@ -57,8 +57,7 @@ public class CreateUserProfileRequestDto {
     private String department;
     @NotBlank
     private String jobShift;
-    @NotBlank
-    private String jobBreak;
+    private List<String> jobBreak;
     @NotNull
     private int employeeLeaves;
     private String dateOfBirth;
