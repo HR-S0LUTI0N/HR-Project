@@ -493,6 +493,40 @@ public class UserProfileService extends ServiceManager<UserProfile, String> {
         return true;
     }
 
+    public Boolean founderCreateManagerUserProfile(String token, CreateUserProfileRequestDto dto){
+        Optional<UserProfile> optionalUserProfile = userProfileRepository.findByEmail(dto.getEmail());
+        if(optionalUserProfile.isEmpty()) {
+            List<String> role = jwtTokenProvider.getRoleFromToken(token);
+            Long founderAuthId = jwtTokenProvider.getIdFromToken(token).orElseThrow(()-> {throw new UserProfileManagerException(ErrorType.USER_NOT_FOUND);});
+            Optional<UserProfile> managerProfile = userProfileRepository.findByAuthId(founderAuthId);
+            if(managerProfile.isEmpty())
+                throw new UserProfileManagerException(ErrorType.USER_NOT_FOUND);
+            if (role.contains(ERole.FOUNDER.toString())) {
+                UserProfile userProfile = IUserProfileMapper.INSTANCE.fromCreateUserProfileRequestDtoToUserProfile(dto);
+                if(dto.getBase64Avatar()!=null){
+                    String encodedAvatar = Base64.getEncoder().encodeToString(dto.getBase64Avatar().getBytes());
+                    userProfile.setAvatar(encodedAvatar);
+                }
+                String newPassword = UUID.randomUUID().toString();
+                userProfile.setPassword(passwordEncoder.encode(newPassword));
+                userProfile.setRole(Arrays.asList(ERole.PERSONEL,ERole.MANAGER));
+                userProfile.setStatus(EStatus.ACTIVE);
+                userProfile.setCompanyId(managerProfile.get().getCompanyId());
+                AuthCreatePersonnelProfileRequestDto authDto = IUserProfileMapper.INSTANCE.fromUserProfileToAuthCreatePersonelProfileRequestDto(userProfile);
+                Long personnelAuthId = authManager.founderCreateManagerUserProfile(authDto).getBody();
+                userProfile.setAuthId(personnelAuthId);
+                System.out.println(userProfile);
+                save(userProfile);
+                PersonnelPasswordModel personnelPasswordModel = IUserProfileMapper.INSTANCE.fromUserProfileToPersonnelPasswordModel(userProfile);
+                personnelPasswordModel.setPassword(newPassword);
+                personelPasswordProducer.sendPersonnelPassword(personnelPasswordModel);
+                return true;
+            }
+            throw new UserProfileManagerException(ErrorType.AUTHORIZATION_ERROR);
+        }
+        throw new UserProfileManagerException(ErrorType.USERNAME_DUPLICATE);
+    }
+
 }
 
 
