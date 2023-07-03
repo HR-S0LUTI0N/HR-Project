@@ -88,6 +88,12 @@ public class UserProfileController {
         return ResponseEntity.ok(userProfileService.getUserProfileCommentInformation(authId));
     }
 
+    @Hidden
+    @GetMapping("/get-userprofile-expense-information/{authId}")
+    public ResponseEntity<UserProfileExpenseResponseDto> getUserProfileExpenseInformation(@PathVariable Long authId){
+        return ResponseEntity.ok(userProfileService.getUserProfileExpenseInformation(authId));
+    }
+
     @GetMapping("/find-all-manager-list/{token}")
     @CrossOrigin(origins = "*", allowedHeaders = "*")
     public ResponseEntity<List<FindAllManagerResponseDto>> findAllInactiveManager(@PathVariable String token) {

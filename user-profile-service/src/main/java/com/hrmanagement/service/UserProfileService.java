@@ -220,6 +220,13 @@ public class UserProfileService extends ServiceManager<UserProfile, String> {
             throw new UserProfileManagerException(ErrorType.USER_NOT_FOUND);
         return IUserProfileMapper.INSTANCE.fromUserProfileToUserProfileCommentResponseDto(optionalUserProfile.get());
     }
+
+    public UserProfileExpenseResponseDto getUserProfileExpenseInformation(Long authId) {
+        Optional<UserProfile> optionalUserProfile = userProfileRepository.findByAuthId(authId);
+        if(optionalUserProfile.isEmpty())
+            throw new UserProfileManagerException(ErrorType.USER_NOT_FOUND);
+        return IUserProfileMapper.INSTANCE.fromUserProfileToUserProfileExpenseResponseDto(optionalUserProfile.get());
+    }
     public List<FindAllManagerResponseDto> findAllInactiveManager(String token) {
         Optional<Long> authId = jwtTokenProvider.getIdFromToken(token);
         if (authId.isEmpty())
@@ -473,6 +480,8 @@ public class UserProfileService extends ServiceManager<UserProfile, String> {
             throw new UserProfileManagerException(ErrorType.USER_NOT_FOUND);
         }
     }
+
+
 }
 
 
