@@ -113,18 +113,22 @@ public class AuthService extends ServiceManager<Auth,Long> {
 
     public LoginResponseDto login(LoginRequestDto dto){
         Optional<Auth> auth=authRepository.findOptionalByEmail(dto.getEmail());
+        System.out.println("Bilmiyorum");
+        System.out.println(auth);
         if(auth.isEmpty()||!passwordEncoder.matches(dto.getPassword(), auth.get().getPassword())){
             throw new AuthManagerException(ErrorType.LOGIN_ERROR);
         }
+        System.out.println("Biliyorum");
         if(!auth.get().getStatus().equals(EStatus.ACTIVE)){
             throw new AuthManagerException(ErrorType.ACTIVATE_CODE_ERROR);
         }
         List<String> roleList = auth.get().getRoles().stream().map(x -> x.toString()).collect(Collectors.toList());
-
+        System.out.println(roleList);
         String token = jwtTokenProvider.createToken(auth.get().getAuthId(),roleList)
                 .orElseThrow(()->{
                     throw new AuthManagerException(ErrorType.TOKEN_NOT_CREATED);
                 });
+        System.out.println(token);
         return LoginResponseDto.builder().roles(roleList).token(token).build();
     }
 
