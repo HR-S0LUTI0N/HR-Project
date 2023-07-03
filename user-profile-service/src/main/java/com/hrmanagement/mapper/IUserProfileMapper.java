@@ -37,11 +37,15 @@ public interface IUserProfileMapper {
                                                                                                                 @MappingTarget PersonnelInformationResponseDto dtoMain);
     UserProfileCommentResponseDto fromUserProfileToUserProfileCommentResponseDto(final UserProfile userProfile);
 
+    UserProfileExpenseResponseDto fromUserProfileToUserProfileExpenseResponseDto(final UserProfile userProfile);
+
     UserProfilePersonnelDashboardRequestDto fromUserProfileToUserProfilePersonnelDashboardRequestDto(final UserProfile userProfile);
 
     PersonnelDashboardCommentRequestDto fromUserProfileToPersonnelDashboardCommentRequestDto(final UserProfile userProfile);
 
     PersonnelProfilesForManagerDashBoardResponseDto fromUserProfileToPersonnelProfilesForManagerDashBoardResponseDto(final UserProfile userProfile);
+
+
 
     UserProfileAvatarAndNameResponseDto fromUserProfileToUserProfileAvatarAndNameResponseDto(final UserProfile userProfile);
     UserProfileAvatarAndNameAndSurnameResponseDto fromUserProfileToUserProfileAvatarAndNameAndSurnameResponseDto(final UserProfile userProfile);
