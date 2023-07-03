@@ -4,6 +4,7 @@ package com.hrmanagement.manager;
 import com.hrmanagement.dto.request.ForgotPasswordUserRequestDto;
 import com.hrmanagement.dto.request.NewCreateManagerUserRequestDto;
 import com.hrmanagement.dto.request.NewCreateVisitorUserRequestDto;
+import org.apache.catalina.authenticator.SavedRequest;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -23,4 +24,7 @@ public interface IUserProfileManager {
 
     @PutMapping("/inactivate-user/{authId}")
     public ResponseEntity<Boolean> inactivateUser(@PathVariable Long authId);
+
+    @GetMapping("/does-founder-exists/{companyId}")
+    public ResponseEntity<Boolean> doesFounderExists(@PathVariable String companyId);
 }

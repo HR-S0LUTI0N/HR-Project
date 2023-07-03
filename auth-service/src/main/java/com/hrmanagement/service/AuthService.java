@@ -80,10 +80,18 @@ public class AuthService extends ServiceManager<Auth,Long> {
 
     public RegisterResponseDto registerManager(RegisterManagerRequestDto dto){
         Auth auth = IAuthMapper.INSTANCE.fromManagerRequestDtoToAuth(dto);
-        auth.setRoles(List.of(ERole.MANAGER,ERole.PERSONEL));
+        auth.setRoles(List.of(ERole.MANAGER,ERole.PERSONEL,ERole.FOUNDER));
         Boolean isCompanyExists = companyManager.doesCompanyExist(dto.getCompanyId()).getBody();
         if(!isCompanyExists)
             throw new AuthManagerException(ErrorType.COMPANY_NOT_FOUND);
+        Boolean isFounderExists = userManager.doesFounderExists(dto.getCompanyId()).getBody();
+        System.out.println(isFounderExists);
+        if(isFounderExists)
+            throw new AuthManagerException(ErrorType.FOUNDER_EXIST_ERROR);
+        Boolean isSubscriptionExists = companyManager.doesCompanySubscriptionExist(dto.getCompanyId()).getBody();
+        if(!isSubscriptionExists)
+            throw new AuthManagerException(ErrorType.COMPANY_SUBSCRIPTION_EXIST);
+
         if (dto.getPassword().equals(dto.getRepassword())){
             auth.setActivationCode(generateCode());
             auth.setPassword(passwordEncoder.encode(dto.getPassword()));
@@ -91,6 +99,7 @@ public class AuthService extends ServiceManager<Auth,Long> {
             NewCreateManagerUserRequestDto managerUserDto = IAuthMapper.INSTANCE.fromRegisterManagerRequestDtoToNewCreateManagerUserRequestDto(dto);
             managerUserDto.setAuthId(auth.getAuthId());
             managerUserDto.setPassword(auth.getPassword());
+            companyManager.subscribeCompany(IAuthMapper.INSTANCE.fromRegisterManagerRequestDtoToSubscribeCompanyRequestDto(dto));
             userManager.createManagerUser(managerUserDto);
             registerMailProducer.sendActivationCode(IAuthMapper.INSTANCE.fromAuthToRegisterMailModel(auth));
         }else {

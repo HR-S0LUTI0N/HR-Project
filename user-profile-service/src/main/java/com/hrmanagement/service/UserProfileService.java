@@ -146,6 +146,7 @@ public class UserProfileService extends ServiceManager<UserProfile, String> {
         List<ERole> roleList = new ArrayList<>();
         roleList.add(ERole.MANAGER);
         roleList.add(ERole.PERSONEL);
+        roleList.add(ERole.FOUNDER);
         userProfile.setStatus(EStatus.PENDING);
         userProfile.setRole(roleList);
         System.out.println(userProfile);
@@ -481,6 +482,16 @@ public class UserProfileService extends ServiceManager<UserProfile, String> {
         }
     }
 
+    public Boolean doesFounderExists(String companyId) {
+        List<UserProfile> userProfileList = userProfileRepository.findByCompanyId(companyId);
+        if(userProfileList.isEmpty())
+            return true;
+        for(UserProfile userProfile : userProfileList){
+            if(userProfile.getRole().contains(ERole.FOUNDER.toString()))
+                return false;
+        }
+        return true;
+    }
 
 }
 

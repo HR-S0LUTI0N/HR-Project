@@ -21,7 +21,9 @@ public enum ErrorType {
     INVALID_ACTION(4900,"Kullanıcı istenilen statüye geçirilemedi.",HttpStatus.BAD_REQUEST),
     PASSWORD_DUPLICATE(5000,"Şifre son kullanılan şifreyle aynıdır.",HttpStatus.BAD_REQUEST),
     COMPANY_NOT_FOUND(5100, "Böyle bir şirket bulunamadı", HttpStatus.NOT_FOUND),
-    DUPLICATE_USER(5200, "Bu kullanıcı zaten kayıtlı", HttpStatus.BAD_REQUEST);
+    DUPLICATE_USER(5200, "Bu kullanıcı zaten kayıtlı", HttpStatus.BAD_REQUEST),
+    FOUNDER_EXIST_ERROR(5300,"Şirkete kayıtlı bir founder manager bulunmaktadır.", HttpStatus.BAD_REQUEST),
+    COMPANY_SUBSCRIPTION_EXIST(5400,"Company'nin subscription işlemleri önceden yapılmıştır", HttpStatus.BAD_REQUEST);
 
 
 

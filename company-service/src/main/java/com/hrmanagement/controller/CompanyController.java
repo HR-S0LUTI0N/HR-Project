@@ -93,6 +93,16 @@ public class CompanyController {
     ResponseEntity<CompanyNameAndWageDateRequestDto> getCompanyNameAndWageDateResponseDto(@PathVariable String companyId){
         return ResponseEntity.ok(companyService.getCompanyNameAndWageDateResponseDto(companyId));
     }
+    @Hidden
+    @PutMapping("/subscribe-company")
+    public ResponseEntity<Boolean> subscribeCompany(@RequestBody SubscribeCompanyResponseDto dto){
+        return ResponseEntity.ok(companyService.subscribeCompany(dto));
+    }
+    @Hidden
+    @GetMapping("/does-company-subscription-exist/{companyId}")
+    public ResponseEntity<Boolean> doesCompanySubscriptionExist(@PathVariable String companyId){
+        return ResponseEntity.ok(companyService.doesCompanySubscriptionExist(companyId));
+    }
 
 
 }
