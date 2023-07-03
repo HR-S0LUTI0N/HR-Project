@@ -86,9 +86,10 @@ public class AuthService extends ServiceManager<Auth,Long> {
             throw new AuthManagerException(ErrorType.COMPANY_NOT_FOUND);
         Boolean isFounderExists = userManager.doesFounderExists(dto.getCompanyId()).getBody();
         System.out.println(isFounderExists);
-        if(isFounderExists)
+        if(!isFounderExists)
             throw new AuthManagerException(ErrorType.FOUNDER_EXIST_ERROR);
         Boolean isSubscriptionExists = companyManager.doesCompanySubscriptionExist(dto.getCompanyId()).getBody();
+        System.out.println("Company Subscription" + isSubscriptionExists);
         if(!isSubscriptionExists)
             throw new AuthManagerException(ErrorType.COMPANY_SUBSCRIPTION_EXIST);
 
