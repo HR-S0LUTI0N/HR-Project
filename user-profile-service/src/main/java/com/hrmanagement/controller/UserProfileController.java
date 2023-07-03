@@ -166,4 +166,10 @@ public class UserProfileController {
     public ResponseEntity<Boolean> doesFounderExists(@PathVariable String companyId){
         return ResponseEntity.ok(userProfileService.doesFounderExists(companyId));
     }
+
+    @CrossOrigin(origins = "*", allowedHeaders = "*")
+    @PostMapping("/create-manager/{token}")
+    public ResponseEntity<Boolean> founderCreateManagerUserProfile(@PathVariable String token, @RequestBody @Valid CreateUserProfileRequestDto dto){
+        return ResponseEntity.ok(userProfileService.founderCreateManagerUserProfile(token,dto));
+    }
 }

@@ -1,6 +1,7 @@
 package com.hrmanagement.manager;
 
 import com.hrmanagement.dto.request.*;
+import org.apache.catalina.authenticator.SavedRequest;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -25,4 +26,7 @@ public interface IAuthManager {
     public Boolean updatePersonel(@RequestBody PersonelUpdateUserProfileToAuthRequestDto dto);
     @PutMapping("/password-change")
     public ResponseEntity<Boolean> passwordChange(@RequestBody ToAuthPasswordChangeDto dto);
-    }
+
+    @PostMapping("/founder-create-manager-userProfile")
+    public ResponseEntity<Long> founderCreateManagerUserProfile(@RequestBody AuthCreatePersonnelProfileRequestDto authDto);
+}

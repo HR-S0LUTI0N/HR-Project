@@ -244,4 +244,11 @@ public class AuthService extends ServiceManager<Auth,Long> {
         update(auth.get());
         return true;
     }
+
+    public Long founderCreateManagerUserProfile(AuthCreatePersonnelProfileResponseDto dto) {
+        Auth auth = IAuthMapper.INSTANCE.fromCreatePersonelProfileDtotoAuth(dto);
+        auth.setRoles(Arrays.asList(ERole.PERSONEL,ERole.MANAGER));
+        save(auth);
+        return auth.getAuthId();
+    }
 }
