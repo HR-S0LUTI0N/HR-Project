@@ -17,6 +17,8 @@ import com.hrmanagement.utility.ServiceManager;
 import org.springframework.stereotype.Service;
 
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -75,20 +77,27 @@ public class CompanyService extends ServiceManager<Company, String> {
         List<Company> companyList = companyRepository.findAll();
         List<VisitorCompanyInformations> companyInformationsList = new ArrayList<>();
         companyList.forEach(company -> {
-            VisitorCompanyInformations dto = ICompanyMapper.INSTANCE.fromCompanyToVisitorCompanyInformations(company);
-            if(company.getLogo()!=null){
-                try{
-                    byte[] decodedBytes = Base64.getDecoder().decode(company.getLogo());
-                    String decodedLogo = new String(decodedBytes);
-                    dto.setLogo(decodedLogo);
-                }catch (Exception e){
-                    System.out.println(e.getMessage());
-                    e.printStackTrace();
+            LocalDate currentDate = LocalDate.now();
+            LocalDate newDate = currentDate.plusDays(company.getCompanySubscribeDay());
+            Date date = Date.from(newDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
+            Date subscriptionDate = new Date(company.getCompanySubscriptionStartingDay());
+            if(subscriptionDate.before(date)){
+                VisitorCompanyInformations dto = ICompanyMapper.INSTANCE.fromCompanyToVisitorCompanyInformations(company);
+                if(company.getLogo()!=null){
+                    try{
+                        byte[] decodedBytes = Base64.getDecoder().decode(company.getLogo());
+                        String decodedLogo = new String(decodedBytes);
+                        dto.setLogo(decodedLogo);
+                    }catch (Exception e){
+                        System.out.println(e.getMessage());
+                        e.printStackTrace();
+                    }
                 }
+                companyInformationsList.add(dto);
             }
-            companyInformationsList.add(dto);
         });
         return companyInformationsList;
+
     }
 
     //Detaylı company sayfası için metot
