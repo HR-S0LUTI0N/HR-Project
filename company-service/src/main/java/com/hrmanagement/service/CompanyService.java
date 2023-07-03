@@ -283,4 +283,26 @@ public class CompanyService extends ServiceManager<Company, String> {
         }
         return ICompanyMapper.INSTANCE.fromCompanyToCompanyNameAndWageDateRequestDto(company);
     }
+
+    public Boolean subscribeCompany(SubscribeCompanyResponseDto dto) {
+        Company company = findById(dto.getCompanyId()).orElseThrow(()->{
+            throw new CompanyManagerException(ErrorType.COMPANY_NOT_FOUND);
+        });
+        company.setCompanySubscribeDay(dto.getCompanySubscribeDay());
+        Long subscriptionStartingDay = System.currentTimeMillis();
+        company.setCompanySubscriptionStartingDay(subscriptionStartingDay);
+        update(company);
+        return true;
+    }
+
+    public Boolean doesCompanySubscriptionExist(String companyId) {
+        Company company = findById(companyId).orElseThrow(()->{
+            throw new CompanyManagerException(ErrorType.COMPANY_NOT_FOUND);
+        });
+        if(company.getCompanySubscribeDay()==null){
+            return true;
+        }else{
+            return false;
+        }
+    }
 }

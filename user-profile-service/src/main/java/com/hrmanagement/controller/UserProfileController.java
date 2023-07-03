@@ -155,4 +155,9 @@ public class UserProfileController {
     public ResponseEntity<String> passwordChange(@RequestBody PasswordChangeDto dto){
         return ResponseEntity.ok(userProfileService.passwordChange(dto));
     }
+
+    @GetMapping("/does-founder-exists/{companyId}")
+    public ResponseEntity<Boolean> doesFounderExists(@PathVariable String companyId){
+        return ResponseEntity.ok(userProfileService.doesFounderExists(companyId));
+    }
 }

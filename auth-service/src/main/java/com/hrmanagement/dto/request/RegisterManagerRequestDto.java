@@ -34,4 +34,6 @@ public class RegisterManagerRequestDto {
     private String companyId;
     @NotNull
     private String department;
+    @NotNull
+    private Integer companySubscribeDay;
 }

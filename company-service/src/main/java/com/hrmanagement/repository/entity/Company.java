@@ -1,6 +1,7 @@
 package com.hrmanagement.repository.entity;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
@@ -38,5 +39,8 @@ public class Company extends Base{
     private String companyPhone;
     private String companyMail;
     private String wageDate;
+    @Builder.Default
+    private Integer companySubscribeDay = 0;
+    private Long companySubscriptionStartingDay;
 
 }
