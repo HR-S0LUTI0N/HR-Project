@@ -1,5 +1,5 @@
 package com.hrmanagement.repository.entity.enums;
 
 public enum EPermissionTypes {
-    HOLIDAY,ANNUALLEAVE,MATERNITYLEAVE
+    PREGNANCY, PATERNITY, ANNUAL, COMPASSIONATE, OTHER
 }

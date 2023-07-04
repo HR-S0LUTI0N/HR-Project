@@ -17,6 +17,7 @@ import com.hrmanagement.repository.entity.enums.ERole;
 import com.hrmanagement.repository.entity.enums.EStatus;
 import com.hrmanagement.utility.JwtTokenProvider;
 import com.hrmanagement.utility.ServiceManager;
+import org.apache.tomcat.jni.User;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -543,6 +544,13 @@ public class UserProfileService extends ServiceManager<UserProfile, String> {
             }
         }
         return null;
+    }
+
+    public UserProfile findByAuthId(Long authId) {
+        Optional<UserProfile> userProfile = userProfileRepository.findByAuthId(authId);
+        if (userProfile.isEmpty())
+            throw new UserProfileManagerException(ErrorType.USER_NOT_FOUND);
+        return userProfile.get();
     }
 }
 
