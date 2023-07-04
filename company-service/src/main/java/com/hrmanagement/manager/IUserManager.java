@@ -34,4 +34,9 @@ public interface IUserManager {
     @GetMapping("/get-userprofile-manager-dashboard/{authId}")
     ResponseEntity<UserProfileManagerDashboardResponseDto> getUserProfileManagerDashboard(@PathVariable Long authId);
 
+    @GetMapping("/find-user-companyId/{authId}")
+    ResponseEntity<String> findUserCompanyId(@PathVariable Long authId);
+
+    @GetMapping("/find-avatar/{userId}")
+    ResponseEntity<String> findAvatar(@PathVariable String userId);
 }

@@ -172,4 +172,16 @@ public class UserProfileController {
     public ResponseEntity<Boolean> founderCreateManagerUserProfile(@PathVariable String token, @RequestBody @Valid CreateUserProfileRequestDto dto){
         return ResponseEntity.ok(userProfileService.founderCreateManagerUserProfile(token,dto));
     }
+
+    @Hidden
+    @GetMapping("/find-user-companyId/{authId}")
+    ResponseEntity<String> findUserCompanyId(@PathVariable Long authId){
+        return ResponseEntity.ok(userProfileService.getCompanyId(authId));
+    }
+
+    @Hidden
+    @GetMapping("/find-avatar/{userId}")
+    ResponseEntity<String> findAvatar(@PathVariable String userId){
+        return ResponseEntity.ok(userProfileService.findAvatar(userId));
+    }
 }

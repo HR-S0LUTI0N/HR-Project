@@ -527,6 +527,23 @@ public class UserProfileService extends ServiceManager<UserProfile, String> {
         throw new UserProfileManagerException(ErrorType.USERNAME_DUPLICATE);
     }
 
+    public String findAvatar(String userId) {
+        UserProfile userProfile = findById(userId).orElseThrow(()->{
+            throw new UserProfileManagerException(ErrorType.USER_NOT_FOUND);
+        });
+        if(userProfile.getAvatar()!=null && userProfile.getAvatar()!=""){
+            try{
+                byte[] decodedBytes = Base64.getDecoder().decode(userProfile.getAvatar());
+                System.out.println(decodedBytes);
+                String decodedAvatar = new String(decodedBytes);
+                return decodedAvatar;
+            }catch (Exception e){
+                System.out.println(e.getMessage());
+                e.printStackTrace();
+            }
+        }
+        return null;
+    }
 }
 
 
