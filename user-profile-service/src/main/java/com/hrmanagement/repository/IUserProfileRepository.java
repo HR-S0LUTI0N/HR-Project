@@ -17,5 +17,4 @@ public interface IUserProfileRepository extends MongoRepository<UserProfile, Str
     Optional<UserProfile> findByEmail(String email);
     List<FindAllManagerResponseDto> findAllByStatusAndRole(EStatus status, ERole role);
     Integer countByCompanyId(String companyId);
-
 }

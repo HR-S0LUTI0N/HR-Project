@@ -34,7 +34,6 @@ public class Expense extends Base{
     private String taxZone;
     private String description;
     private String billPhoto;
-
     @Builder.Default
     private EExpenseStatus eExpenseStatus = EExpenseStatus.PENDING;
 
