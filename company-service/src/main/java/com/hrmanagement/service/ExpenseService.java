@@ -1,6 +1,7 @@
 package com.hrmanagement.service;
 
 
+import com.hrmanagement.dto.request.ChangeExpenseStatusRequestDto;
 import com.hrmanagement.dto.request.PersonelExpenseRequestDto;
 import com.hrmanagement.dto.response.CompanyExpenseListResponseDto;
 import com.hrmanagement.dto.response.UserProfileExpenseResponseDto;
@@ -12,6 +13,8 @@ import com.hrmanagement.mapper.IExpenseMapper;
 import com.hrmanagement.repository.IExpenseRepository;
 import com.hrmanagement.repository.entity.Comment;
 import com.hrmanagement.repository.entity.Expense;
+import com.hrmanagement.repository.entity.enums.ECommentStatus;
+import com.hrmanagement.repository.entity.enums.EExpenseStatus;
 import com.hrmanagement.repository.entity.enums.ERole;
 import com.hrmanagement.utility.JwtTokenProvider;
 import com.hrmanagement.utility.ServiceManager;
@@ -67,26 +70,59 @@ public class ExpenseService extends ServiceManager<Expense, String> {
             List<Expense> expenseList = expenseRepository.findAllByCompanyId(companyId);
             if(expenseList.isEmpty())
                 throw new CompanyManagerException(ErrorType.NO_EXPENSE_EXIST);
-            List<CompanyExpenseListResponseDto> dtoList = expenseList.stream().map(expense->{
-                CompanyExpenseListResponseDto dto = IExpenseMapper.INSTANCE.fromExpenseToCompanyExpenseListResponseDto(expense);
-                dto.setEExpenseStatus(expense.getEExpenseStatus());
-                String avatar = userManager.findAvatar(expense.getUserId()).getBody();
-                dto.setAvatar(avatar);
-                if(expense.getBillPhoto()!=null){
-                    try{
-                        byte[] decodedBytes = Base64.getDecoder().decode(expense.getBillPhoto());
-                        String decodedPhoto = new String(decodedBytes);
-                        dto.setRecipePhoto(decodedPhoto);
-                    }catch (Exception e){
-                        System.out.println(e.getMessage());
-                        e.printStackTrace();
+            List<CompanyExpenseListResponseDto> dtoList = expenseList.stream().filter(expense ->
+                expense.getEExpenseStatus().equals(EExpenseStatus.PENDING)
+                    ).map(expense->{
+                    CompanyExpenseListResponseDto dto = IExpenseMapper.INSTANCE.fromExpenseToCompanyExpenseListResponseDto(expense);
+                    dto.setEExpenseStatus(expense.getEExpenseStatus());
+                    String avatar = userManager.findAvatar(expense.getUserId()).getBody();
+                    dto.setAvatar(avatar);
+                    if(expense.getBillPhoto()!=null){
+                        try{
+                            byte[] decodedBytes = Base64.getDecoder().decode(expense.getBillPhoto());
+                            String decodedPhoto = new String(decodedBytes);
+                            dto.setRecipePhoto(decodedPhoto);
+                        }catch (Exception e){
+                            System.out.println(e.getMessage());
+                            e.printStackTrace();
+                        }
                     }
-                }
-                return dto;
+                    return dto;
+
             }
                     )
                     .collect(Collectors.toList());
             return dtoList;
+        }
+        throw new CompanyManagerException(ErrorType.NO_AUTHORIZATION);
+    }
+
+    public Boolean changeExpenseStatus(String token, ChangeExpenseStatusRequestDto dto){
+        List<String> roles = jwtTokenProvider.getRoleFromToken(token);
+        if (roles.isEmpty())
+            throw new CompanyManagerException(ErrorType.INVALID_TOKEN);
+        Long authId = jwtTokenProvider.getIdFromToken(token).orElseThrow(()->{
+            throw new CompanyManagerException(ErrorType.NO_EXPENSE_EXIST);
+        });
+        UserProfileExpenseResponseDto userProfileExpenseResponseDto = userManager.getUserProfileExpenseInformation(authId).getBody();
+        if (roles.contains(ERole.MANAGER.toString())) {
+            System.out.println(userProfileExpenseResponseDto);
+            System.out.println(dto);
+            Expense expense = expenseRepository.findByCompanyIdAndExpenseId(userProfileExpenseResponseDto.getCompanyId(),dto.getExpenseId())
+                    .orElseThrow(() -> {
+                throw new CompanyManagerException(ErrorType.NO_EXPENSE_EXIST);
+            });
+            System.out.println(expense);
+            if (expense.getEExpenseStatus() == EExpenseStatus.PENDING) {
+                if (dto.getAction()) {
+                    expense.setEExpenseStatus(EExpenseStatus.ACTIVE);
+                } else {
+                    expense.setEExpenseStatus(EExpenseStatus.DECLINED);
+                }
+                update(expense);
+                return true;
+            }
+            throw new CompanyManagerException(ErrorType.EXPENSE_NOT_PENDING);
         }
         throw new CompanyManagerException(ErrorType.NO_AUTHORIZATION);
     }
