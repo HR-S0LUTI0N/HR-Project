@@ -1,5 +1,6 @@
 package com.hrmanagement.controller;
 
+import com.hrmanagement.dto.request.ChangeExpenseStatusRequestDto;
 import com.hrmanagement.dto.request.PersonelExpenseRequestDto;
 import com.hrmanagement.dto.response.CompanyExpenseListResponseDto;
 import com.hrmanagement.service.ExpenseService;
@@ -29,6 +30,12 @@ public class ExpenseController {
     @GetMapping("/find-all-company-expense-list/{token}")
     public ResponseEntity<List<CompanyExpenseListResponseDto>> findAllCompanyExpenseList(@PathVariable String token){
         return ResponseEntity.ok(expenseService.findAllCompanyExpenseList(token));
+    }
+
+    @CrossOrigin(origins = "*", allowedHeaders = "*")
+    @PutMapping("/change-expense-status/{token}")
+    public ResponseEntity<Boolean> changeExpenseStatus(@PathVariable String token, @RequestBody ChangeExpenseStatusRequestDto dto){
+        return ResponseEntity.ok(expenseService.changeExpenseStatus(token,dto));
     }
 
 }

@@ -17,8 +17,8 @@ public enum ErrorType {
     COMPANY_ALREADY_EXIST(5200,"Bu şirket veritabanında zaten kayıtlı", HttpStatus.BAD_REQUEST),
     COMMENT_NOT_FOUND(5300,"Bu şirkete ait bir yorum bulunamadı.", HttpStatus.NOT_FOUND),
     COMMENT_NOT_PENDING(5400,"Comment Pending durumda değildir.", HttpStatus.BAD_REQUEST),
-    NO_EXPENSE_EXIST(5500,"Bu şirkete ait bir expense bulunmamaktadır.",HttpStatus.NOT_FOUND);
-
+    NO_EXPENSE_EXIST(5500,"Bu şirkete ait bir expense bulunmamaktadır.",HttpStatus.NOT_FOUND),
+    EXPENSE_NOT_PENDING(5600,"İlgili expense'in durumu pending değildir.",HttpStatus.BAD_REQUEST);
 
 
 
