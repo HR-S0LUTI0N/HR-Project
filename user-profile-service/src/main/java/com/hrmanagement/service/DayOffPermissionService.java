@@ -1,5 +1,6 @@
 package com.hrmanagement.service;
 
+import com.hrmanagement.dto.request.ActionDayOffPermissionDto;
 import com.hrmanagement.dto.request.TakeDayOffPermissionRequestDto;
 import com.hrmanagement.exception.ErrorType;
 import com.hrmanagement.exception.UserProfileManagerException;
@@ -47,8 +48,12 @@ public class DayOffPermissionService extends ServiceManager<DayOffPermission, St
             long differentOfTime = endPermissionDate.getTime() - startPermissionDate.getTime();
             long dayOfPermission = (differentOfTime / (1000 * 60 * 60 * 24)) % 365;
             System.out.println("İzin gün sayısı " + dayOfPermission);
-
-            if (userProfile.getEmployeeLeaves() > dayOfPermission) {
+            List<DayOffPermission> pendingDayOffPermissionList = dayOffPermissionRepository.findByUserIdAndStatus(userProfile.getUserId(), EStatus.PENDING.toString());
+            int pendingDates = 0;
+            for (DayOffPermission x : pendingDayOffPermissionList) {
+                pendingDates += x.getPermissionDates().size();
+            }
+            if (userProfile.getEmployeeLeaves() > dayOfPermission + pendingDates) {
                 List<String> dateList = getDatesBetween(startPermissionDate, endPermissionDate, dateFormat);
                 for (String date : dateList) {
                     System.out.println(date);
@@ -60,7 +65,7 @@ public class DayOffPermissionService extends ServiceManager<DayOffPermission, St
                 save(dayOffPermission);
                 return dayOffPermission;
             } else {
-                throw new RuntimeException("Mevcut izin gün sayınızdan fazla izin talep edemezsiniz");
+                throw new RuntimeException("Mevcut izin gün sayınızdan fazla izin talep edemezsiniz veya bekleyen izin günleriniz bulunmaktadır!!");
             }
         } else {
             throw new RuntimeException("ROlü personel değil");
@@ -78,5 +83,37 @@ public class DayOffPermissionService extends ServiceManager<DayOffPermission, St
             calendar.add(Calendar.DATE, 1);
         }
         return dateList;
+    }
+
+    public Boolean actionDayOffPermission(String token, ActionDayOffPermissionDto dto) {
+        List<String> roles = jwtTokenProvider.getRoleFromToken(token);
+        if (roles.contains(ERole.MANAGER.toString())) {
+            DayOffPermission dayOffPermission = findById(dto.getPermissionId()).orElseThrow(() -> {
+                throw new RuntimeException("İzin bulunamadı");
+            });
+            if (dayOffPermission.getStatus() == EStatus.PENDING) {
+                if (dto.getAction()) {
+                    dayOffPermission.setStatus(EStatus.ACTIVE);
+                    int givenPermissionsDate = dayOffPermission.getPermissionDates().size();
+                    Optional<UserProfile> userProfile = userProfileService.findById(dayOffPermission.getUserId());
+                    int totalEmployeeLeaves = userProfile.get().getEmployeeLeaves();
+                    totalEmployeeLeaves -= givenPermissionsDate;
+                    userProfile.get().setEmployeeLeaves(totalEmployeeLeaves);
+                    userProfileService.update(userProfile.get());
+                } else {
+                    dayOffPermission.setStatus(EStatus.DELETED);
+                }
+                update(dayOffPermission);
+                return true;
+            }
+            throw new RuntimeException("İzin durumu Pending değil");
+        }
+        throw new UserProfileManagerException(ErrorType.AUTHORIZATION_ERROR);
+    }
+
+    public List<DayOffPermission> findAllPendingDayOffPermission() {
+        List<DayOffPermission> dayOffPermissionList = dayOffPermissionRepository.findAllByStatus(EStatus.PENDING.toString());
+        System.out.println(dayOffPermissionList);
+        return dayOffPermissionList;
     }
 }
