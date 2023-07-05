@@ -39,8 +39,6 @@ public class Company extends Base{
     private String companyPhone;
     private String companyMail;
     private String wageDate;
-    @Builder.Default
-    private Integer companySubscribeDay = 0;
-    private Long companySubscriptionStartingDay;
+    private Long subscriptionExpirationDate;
 
 }

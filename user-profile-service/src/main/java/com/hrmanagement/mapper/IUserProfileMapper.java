@@ -3,6 +3,7 @@ package com.hrmanagement.mapper;
 import com.hrmanagement.dto.request.*;
 import com.hrmanagement.dto.response.*;
 import com.hrmanagement.rabbitmq.model.PersonnelPasswordModel;
+import com.hrmanagement.repository.entity.DayOffPermission;
 import com.hrmanagement.repository.entity.UserProfile;
 import org.mapstruct.*;
 import org.mapstruct.factory.Mappers;
@@ -54,4 +55,8 @@ public interface IUserProfileMapper {
     UserProfileSendingInfosResponseDto companyInfosToUserProfileSendingInfosResponseDto(final AllCompanyInfosForUserProfileResponseDto dto);
     PersonelUpdateUserProfileToAuthRequestDto fromPersonelUpdateRequestDtoToPersonelUpdateUserProfileToAuthRequestDto (final PersonelUpdateRequestDto dto);
     ToAuthPasswordChangeDto fromUserProfileToAuthPasswordChangeDto(final UserProfile userProfile);
+
+
+    DayOffPermission fromTakeDayOffPermissionRequestDtoToDayOffPermission(final TakeDayOffPermissionRequestDto dto);
+
 }

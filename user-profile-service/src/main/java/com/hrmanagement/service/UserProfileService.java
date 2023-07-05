@@ -17,6 +17,7 @@ import com.hrmanagement.repository.entity.enums.ERole;
 import com.hrmanagement.repository.entity.enums.EStatus;
 import com.hrmanagement.utility.JwtTokenProvider;
 import com.hrmanagement.utility.ServiceManager;
+import org.apache.tomcat.jni.User;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -503,6 +504,67 @@ public class UserProfileService extends ServiceManager<UserProfile, String> {
 
         }
 
+
+
+    public Boolean founderCreateManagerUserProfile(String token, CreateUserProfileRequestDto dto){
+        Optional<UserProfile> optionalUserProfile = userProfileRepository.findByEmail(dto.getEmail());
+        if(optionalUserProfile.isEmpty()) {
+            List<String> role = jwtTokenProvider.getRoleFromToken(token);
+            Long founderAuthId = jwtTokenProvider.getIdFromToken(token).orElseThrow(()-> {throw new UserProfileManagerException(ErrorType.USER_NOT_FOUND);});
+            Optional<UserProfile> managerProfile = userProfileRepository.findByAuthId(founderAuthId);
+            if(managerProfile.isEmpty())
+                throw new UserProfileManagerException(ErrorType.USER_NOT_FOUND);
+            if (role.contains(ERole.FOUNDER.toString())) {
+                UserProfile userProfile = IUserProfileMapper.INSTANCE.fromCreateUserProfileRequestDtoToUserProfile(dto);
+                if(dto.getBase64Avatar()!=null){
+                    String encodedAvatar = Base64.getEncoder().encodeToString(dto.getBase64Avatar().getBytes());
+                    userProfile.setAvatar(encodedAvatar);
+                }
+                String newPassword = UUID.randomUUID().toString();
+                userProfile.setPassword(passwordEncoder.encode(newPassword));
+                userProfile.setRole(Arrays.asList(ERole.PERSONEL,ERole.MANAGER));
+                userProfile.setStatus(EStatus.ACTIVE);
+                userProfile.setCompanyId(managerProfile.get().getCompanyId());
+                AuthCreatePersonnelProfileRequestDto authDto = IUserProfileMapper.INSTANCE.fromUserProfileToAuthCreatePersonelProfileRequestDto(userProfile);
+                Long personnelAuthId = authManager.founderCreateManagerUserProfile(authDto).getBody();
+                userProfile.setAuthId(personnelAuthId);
+                System.out.println(userProfile);
+                save(userProfile);
+                PersonnelPasswordModel personnelPasswordModel = IUserProfileMapper.INSTANCE.fromUserProfileToPersonnelPasswordModel(userProfile);
+                personnelPasswordModel.setPassword(newPassword);
+                personelPasswordProducer.sendPersonnelPassword(personnelPasswordModel);
+                return true;
+            }
+            throw new UserProfileManagerException(ErrorType.AUTHORIZATION_ERROR);
+        }
+        throw new UserProfileManagerException(ErrorType.USERNAME_DUPLICATE);
+    }
+
+    public String findAvatar(String userId) {
+        UserProfile userProfile = findById(userId).orElseThrow(()->{
+            throw new UserProfileManagerException(ErrorType.USER_NOT_FOUND);
+        });
+        if(userProfile.getAvatar()!=null && userProfile.getAvatar()!=""){
+            try{
+                byte[] decodedBytes = Base64.getDecoder().decode(userProfile.getAvatar());
+                System.out.println(decodedBytes);
+                String decodedAvatar = new String(decodedBytes);
+                return decodedAvatar;
+            }catch (Exception e){
+                System.out.println(e.getMessage());
+                e.printStackTrace();
+            }
+        }
+        return null;
+    }
+
+    public UserProfile findByAuthId(Long authId) {
+        Optional<UserProfile> userProfile = userProfileRepository.findByAuthId(authId);
+        if (userProfile.isEmpty())
+            throw new UserProfileManagerException(ErrorType.USER_NOT_FOUND);
+        return userProfile.get();
+    }
+}
 
 
 

@@ -108,4 +108,10 @@ public class AuthController {
     public ResponseEntity<Boolean> passwordChange(@RequestBody ToAuthPasswordChangeDto dto){
         return ResponseEntity.ok(authService.passwordChange(dto));
     }
+
+    @Hidden
+    @PostMapping("/founder-create-manager-userProfile")
+    public ResponseEntity<Long> founderCreateManagerUserProfile(@RequestBody AuthCreatePersonnelProfileResponseDto dto){
+        return ResponseEntity.ok(authService.founderCreateManagerUserProfile(dto));
+    }
 }

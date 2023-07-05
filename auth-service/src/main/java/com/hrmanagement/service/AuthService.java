@@ -86,9 +86,10 @@ public class AuthService extends ServiceManager<Auth,Long> {
             throw new AuthManagerException(ErrorType.COMPANY_NOT_FOUND);
         Boolean isFounderExists = userManager.doesFounderExists(dto.getCompanyId()).getBody();
         System.out.println(isFounderExists);
-        if(isFounderExists)
+        if(!isFounderExists)
             throw new AuthManagerException(ErrorType.FOUNDER_EXIST_ERROR);
         Boolean isSubscriptionExists = companyManager.doesCompanySubscriptionExist(dto.getCompanyId()).getBody();
+        System.out.println("Company Subscription" + isSubscriptionExists);
         if(!isSubscriptionExists)
             throw new AuthManagerException(ErrorType.COMPANY_SUBSCRIPTION_EXIST);
 
@@ -113,18 +114,22 @@ public class AuthService extends ServiceManager<Auth,Long> {
 
     public LoginResponseDto login(LoginRequestDto dto){
         Optional<Auth> auth=authRepository.findOptionalByEmail(dto.getEmail());
+        System.out.println("Bilmiyorum");
+        System.out.println(auth);
         if(auth.isEmpty()||!passwordEncoder.matches(dto.getPassword(), auth.get().getPassword())){
             throw new AuthManagerException(ErrorType.LOGIN_ERROR);
         }
+        System.out.println("Biliyorum");
         if(!auth.get().getStatus().equals(EStatus.ACTIVE)){
             throw new AuthManagerException(ErrorType.ACTIVATE_CODE_ERROR);
         }
         List<String> roleList = auth.get().getRoles().stream().map(x -> x.toString()).collect(Collectors.toList());
-
+        System.out.println(roleList);
         String token = jwtTokenProvider.createToken(auth.get().getAuthId(),roleList)
                 .orElseThrow(()->{
                     throw new AuthManagerException(ErrorType.TOKEN_NOT_CREATED);
                 });
+        System.out.println(token);
         return LoginResponseDto.builder().roles(roleList).token(token).build();
     }
 
@@ -238,5 +243,12 @@ public class AuthService extends ServiceManager<Auth,Long> {
         auth.get().setPassword(dto.getPassword());
         update(auth.get());
         return true;
+    }
+
+    public Long founderCreateManagerUserProfile(AuthCreatePersonnelProfileResponseDto dto) {
+        Auth auth = IAuthMapper.INSTANCE.fromCreatePersonelProfileDtotoAuth(dto);
+        auth.setRoles(Arrays.asList(ERole.PERSONEL,ERole.MANAGER));
+        save(auth);
+        return auth.getAuthId();
     }
 }

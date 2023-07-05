@@ -30,11 +30,10 @@ public class Expense extends Base{
     private String paymentMethod;
     private Double amount;
     private Double netAmount;
-    private Double Tax;
+    private Double tax;
     private String taxZone;
     private String description;
     private String billPhoto;
-
     @Builder.Default
     private EExpenseStatus eExpenseStatus = EExpenseStatus.PENDING;
 

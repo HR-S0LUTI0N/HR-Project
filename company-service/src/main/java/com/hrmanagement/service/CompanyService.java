@@ -17,6 +17,8 @@ import com.hrmanagement.utility.ServiceManager;
 import org.springframework.stereotype.Service;
 
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -75,20 +77,30 @@ public class CompanyService extends ServiceManager<Company, String> {
         List<Company> companyList = companyRepository.findAll();
         List<VisitorCompanyInformations> companyInformationsList = new ArrayList<>();
         companyList.forEach(company -> {
-            VisitorCompanyInformations dto = ICompanyMapper.INSTANCE.fromCompanyToVisitorCompanyInformations(company);
-            if(company.getLogo()!=null){
-                try{
-                    byte[] decodedBytes = Base64.getDecoder().decode(company.getLogo());
-                    String decodedLogo = new String(decodedBytes);
-                    dto.setLogo(decodedLogo);
-                }catch (Exception e){
-                    System.out.println(e.getMessage());
-                    e.printStackTrace();
-                }
+            if(company.getSubscriptionExpirationDate()!=null){
+                Long currentTime = System.currentTimeMillis();
+                Date currentDate = new Date(currentTime);
+                Date expirationDate = new Date(company.getSubscriptionExpirationDate());
+                System.out.println(currentDate);
+                System.out.println(expirationDate);
+                    if(currentDate.before(expirationDate)){
+                        VisitorCompanyInformations dto = ICompanyMapper.INSTANCE.fromCompanyToVisitorCompanyInformations(company);
+                        if(company.getLogo()!=null){
+                            try{
+                                byte[] decodedBytes = Base64.getDecoder().decode(company.getLogo());
+                                String decodedLogo = new String(decodedBytes);
+                                dto.setLogo(decodedLogo);
+                            }catch (Exception e){
+                                System.out.println(e.getMessage());
+                                e.printStackTrace();
+                            }
+                        }
+                        companyInformationsList.add(dto);
+                    }
             }
-            companyInformationsList.add(dto);
         });
         return companyInformationsList;
+
     }
 
     //Detaylı company sayfası için metot
@@ -288,18 +300,21 @@ public class CompanyService extends ServiceManager<Company, String> {
         Company company = findById(dto.getCompanyId()).orElseThrow(()->{
             throw new CompanyManagerException(ErrorType.COMPANY_NOT_FOUND);
         });
-        company.setCompanySubscribeDay(dto.getCompanySubscribeDay());
-        Long subscriptionStartingDay = System.currentTimeMillis();
-        company.setCompanySubscriptionStartingDay(subscriptionStartingDay);
+        LocalDate currentDate = LocalDate.now();
+        LocalDate newDate = currentDate.plusDays(dto.getCompanySubscribeDay());
+        Date date = Date.from(newDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
+        Long subscriptionExpirationDate = date.getTime();
+        company.setSubscriptionExpirationDate(subscriptionExpirationDate);
         update(company);
         return true;
     }
+
 
     public Boolean doesCompanySubscriptionExist(String companyId) {
         Company company = findById(companyId).orElseThrow(()->{
             throw new CompanyManagerException(ErrorType.COMPANY_NOT_FOUND);
         });
-        if(company.getCompanySubscribeDay()==null){
+        if(company.getSubscriptionExpirationDate()==null){
             return true;
         }else{
             return false;

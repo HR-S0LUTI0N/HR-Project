@@ -20,8 +20,8 @@ public class PersonelExpenseRequestDto {
     private String paymentMethod;
     private Double amount;
     private Double netAmount;
-    private Double Tax;
+    private Double tax;
     private String taxZone;
     private String description;
-    private String billPhoto;
+    private String base64Bill;
 }

@@ -2,6 +2,7 @@ package com.hrmanagement.mapper;
 
 
 import com.hrmanagement.dto.request.PersonelExpenseRequestDto;
+import com.hrmanagement.dto.response.CompanyExpenseListResponseDto;
 import com.hrmanagement.dto.response.UserProfileExpenseResponseDto;
 import com.hrmanagement.repository.entity.Expense;
 import org.mapstruct.Mapper;
@@ -17,4 +18,6 @@ public interface IExpenseMapper {
     Expense fromUserProfileExpenseResponseDtoToExpense(final UserProfileExpenseResponseDto dto);
 
     Expense fromPersonelExpenseRequestDtoToExpense(final PersonelExpenseRequestDto dto);
+
+    CompanyExpenseListResponseDto fromExpenseToCompanyExpenseListResponseDto(final Expense expense);
 }
