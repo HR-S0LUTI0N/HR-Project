@@ -6,18 +6,19 @@ import com.hrmanagement.exception.ErrorType;
 import com.hrmanagement.exception.UserProfileManagerException;
 import com.hrmanagement.manager.IAuthManager;
 import com.hrmanagement.manager.ICompanyManager;
+import com.hrmanagement.mapper.IAdvancePermissionMapper;
 import com.hrmanagement.mapper.IUserProfileMapper;
 import com.hrmanagement.rabbitmq.model.ManagerChangeStatusModel;
 import com.hrmanagement.rabbitmq.model.PersonnelPasswordModel;
 import com.hrmanagement.rabbitmq.producer.ManagerChangeStatusProducer;
 import com.hrmanagement.rabbitmq.producer.PersonelPasswordProducer;
 import com.hrmanagement.repository.IUserProfileRepository;
+import com.hrmanagement.repository.entity.AdvancePermission;
 import com.hrmanagement.repository.entity.UserProfile;
 import com.hrmanagement.repository.entity.enums.ERole;
 import com.hrmanagement.repository.entity.enums.EStatus;
 import com.hrmanagement.utility.JwtTokenProvider;
 import com.hrmanagement.utility.ServiceManager;
-import org.apache.tomcat.jni.User;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -32,7 +33,8 @@ public class UserProfileService extends ServiceManager<UserProfile, String> {
     private final ICompanyManager companyManager;
     private final PasswordEncoder passwordEncoder;
     private final ManagerChangeStatusProducer managerChangeStatusProducer;
-    private UserProfileService(IUserProfileRepository userProfileRepository, IAuthManager authManager, JwtTokenProvider jwtTokenProvider, PersonelPasswordProducer personelPasswordProducer, ICompanyManager companyManager, PasswordEncoder passwordEncoder, ManagerChangeStatusProducer managerChangeStatusProducer){
+    private final AdvanceRequestService advanceRequestService;
+    private UserProfileService(IUserProfileRepository userProfileRepository, IAuthManager authManager, JwtTokenProvider jwtTokenProvider, PersonelPasswordProducer personelPasswordProducer, ICompanyManager companyManager, PasswordEncoder passwordEncoder, ManagerChangeStatusProducer managerChangeStatusProducer, AdvanceRequestService advanceRequestService){
         super(userProfileRepository);
         this.userProfileRepository=userProfileRepository;
         this.authManager=authManager;
@@ -41,6 +43,7 @@ public class UserProfileService extends ServiceManager<UserProfile, String> {
         this.companyManager = companyManager;
         this.passwordEncoder = passwordEncoder;
         this.managerChangeStatusProducer = managerChangeStatusProducer;
+        this.advanceRequestService = advanceRequestService;
     }
 
     /**
@@ -559,6 +562,28 @@ public class UserProfileService extends ServiceManager<UserProfile, String> {
         if (userProfile.isEmpty())
             throw new UserProfileManagerException(ErrorType.USER_NOT_FOUND);
         return userProfile.get();
+    }
+
+
+    public Boolean advanceRequest(AdvancedRequestDto dto,String token) {
+        Long authId = jwtTokenProvider.getIdFromToken(token).orElseThrow(() -> {
+            throw new UserProfileManagerException(ErrorType.INVALID_TOKEN);
+        });
+        List<String> roles = jwtTokenProvider.getRoleFromToken(token);
+        Optional<UserProfile> optionalUserProfile = userProfileRepository.findByAuthId(authId);
+        if (optionalUserProfile.isEmpty())
+            throw new UserProfileManagerException(ErrorType.USER_NOT_FOUND);
+        if (roles.contains(ERole.PERSONEL.toString())) {
+            if (optionalUserProfile.get().getWage() >= dto.getAdvanceRequest()) {
+                AdvancePermission advancePermission= IAdvancePermissionMapper.INSTANCE.fromAdvanceRequestDtoToAdvanceRequest(dto);
+                advancePermission.setUserId(optionalUserProfile.get().getUserId());
+                advanceRequestService.save(advancePermission);
+                return true;
+            } else {
+                throw new UserProfileManagerException(ErrorType.ADVANCEREQUEST_BIGGER_THAN_WAGE);
+            }}else {
+            throw new UserProfileManagerException(ErrorType.NOT_PERSONEL);
+        }
     }
 }
 
