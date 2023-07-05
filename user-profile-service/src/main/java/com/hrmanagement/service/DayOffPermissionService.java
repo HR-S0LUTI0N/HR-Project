@@ -2,6 +2,7 @@ package com.hrmanagement.service;
 
 import com.hrmanagement.dto.request.ActionDayOffPermissionDto;
 import com.hrmanagement.dto.request.TakeDayOffPermissionRequestDto;
+import com.hrmanagement.dto.response.FindAllPendingDayOfPermissionResponseDto;
 import com.hrmanagement.exception.ErrorType;
 import com.hrmanagement.exception.UserProfileManagerException;
 import com.hrmanagement.mapper.IUserProfileMapper;
@@ -112,15 +113,37 @@ public class DayOffPermissionService extends ServiceManager<DayOffPermission, St
         throw new UserProfileManagerException(ErrorType.AUTHORIZATION_ERROR);
     }
 
-    public List<DayOffPermission> findAllPendingDayOffPermission(String token) {
+    public List<FindAllPendingDayOfPermissionResponseDto> findAllPendingDayOffPermission(String token) {
         Optional<Long> authId = jwtTokenProvider.getIdFromToken(token);
         if (authId.isEmpty())
             throw new UserProfileManagerException(ErrorType.INVALID_TOKEN);
         UserProfile userProfile = userProfileService.findByAuthId(authId.get());
         if (userProfile.getRole().contains(ERole.MANAGER)) {
             List<DayOffPermission> dayOffPermissionList = dayOffPermissionRepository.findAllByStatusAndCompanyId(EStatus.PENDING.toString(), userProfile.getCompanyId());
-            System.out.println(dayOffPermissionList);
-            return dayOffPermissionList;
+            List<FindAllPendingDayOfPermissionResponseDto> findAllPendingDayOfPermissionResponseDtos = dayOffPermissionList.stream().map(x -> {
+                FindAllPendingDayOfPermissionResponseDto dto = IUserProfileMapper.INSTANCE.fromToFindAllPendingDayOfPermissionResponseDtoToDayOffPermission(x);
+                UserProfile userProfile1 = userProfileService.findById(x.getUserId()).orElseThrow(() -> {
+                    throw new RuntimeException("Personel yok");
+                });
+                dto.setPermissionId(x.getPermissionId());
+                dto.setName(userProfile1.getName());
+                dto.setMiddleName(userProfile1.getMiddleName());
+                dto.setSurname(userProfile1.getSurname());
+                dto.setPermissionStatus(x.getStatus());
+                dto.setDayOffPermission(x.getPermissionDates().size());
+                if(userProfile1.getAvatar() != null) {
+                    try {
+                        byte[] decodedBytes = Base64.getDecoder().decode(userProfile1.getAvatar());
+                        String decodedPhoto = new String(decodedBytes);
+                        dto.setAvatar(decodedPhoto);
+                    } catch (Exception e) {
+                        System.out.println(e.getMessage());
+                        e.printStackTrace();
+                    }
+                }
+                return dto;
+            }).collect(Collectors.toList());
+            return findAllPendingDayOfPermissionResponseDtos;
         }
         throw new RuntimeException("Manager değilsin.");
     }

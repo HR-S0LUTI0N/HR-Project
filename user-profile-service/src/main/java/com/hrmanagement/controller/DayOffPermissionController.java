@@ -2,6 +2,7 @@ package com.hrmanagement.controller;
 
 import com.hrmanagement.dto.request.ActionDayOffPermissionDto;
 import com.hrmanagement.dto.request.TakeDayOffPermissionRequestDto;
+import com.hrmanagement.dto.response.FindAllPendingDayOfPermissionResponseDto;
 import com.hrmanagement.repository.entity.DayOffPermission;
 import com.hrmanagement.service.DayOffPermissionService;
 import lombok.RequiredArgsConstructor;
@@ -31,7 +32,7 @@ public class DayOffPermissionController {
 
     @GetMapping("/find-all-pending-day-off-permissions/{token}")
     @CrossOrigin(origins = "*", allowedHeaders = "*")
-    public ResponseEntity<List<DayOffPermission>> findAllPendingDayOffPermission(@PathVariable String token) {
+    public ResponseEntity<List<FindAllPendingDayOfPermissionResponseDto>> findAllPendingDayOffPermission(@PathVariable String token) {
         return ResponseEntity.ok(dayOffPermissionService.findAllPendingDayOffPermission(token));
     }
 }
