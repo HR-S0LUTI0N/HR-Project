@@ -207,6 +207,11 @@ public class UserProfileController {
     public ResponseEntity<List<FindAllAdvanceRequestListResponseDto>> findAllAdvanceRequestList(@PathVariable String token){
         return ResponseEntity.ok(userProfileService.findAllAdvanceRequestList(token));
     }
+    @CrossOrigin(origins = "*", allowedHeaders = "*")
+    @PutMapping("/change-advance-status/{token}")
+    public ResponseEntity<Boolean> changeAdvanceStatus(@PathVariable String token,@RequestBody ChangeAdvanceStatusRequestDto dto){
+        return ResponseEntity.ok(userProfileService.changeAdvanceStatus(token,dto));
+    }
 
 
 

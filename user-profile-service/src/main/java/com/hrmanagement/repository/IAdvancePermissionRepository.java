@@ -14,5 +14,6 @@ public interface IAdvancePermissionRepository extends MongoRepository<AdvancePer
     Optional<AdvancePermission> findByUserId(String userId);
 
     List<AdvancePermission> findAllByStatusAndCompanyId(EAdvanceStatus status, String companyId);
+    Optional<AdvancePermission> findByAdvancedPermissionIdAndCompanyId(String advancePermissionId,String companyId);
 
 }

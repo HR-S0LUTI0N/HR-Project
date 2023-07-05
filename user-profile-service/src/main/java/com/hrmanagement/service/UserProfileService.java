@@ -630,6 +630,34 @@ public class UserProfileService extends ServiceManager<UserProfile, String> {
         throw new UserProfileManagerException(ErrorType.AUTHORIZATION_ERROR);
     }
 
+    public Boolean changeAdvanceStatus(String token, ChangeAdvanceStatusRequestDto dto){
+        System.out.println(dto);
+        List<String> roles = jwtTokenProvider.getRoleFromToken(token);
+        if (roles.isEmpty())
+            throw new UserProfileManagerException(ErrorType.INVALID_TOKEN);
+        Long authId = jwtTokenProvider.getIdFromToken(token).orElseThrow(()->{
+            throw new UserProfileManagerException(ErrorType.ADVANCE_NOT_FOUND);
+        });
+        UserProfile userProfile = findByAuthId(authId);
+        if (roles.contains(ERole.MANAGER.toString())) {
+            AdvancePermission advance = advanceRequestService.findByAdvancedPermissionIdAndCompanyId(dto.getAdvancedPermissionId(),userProfile.getCompanyId())
+                    .orElseThrow(() -> {
+                        throw new UserProfileManagerException(ErrorType.ADVANCE_NOT_FOUND);
+                    });
+            if (advance.getStatus() == EAdvanceStatus.PENDING) {
+                if (dto.getAction()) {
+                    advance.setStatus(EAdvanceStatus.ACTIVE);
+                } else {
+                    advance.setStatus(EAdvanceStatus.DECLINED);
+                }
+                System.out.println("1");
+                advanceRequestService.update(advance);
+                return true;
+            }
+            throw new UserProfileManagerException(ErrorType.ADVANCE_NOT_PENDING);
+        }
+        throw new UserProfileManagerException(ErrorType.AUTHORIZATION_ERROR);
+    }
 
 
 }
