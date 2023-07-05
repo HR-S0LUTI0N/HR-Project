@@ -56,5 +56,7 @@ public interface IUserProfileMapper {
     PersonelUpdateUserProfileToAuthRequestDto fromPersonelUpdateRequestDtoToPersonelUpdateUserProfileToAuthRequestDto (final PersonelUpdateRequestDto dto);
     ToAuthPasswordChangeDto fromUserProfileToAuthPasswordChangeDto(final UserProfile userProfile);
 
+
     DayOffPermission fromTakeDayOffPermissionRequestDtoToDayOffPermission(final TakeDayOffPermissionRequestDto dto);
+
 }

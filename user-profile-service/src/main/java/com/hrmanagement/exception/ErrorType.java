@@ -22,7 +22,10 @@ public enum ErrorType {
     INVALID_ACTION(5000,"Kullanıcı istenilen statüye geçirilemedi.",HttpStatus.BAD_REQUEST),
     USER_ALREADY_DELETED(5200,"Kullanıcı zaten silinmiştir.",HttpStatus.BAD_REQUEST),
     DIFFERENT_COMPANY(5300,"Personel başka bir şirkette çalışmaktadır." , HttpStatus.BAD_REQUEST),
-    NOT_PERSONEL(5400,"Bu işlemi yapabilmek için personel olmanız gerekmektedir.",HttpStatus.NOT_FOUND);
+    NOT_PERSONEL(5400,"Bu işlemi yapabilmek için personel olmanız gerekmektedir.",HttpStatus.NOT_FOUND),
+    ADVANCEREQUEST_BIGGER_THAN_WAGE(5500,"İstediğiniz avans maaşınızdan yüksek!!",HttpStatus.NOT_FOUND),
+    REMAININGMONEY_LESSERTHANZERO(5600,"Bu ay avans alma kotanızı doldurdunuz!!",HttpStatus.NOT_FOUND),
+    INVALID_WAGEDATE(5700,"Maaş alma günü geçersiz.",HttpStatus.NOT_FOUND);
     private int code;
     private String message;
     HttpStatus httpStatus;

@@ -430,7 +430,6 @@ public class UserProfileService extends ServiceManager<UserProfile, String> {
         return dto;
     }
     public Boolean updatePersonelAdress(PersonelAddressUpdateRequestDto personelUpdateRequestDto) {
-        System.out.println("updatePersonelAdress"+personelUpdateRequestDto.getToken());
         Long authId = jwtTokenProvider.getIdFromToken(personelUpdateRequestDto.getToken())
                 .orElseThrow(() -> { throw new UserProfileManagerException(ErrorType.USER_NOT_FOUND); });
         List<String> roles = jwtTokenProvider.getRoleFromToken(personelUpdateRequestDto.getToken());
@@ -493,6 +492,19 @@ public class UserProfileService extends ServiceManager<UserProfile, String> {
         }
         return true;
     }
+    public Double getWage(String token){
+        Optional<Long> authId = jwtTokenProvider.getIdFromToken(token);
+        if (authId.isEmpty()){
+            throw new UserProfileManagerException(ErrorType.INVALID_TOKEN);
+        }
+        UserProfile userProfile = userProfileRepository.findByAuthId(authId.get()).orElseThrow(
+                ()->{throw new UserProfileManagerException(ErrorType.USER_NOT_FOUND);});
+        return userProfile.getWage();
+    }
+
+        }
+
+
 
     public Boolean founderCreateManagerUserProfile(String token, CreateUserProfileRequestDto dto){
         Optional<UserProfile> optionalUserProfile = userProfileRepository.findByEmail(dto.getEmail());
@@ -553,6 +565,7 @@ public class UserProfileService extends ServiceManager<UserProfile, String> {
         return userProfile.get();
     }
 }
+
 
 
 
