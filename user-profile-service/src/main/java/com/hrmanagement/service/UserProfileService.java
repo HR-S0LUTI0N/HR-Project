@@ -285,7 +285,10 @@ public class UserProfileService extends ServiceManager<UserProfile, String> {
 
     public UserProfilePersonnelDashboardRequestDto getUserProfilePersonnelDashboardInformation(Long authId) {
         UserProfile userProfile = userProfileRepository.findByAuthId(authId).orElseThrow(()->{throw new UserProfileManagerException(ErrorType.USER_NOT_FOUND);});
+        double sumDebt = wageCheck(userProfile);
+        Double totalDebt = userProfile.getWage() - sumDebt;
         UserProfilePersonnelDashboardRequestDto dto = IUserProfileMapper.INSTANCE.fromUserProfileToUserProfilePersonnelDashboardRequestDto(userProfile);
+        dto.setWage(totalDebt);
         return dto;
     }
 
@@ -329,11 +332,14 @@ public class UserProfileService extends ServiceManager<UserProfile, String> {
                 dto.setCompanyName(companyNameAndWageDateResponseDto.getCompanyName());
                 dto.setWageDate(companyNameAndWageDateResponseDto.getWageDate());
                 dto.setEStatus(user.getStatus());
+                Double totalDebt = wageCheck(user);
+                Double totalWage = user.getWage() - totalDebt;
                 if( user.getRole().contains(ERole.MANAGER)){
                     dto.setRoleString("MANAGER");
                 }else{
                     dto.setRoleString("PERSONNEL");
                 }
+                dto.setWage(totalWage);
                 dtoList.add(dto);
             });
             return dtoList;
