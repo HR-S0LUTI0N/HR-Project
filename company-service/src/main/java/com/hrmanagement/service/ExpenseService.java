@@ -48,6 +48,10 @@ public class ExpenseService extends ServiceManager<Expense, String> {
         if (roles.contains(ERole.PERSONEL.toString())) {
             UserProfileExpenseResponseDto userProfileExpenseResponseDto = userManager.getUserProfileExpenseInformation(authId).getBody();
             Expense expense = IExpenseMapper.INSTANCE.fromPersonelExpenseRequestDtoToExpense(personelExpenseRequestDto);
+            if(personelExpenseRequestDto.getBase64Bill()!=null){
+                String encodedBill = Base64.getEncoder().encodeToString(personelExpenseRequestDto.getBase64Bill().getBytes());
+                expense.setBillPhoto(encodedBill);
+            }
             expense.setUserId(userProfileExpenseResponseDto.getUserId());
             expense.setName(userProfileExpenseResponseDto.getName());
             expense.setSurname(userProfileExpenseResponseDto.getSurname());
