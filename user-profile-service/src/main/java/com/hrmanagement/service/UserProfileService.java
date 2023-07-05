@@ -14,17 +14,22 @@ import com.hrmanagement.rabbitmq.producer.ManagerChangeStatusProducer;
 import com.hrmanagement.rabbitmq.producer.PersonelPasswordProducer;
 import com.hrmanagement.repository.IUserProfileRepository;
 import com.hrmanagement.repository.entity.AdvancePermission;
+import com.hrmanagement.repository.entity.Debt;
 import com.hrmanagement.repository.entity.UserProfile;
 import com.hrmanagement.repository.entity.enums.EAdvanceStatus;
 import com.hrmanagement.repository.entity.enums.ERole;
 import com.hrmanagement.repository.entity.enums.EStatus;
 import com.hrmanagement.utility.JwtTokenProvider;
 import com.hrmanagement.utility.ServiceManager;
+import org.mapstruct.control.MappingControl;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import java.time.format.DateTimeFormatter;
+
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -38,7 +43,8 @@ public class UserProfileService extends ServiceManager<UserProfile, String> {
     private final PasswordEncoder passwordEncoder;
     private final ManagerChangeStatusProducer managerChangeStatusProducer;
     private final AdvanceRequestService advanceRequestService;
-    private UserProfileService(IUserProfileRepository userProfileRepository, IAuthManager authManager, JwtTokenProvider jwtTokenProvider, PersonelPasswordProducer personelPasswordProducer, ICompanyManager companyManager, PasswordEncoder passwordEncoder, ManagerChangeStatusProducer managerChangeStatusProducer, AdvanceRequestService advanceRequestService){
+    private final DebtService debtService;
+    private UserProfileService(IUserProfileRepository userProfileRepository, IAuthManager authManager, JwtTokenProvider jwtTokenProvider, PersonelPasswordProducer personelPasswordProducer, ICompanyManager companyManager, PasswordEncoder passwordEncoder, ManagerChangeStatusProducer managerChangeStatusProducer, AdvanceRequestService advanceRequestService, DebtService debtService){
         super(userProfileRepository);
         this.userProfileRepository=userProfileRepository;
         this.authManager=authManager;
@@ -48,6 +54,7 @@ public class UserProfileService extends ServiceManager<UserProfile, String> {
         this.passwordEncoder = passwordEncoder;
         this.managerChangeStatusProducer = managerChangeStatusProducer;
         this.advanceRequestService = advanceRequestService;
+        this.debtService = debtService;
     }
 
     /**
@@ -69,7 +76,6 @@ public class UserProfileService extends ServiceManager<UserProfile, String> {
         Long authId = jwtTokenProvider.getIdFromToken(token).orElseThrow(() -> {throw new UserProfileManagerException(ErrorType.INVALID_TOKEN);});
         Optional<UserProfile> optionalAdminProfile = userProfileRepository.findByAuthId(authId);
         List<String> role = jwtTokenProvider.getRoleFromToken(token);
-        System.out.println(role);
         if(role.contains(ERole.ADMIN.toString())) {
             if (optionalAdminProfile.isEmpty())
                 throw new UserProfileManagerException(ErrorType.USER_NOT_FOUND);
@@ -126,7 +132,6 @@ public class UserProfileService extends ServiceManager<UserProfile, String> {
                 AuthCreatePersonnelProfileRequestDto authDto = IUserProfileMapper.INSTANCE.fromUserProfileToAuthCreatePersonelProfileRequestDto(userProfile);
                 Long personnelAuthId = authManager.managerCreatePersonnelUserProfile(authDto).getBody();
                 userProfile.setAuthId(personnelAuthId);
-                System.out.println(userProfile);
                 save(userProfile);
                 PersonnelPasswordModel personnelPasswordModel = IUserProfileMapper.INSTANCE.fromUserProfileToPersonnelPasswordModel(userProfile);
                 personnelPasswordModel.setPassword(newPassword);
@@ -149,7 +154,6 @@ public class UserProfileService extends ServiceManager<UserProfile, String> {
 
 
     public Boolean createManagerUser(NewCreateManagerUserResponseDto dto) {
-        System.out.println(dto);
         UserProfile userProfile = IUserProfileMapper.INSTANCE.fromNewCreateManagerUserResponseDtoToUserProfile(dto);
         List<ERole> roleList = new ArrayList<>();
         roleList.add(ERole.MANAGER);
@@ -157,9 +161,7 @@ public class UserProfileService extends ServiceManager<UserProfile, String> {
         roleList.add(ERole.FOUNDER);
         userProfile.setStatus(EStatus.PENDING);
         userProfile.setRole(roleList);
-        System.out.println(userProfile);
         save(userProfile);
-        System.out.println(userProfile);
         return true;
     }
 
@@ -271,7 +273,6 @@ public class UserProfileService extends ServiceManager<UserProfile, String> {
         if(userProfile.getAvatar()!=null){
             try{
                 byte[] decodedBytes = Base64.getDecoder().decode(userProfile.getAvatar());
-                System.out.println(decodedBytes);
                 String decodedAvatar = new String(decodedBytes);
                 return decodedAvatar;
             }catch (Exception e){
@@ -285,7 +286,6 @@ public class UserProfileService extends ServiceManager<UserProfile, String> {
     public UserProfilePersonnelDashboardRequestDto getUserProfilePersonnelDashboardInformation(Long authId) {
         UserProfile userProfile = userProfileRepository.findByAuthId(authId).orElseThrow(()->{throw new UserProfileManagerException(ErrorType.USER_NOT_FOUND);});
         UserProfilePersonnelDashboardRequestDto dto = IUserProfileMapper.INSTANCE.fromUserProfileToUserProfilePersonnelDashboardRequestDto(userProfile);
-        System.out.println(dto);
         return dto;
     }
 
@@ -350,7 +350,6 @@ public class UserProfileService extends ServiceManager<UserProfile, String> {
         if(userProfile.getAvatar()!=null){
             try{
                 byte[] decodedBytes = Base64.getDecoder().decode(userProfile.getAvatar());
-                System.out.println(decodedBytes);
                 String decodedAvatar = new String(decodedBytes);
                 dto.setAvatar(decodedAvatar);
             }catch (Exception e){
@@ -358,7 +357,6 @@ public class UserProfileService extends ServiceManager<UserProfile, String> {
                 e.printStackTrace();
             }
         }
-        System.out.println(dto);
         return dto;
     }
     public UserProfileAvatarAndNameAndSurnameResponseDto getUserProfileAvatarAndNameAndSurname(String token) {
@@ -368,7 +366,6 @@ public class UserProfileService extends ServiceManager<UserProfile, String> {
         if(userProfile.getAvatar()!=null){
             try{
                 byte[] decodedBytes = Base64.getDecoder().decode(userProfile.getAvatar());
-                System.out.println(decodedBytes);
                 String decodedAvatar = new String(decodedBytes);
                 dto.setAvatar(decodedAvatar);
             }catch (Exception e){
@@ -376,7 +373,6 @@ public class UserProfileService extends ServiceManager<UserProfile, String> {
                 e.printStackTrace();
             }
         }
-        System.out.println(dto);
         return dto;
     }
     public Boolean updatePersonel(PersonelUpdateRequestDto personelUpdateRequestDto) {
@@ -422,9 +418,7 @@ public class UserProfileService extends ServiceManager<UserProfile, String> {
         });
         AllCompanyInfosForUserProfileResponseDto companyInfos =
                 companyManager.getAllInfosCompanyWithCompanyId(userProfile.getCompanyId()).getBody();
-        System.out.println(companyInfos);
         UserProfileSendingInfosResponseDto dto=IUserProfileMapper.INSTANCE.userProfileToUserProfileSendingInfosResponseDto(userProfile);
-        System.out.println(dto);
         dto.setCompanyName(companyInfos.getCompanyName());
         dto.setCompanyNeighbourhood(companyInfos.getCompanyNeighbourhood());
         dto.setCompanyDistrict(companyInfos.getCompanyDistrict());
@@ -433,7 +427,6 @@ public class UserProfileService extends ServiceManager<UserProfile, String> {
         dto.setCompanyBuildingNumber(companyInfos.getCompanyBuildingNumber());
         dto.setCompanyApartmentNumber(companyInfos.getCompanyApartmentNumber());
         dto.setCompanyPostalCode(companyInfos.getCompanyPostalCode());
-        System.out.println(dto);
         return dto;
     }
     public Boolean updatePersonelAdress(PersonelAddressUpdateRequestDto personelUpdateRequestDto) {
@@ -531,7 +524,6 @@ public class UserProfileService extends ServiceManager<UserProfile, String> {
                 AuthCreatePersonnelProfileRequestDto authDto = IUserProfileMapper.INSTANCE.fromUserProfileToAuthCreatePersonelProfileRequestDto(userProfile);
                 Long personnelAuthId = authManager.founderCreateManagerUserProfile(authDto).getBody();
                 userProfile.setAuthId(personnelAuthId);
-                System.out.println(userProfile);
                 save(userProfile);
                 PersonnelPasswordModel personnelPasswordModel = IUserProfileMapper.INSTANCE.fromUserProfileToPersonnelPasswordModel(userProfile);
                 personnelPasswordModel.setPassword(newPassword);
@@ -550,7 +542,6 @@ public class UserProfileService extends ServiceManager<UserProfile, String> {
         if(userProfile.getAvatar()!=null && userProfile.getAvatar()!=""){
             try{
                 byte[] decodedBytes = Base64.getDecoder().decode(userProfile.getAvatar());
-                System.out.println(decodedBytes);
                 String decodedAvatar = new String(decodedBytes);
                 return decodedAvatar;
             }catch (Exception e){
@@ -631,7 +622,6 @@ public class UserProfileService extends ServiceManager<UserProfile, String> {
     }
 
     public Boolean changeAdvanceStatus(String token, ChangeAdvanceStatusRequestDto dto){
-        System.out.println(dto);
         List<String> roles = jwtTokenProvider.getRoleFromToken(token);
         if (roles.isEmpty())
             throw new UserProfileManagerException(ErrorType.INVALID_TOKEN);
@@ -646,11 +636,20 @@ public class UserProfileService extends ServiceManager<UserProfile, String> {
                     });
             if (advance.getStatus() == EAdvanceStatus.PENDING) {
                 if (dto.getAction()) {
+                    UserProfile userRequestPersonnel = findById(advance.getUserId()).orElseThrow(()->
+                    {throw new UserProfileManagerException(ErrorType.USER_NOT_FOUND);});
+                    Double sum = wageCheck(userRequestPersonnel);
+                    if((advance.getAdvanceRequest() + sum)>userRequestPersonnel.getWage())
+                        throw new UserProfileManagerException(ErrorType.INVALID_WAGE);
+                    debtService.save(Debt.builder()
+                                    .userId(advance.getUserId())
+                                    .debt(advance.getAdvanceRequest())
+                                    .build()
+                            );
                     advance.setStatus(EAdvanceStatus.ACTIVE);
                 } else {
                     advance.setStatus(EAdvanceStatus.DECLINED);
                 }
-                System.out.println("1");
                 advanceRequestService.update(advance);
                 return true;
             }
@@ -658,6 +657,45 @@ public class UserProfileService extends ServiceManager<UserProfile, String> {
         }
         throw new UserProfileManagerException(ErrorType.AUTHORIZATION_ERROR);
     }
+
+    public Double wageCheck(UserProfile userProfile){
+        List<Debt> debtList = debtService.findAllByUserId(userProfile.getUserId());
+        if(debtList.isEmpty())
+            return 0.0;
+        Double sum = 0.0;
+        CompanyNameAndWageDateResponseDto dto = companyManager.getCompanyNameAndWageDateResponseDto(userProfile.getCompanyId()).getBody();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+        LocalDate formattedWageDate = LocalDate.parse(dto.getWageDate(),formatter);
+        LocalDate formattedStartingWageDate = formattedWageDate.minusDays(30);
+        //Company Service WageDate Controlü
+        LocalDate nowDate = LocalDate.now();
+        if(formattedWageDate.isBefore(nowDate)){
+            LocalDate newDate = formattedWageDate.plusDays(30);
+            LocalDate newStartingDate = formattedStartingWageDate.plusDays(30);
+            String newWageDate = newDate.format(formatter);
+            UpdateCompanyWageDateRequestDto.builder()
+                            .wageDate(newWageDate)
+                                    .companyId(userProfile.getCompanyId())
+                                            .build();
+            formattedWageDate = newDate;
+            formattedStartingWageDate = newStartingDate;
+        }
+        //Debt kontrolü
+        LocalDate finalFormattedWageDate = formattedWageDate;
+        LocalDate finalFormattedStartingWageDate = formattedStartingWageDate;
+        List<Debt> filteredDebts = debtList.stream()
+                .filter(debt -> {
+                    LocalDate debtDate = LocalDate.ofEpochDay(debt.getDebtDate()  / (24 * 60 * 60 * 1000));
+                    return debtDate.isBefore(finalFormattedWageDate) && debtDate.isAfter(finalFormattedStartingWageDate);
+                })
+                .collect(Collectors.toList());
+        for(Debt debt: filteredDebts){
+            sum += debt.getDebt();
+        }
+        return sum;
+    }
+
+
 
 
 }
