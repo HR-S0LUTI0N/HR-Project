@@ -1,5 +1,6 @@
 package com.hrmanagement.repository;
 
+import com.hrmanagement.dto.response.FindAllPendingDayOfPermissionResponseDto;
 import com.hrmanagement.repository.entity.DayOffPermission;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
