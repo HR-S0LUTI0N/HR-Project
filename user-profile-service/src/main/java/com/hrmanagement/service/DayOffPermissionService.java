@@ -62,6 +62,7 @@ public class DayOffPermissionService extends ServiceManager<DayOffPermission, St
                 dayOffPermission.setEPermissionTypes(dto.getEPermissionTypes());
                 dayOffPermission.setUserId(userProfile.getUserId());
                 dayOffPermission.setStatus(EStatus.PENDING);
+                dayOffPermission.setCompanyId(userProfile.getCompanyId());
                 save(dayOffPermission);
                 return dayOffPermission;
             } else {
@@ -111,9 +112,16 @@ public class DayOffPermissionService extends ServiceManager<DayOffPermission, St
         throw new UserProfileManagerException(ErrorType.AUTHORIZATION_ERROR);
     }
 
-    public List<DayOffPermission> findAllPendingDayOffPermission() {
-        List<DayOffPermission> dayOffPermissionList = dayOffPermissionRepository.findAllByStatus(EStatus.PENDING.toString());
-        System.out.println(dayOffPermissionList);
-        return dayOffPermissionList;
+    public List<DayOffPermission> findAllPendingDayOffPermission(String token) {
+        Optional<Long> authId = jwtTokenProvider.getIdFromToken(token);
+        if (authId.isEmpty())
+            throw new UserProfileManagerException(ErrorType.INVALID_TOKEN);
+        UserProfile userProfile = userProfileService.findByAuthId(authId.get());
+        if (userProfile.getRole().contains(ERole.MANAGER)) {
+            List<DayOffPermission> dayOffPermissionList = dayOffPermissionRepository.findAllByStatusAndCompanyId(EStatus.PENDING.toString(), userProfile.getCompanyId());
+            System.out.println(dayOffPermissionList);
+            return dayOffPermissionList;
+        }
+        throw new RuntimeException("Manager değilsin.");
     }
 }

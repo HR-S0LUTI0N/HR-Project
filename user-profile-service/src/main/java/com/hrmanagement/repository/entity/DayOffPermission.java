@@ -20,6 +20,7 @@ public class DayOffPermission extends Base {
     @Id
     private String permissionId;
     private String userId;
+    private String companyId;
     private String startingDate;
     private String endingDate;
     private List<String> permissionDates = new ArrayList<>();
