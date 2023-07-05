@@ -24,11 +24,13 @@ public class DayOffPermissionController {
     }
 
     @PutMapping("/action-day-off-permission/{token}")
+    @CrossOrigin(origins = "*", allowedHeaders = "*")
     public ResponseEntity<Boolean> actionDayOffPermission(@PathVariable String token,@RequestBody ActionDayOffPermissionDto dto) {
         return ResponseEntity.ok(dayOffPermissionService.actionDayOffPermission(token, dto));
     }
 
     @GetMapping("/find-all-pending-day-off-permissions/{token}")
+    @CrossOrigin(origins = "*", allowedHeaders = "*")
     public ResponseEntity<List<DayOffPermission>> findAllPendingDayOffPermission(@PathVariable String token) {
         return ResponseEntity.ok(dayOffPermissionService.findAllPendingDayOffPermission(token));
     }
