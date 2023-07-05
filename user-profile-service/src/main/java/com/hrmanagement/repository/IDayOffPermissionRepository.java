@@ -9,7 +9,7 @@ import java.util.Optional;
 
 @Repository
 public interface IDayOffPermissionRepository extends MongoRepository<DayOffPermission,String> {
-    List<DayOffPermission> findAllByStatus(String status);
+    List<DayOffPermission> findAllByStatusAndCompanyId(String status, String companyId);
     List<DayOffPermission> findByUserIdAndStatus(String userId,String status);
 
 }

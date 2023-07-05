@@ -28,8 +28,8 @@ public class DayOffPermissionController {
         return ResponseEntity.ok(dayOffPermissionService.actionDayOffPermission(token, dto));
     }
 
-    @GetMapping("/find-all-pending-day-off-permissions")
-    public ResponseEntity<List<DayOffPermission>> findAllPendingDayOffPermission() {
-        return ResponseEntity.ok(dayOffPermissionService.findAllPendingDayOffPermission());
+    @GetMapping("/find-all-pending-day-off-permissions/{token}")
+    public ResponseEntity<List<DayOffPermission>> findAllPendingDayOffPermission(@PathVariable String token) {
+        return ResponseEntity.ok(dayOffPermissionService.findAllPendingDayOffPermission(token));
     }
 }
