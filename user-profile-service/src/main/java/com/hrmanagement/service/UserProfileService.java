@@ -15,6 +15,7 @@ import com.hrmanagement.rabbitmq.producer.PersonelPasswordProducer;
 import com.hrmanagement.repository.IUserProfileRepository;
 import com.hrmanagement.repository.entity.AdvancePermission;
 import com.hrmanagement.repository.entity.UserProfile;
+import com.hrmanagement.repository.entity.enums.EAdvanceStatus;
 import com.hrmanagement.repository.entity.enums.ERole;
 import com.hrmanagement.repository.entity.enums.EStatus;
 import com.hrmanagement.utility.JwtTokenProvider;
@@ -22,7 +23,10 @@ import com.hrmanagement.utility.ServiceManager;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class UserProfileService extends ServiceManager<UserProfile, String> {
@@ -577,6 +581,7 @@ public class UserProfileService extends ServiceManager<UserProfile, String> {
             if (optionalUserProfile.get().getWage() >= dto.getAdvanceRequest()) {
                 AdvancePermission advancePermission= IAdvancePermissionMapper.INSTANCE.fromAdvanceRequestDtoToAdvanceRequest(dto);
                 advancePermission.setUserId(optionalUserProfile.get().getUserId());
+                advancePermission.setCompanyId(optionalUserProfile.get().getCompanyId());
                 advanceRequestService.save(advancePermission);
                 return true;
             } else {
@@ -585,6 +590,48 @@ public class UserProfileService extends ServiceManager<UserProfile, String> {
             throw new UserProfileManagerException(ErrorType.NOT_PERSONEL);
         }
     }
+
+
+    public List<FindAllAdvanceRequestListResponseDto> findAllAdvanceRequestList(String token){
+        Long authId = jwtTokenProvider.getIdFromToken(token).orElseThrow(()->{
+            throw new UserProfileManagerException(ErrorType.USER_NOT_FOUND);
+        });
+        List<String> roles = jwtTokenProvider.getRoleFromToken(token);
+        if(roles.contains(ERole.MANAGER.toString())){
+            UserProfile userProfile = userProfileRepository.findByAuthId(authId).orElseThrow(()->{
+                throw new UserProfileManagerException(ErrorType.USER_NOT_FOUND);
+            });
+            List<AdvancePermission> advancePermissionList = advanceRequestService.findAllByStatusAndCompanyId(
+                    EAdvanceStatus.PENDING,userProfile.getCompanyId()
+            );
+            DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
+            List<FindAllAdvanceRequestListResponseDto> dtoList = advancePermissionList.stream().map(advancePermission->{
+                FindAllAdvanceRequestListResponseDto dto = IAdvancePermissionMapper.INSTANCE.fromAdvancePermissionToFindAllAdvanceRequestListResponseDto(advancePermission);
+                UserProfile userProfile1 = findById(advancePermission.getUserId()).orElseThrow(()->{throw new UserProfileManagerException(ErrorType.USER_NOT_FOUND);});
+                dto.setName(userProfile1.getName());
+                dto.setSurname(userProfile1.getSurname());
+                Date date = new Date(advancePermission.getRequestDate());
+                String requestDate = dateFormat.format(date);
+                dto.setRequestDate(requestDate);
+                if(userProfile1.getAvatar()!=null){
+                    try{
+                        byte[] decodedBytes = Base64.getDecoder().decode(userProfile1.getAvatar());
+                        String decodedPhoto = new String(decodedBytes);
+                        dto.setAvatar(decodedPhoto);
+                    }catch (Exception e){
+                        System.out.println(e.getMessage());
+                        e.printStackTrace();
+                    }
+                }
+                  return dto;
+            }).collect(Collectors.toList());
+            return dtoList;
+        }
+        throw new UserProfileManagerException(ErrorType.AUTHORIZATION_ERROR);
+    }
+
+
+
 }
 
 

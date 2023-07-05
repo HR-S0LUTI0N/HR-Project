@@ -10,6 +10,7 @@ import com.hrmanagement.repository.IAdvancePermissionRepository;
 import com.hrmanagement.repository.IUserProfileRepository;
 import com.hrmanagement.repository.entity.AdvancePermission;
 import com.hrmanagement.repository.entity.UserProfile;
+import com.hrmanagement.repository.entity.enums.EAdvanceStatus;
 import com.hrmanagement.repository.entity.enums.ERole;
 import com.hrmanagement.utility.JwtTokenProvider;
 import com.hrmanagement.utility.ServiceManager;
@@ -31,7 +32,10 @@ public class AdvanceRequestService extends ServiceManager<AdvancePermission, Str
         this.advancePermissionRepository = advancePermissionRepository;
     }
 
-
+    public List<AdvancePermission> findAllByStatusAndCompanyId(EAdvanceStatus status, String companyId){
+        List<AdvancePermission> advancePermissionList = advancePermissionRepository.findAllByStatusAndCompanyId(status,companyId);
+        return advancePermissionList;
+    }
 
 
 
