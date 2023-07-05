@@ -502,10 +502,6 @@ public class UserProfileService extends ServiceManager<UserProfile, String> {
         return userProfile.getWage();
     }
 
-        }
-
-
-
     public Boolean founderCreateManagerUserProfile(String token, CreateUserProfileRequestDto dto){
         Optional<UserProfile> optionalUserProfile = userProfileRepository.findByEmail(dto.getEmail());
         if(optionalUserProfile.isEmpty()) {

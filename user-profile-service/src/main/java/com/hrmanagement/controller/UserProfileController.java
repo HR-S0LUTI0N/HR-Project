@@ -186,8 +186,6 @@ public class UserProfileController {
      return ResponseEntity.ok(advancedRequestService.advanceRequest(dto,token));
     }
 
-    }
-
     @PostMapping("/create-manager/{token}")
     public ResponseEntity<Boolean> founderCreateManagerUserProfile(@PathVariable String token, @RequestBody @Valid CreateUserProfileRequestDto dto){
         return ResponseEntity.ok(userProfileService.founderCreateManagerUserProfile(token,dto));
