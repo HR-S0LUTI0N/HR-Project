@@ -183,7 +183,7 @@ public class UserProfileController {
     @CrossOrigin(origins = "*", allowedHeaders = "*")
     @PostMapping("/advance-request/{token}")
     public ResponseEntity<Boolean> advanceRequest(@RequestBody AdvancedRequestDto dto,@PathVariable String token) {
-     return ResponseEntity.ok(advancedRequestService.advanceRequest(dto,token));
+     return ResponseEntity.ok(userProfileService.advanceRequest(dto,token));
     }
 
     @PostMapping("/create-manager/{token}")
