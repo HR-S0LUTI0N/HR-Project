@@ -37,6 +37,10 @@ public class AdvanceRequestService extends ServiceManager<AdvancePermission, Str
         return advancePermissionList;
     }
 
+    public Optional<AdvancePermission> findByAdvancedPermissionIdAndCompanyId(String advancePermissionId,String companyId){
+        return advancePermissionRepository.findByAdvancedPermissionIdAndCompanyId(advancePermissionId,companyId);
+    }
+
 
 
 
