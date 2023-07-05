@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -199,25 +200,16 @@ public class CompanyService extends ServiceManager<Company, String> {
                     String decodedLogo = new String(decodedBytes);
                     personnelDto.setLogo(decodedLogo);
                     //WageDate
-                    Date wageDate = new SimpleDateFormat("dd-MM-yyyy").parse(company.getWageDate());
-                    long millis = System.currentTimeMillis();
-                    java.sql.Date date = new java.sql.Date(millis);
-                    SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
-                    if (wageDate.before(date)) {
-                        Calendar calendar = Calendar.getInstance();
-                        calendar.setTime(wageDate);
-                        Calendar millisCalendar = Calendar.getInstance();
-                        millisCalendar.setTimeInMillis(millis);
-                        calendar.set(Calendar.MONTH, millisCalendar.get(Calendar.MONTH));
-                        calendar.set(Calendar.YEAR, millisCalendar.get(Calendar.YEAR));
-                        wageDate = calendar.getTime();
-                    }
-                    String formattedDate = dateFormat.format(wageDate);
-                    if(!formattedDate.equals(company.getWageDate())){
-                        company.setWageDate(formattedDate);
+                    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+                    LocalDate formattedWageDate = LocalDate.parse(company.getWageDate(),formatter);
+                    LocalDate nowDate = LocalDate.now();
+                    if(formattedWageDate.isBefore(nowDate)){
+                        LocalDate newDate = formattedWageDate.plusDays(30);
+                        String newWageDate = newDate.format(formatter);
+                        company.setWageDate(newWageDate);
                         update(company);
                     }
-                    personnelDto.setWageDate(formattedDate);
+                    personnelDto.setWageDate(company.getWageDate());
                 }catch (Exception e){
                     System.out.println(e.getMessage());
                     e.printStackTrace();
@@ -304,5 +296,14 @@ public class CompanyService extends ServiceManager<Company, String> {
         }else{
             return false;
         }
+    }
+
+    public Boolean updateCompanyWageDate(UpdateCompanyWageDateResponseDto dto) {
+        Company company = findById(dto.getCompanyId()).orElseThrow(()->{
+            throw new CompanyManagerException(ErrorType.COMPANY_NOT_FOUND);
+        });
+        company.setWageDate(dto.getWageDate());
+        update(company);
+        return true;
     }
 }

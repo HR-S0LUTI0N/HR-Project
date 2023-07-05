@@ -104,5 +104,10 @@ public class CompanyController {
         return ResponseEntity.ok(companyService.doesCompanySubscriptionExist(companyId));
     }
 
+    @PutMapping("/update-company-wage-date")
+    ResponseEntity<Boolean> updateCompanyWageDate(@RequestBody UpdateCompanyWageDateResponseDto dto){
+        return ResponseEntity.ok(companyService.updateCompanyWageDate(dto));
+    }
+
 
 }

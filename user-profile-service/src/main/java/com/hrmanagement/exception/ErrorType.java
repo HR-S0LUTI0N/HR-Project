@@ -27,7 +27,8 @@ public enum ErrorType {
     REMAININGMONEY_LESSERTHANZERO(5600,"Bu ay avans alma kotanızı doldurdunuz!!",HttpStatus.NOT_FOUND),
     INVALID_WAGEDATE(5700,"Maaş alma günü geçersiz.",HttpStatus.NOT_FOUND),
     ADVANCE_NOT_FOUND(5800,"Böyle bir advance bulunamamıştır.",HttpStatus.NOT_FOUND),
-    ADVANCE_NOT_PENDING(5900,"Advance pending durumda değildir.",HttpStatus.BAD_REQUEST);
+    ADVANCE_NOT_PENDING(5900,"Advance pending durumda değildir.",HttpStatus.BAD_REQUEST),
+    INVALID_WAGE(6000,"Maaş miktarı avansı karşılamaya yeterli değildir.",HttpStatus.BAD_REQUEST);
     private int code;
     private String message;
     HttpStatus httpStatus;
