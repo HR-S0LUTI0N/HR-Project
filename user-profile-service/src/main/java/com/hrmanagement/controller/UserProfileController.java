@@ -193,14 +193,22 @@ public class UserProfileController {
 
     @Hidden
     @GetMapping("/find-user-companyId/{authId}")
-    ResponseEntity<String> findUserCompanyId(@PathVariable Long authId){
+    public ResponseEntity<String> findUserCompanyId(@PathVariable Long authId){
         return ResponseEntity.ok(userProfileService.getCompanyId(authId));
     }
 
     @Hidden
     @GetMapping("/find-avatar/{userId}")
-    ResponseEntity<String> findAvatar(@PathVariable String userId){
+    public ResponseEntity<String> findAvatar(@PathVariable String userId){
         return ResponseEntity.ok(userProfileService.findAvatar(userId));
     }
+    @CrossOrigin(origins = "*", allowedHeaders = "*")
+    @GetMapping("/find-all-advance-request-list/{token}")
+    public ResponseEntity<List<FindAllAdvanceRequestListResponseDto>> findAllAdvanceRequestList(@PathVariable String token){
+        return ResponseEntity.ok(userProfileService.findAllAdvanceRequestList(token));
+    }
+
+
+
 }
 
