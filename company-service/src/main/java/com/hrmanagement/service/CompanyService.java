@@ -190,9 +190,7 @@ public class CompanyService extends ServiceManager<Company, String> {
             throw new CompanyManagerException(ErrorType.USER_NOT_FOUND);
         if(roles.contains(ERole.PERSONEL.toString())){
             UserProfilePersonnelDashboardResponseDto userDto = userManager.getUserProfilePersonnelDashboardInformation(authId).getBody();
-            System.out.println(userDto);
             PersonnelDashboardResponseDto personnelDto = ICompanyMapper.INSTANCE.fromUserProfilePersonnelDashboardResponseDtoToPersonnelDashboardResponseDto(userDto);
-            System.out.println(personnelDto);
             Company company = findById(userDto.getCompanyId()).orElseThrow(()->{throw new CompanyManagerException(ErrorType.COMPANY_NOT_FOUND);});
             personnelDto.setCompanyName(company.getCompanyName());
             if(company.getLogo()!=null){
@@ -227,19 +225,6 @@ public class CompanyService extends ServiceManager<Company, String> {
             }
             personnelDto.setSector(company.getSector());
             personnelDto.setHolidayDates(company.getHolidayDates());
-            /*
-            //TODO Günler ön taraftan date şeklinde kaydedilip long'a çevrildiğinde yapılacak bu şekilde
-            for(Long longToDay:company.getHolidayDates()){
-                Date newDate = new Date(longToDay);
-                dateHoliday.add(newDate);
-            }
-            List<Date> holidayDatesList = company.getHolidayDates().stream().map(day -> {
-                Date newDate = new Date(day);
-                return newDate;
-            }).collect(Collectors.toList());
-            personnelDto.setHolidayDates(holidayDatesList);
-
-            */
             return personnelDto;
         }
         throw new CompanyManagerException(ErrorType.NO_AUTHORIZATION);

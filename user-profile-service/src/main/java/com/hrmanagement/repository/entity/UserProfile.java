@@ -39,7 +39,7 @@ public class UserProfile extends Base {
     private EStatus status;
     private EGender gender;
     private String phone;
-    private Double wage;
+    private double wage;
     private String avatar;
     private String neighbourhood;
     private String district;
@@ -56,6 +56,7 @@ public class UserProfile extends Base {
     private String jobShift;
     private String jobStartingDate;
     private String dateOfBirth;
+
 
 
 }

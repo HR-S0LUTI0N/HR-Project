@@ -23,5 +23,5 @@ public class PersonelExpenseRequestDto {
     private Double tax;
     private String taxZone;
     private String description;
-    private String billPhoto;
+    private String base64Bill;
 }

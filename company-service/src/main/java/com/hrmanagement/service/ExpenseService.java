@@ -48,6 +48,10 @@ public class ExpenseService extends ServiceManager<Expense, String> {
         if (roles.contains(ERole.PERSONEL.toString())) {
             UserProfileExpenseResponseDto userProfileExpenseResponseDto = userManager.getUserProfileExpenseInformation(authId).getBody();
             Expense expense = IExpenseMapper.INSTANCE.fromPersonelExpenseRequestDtoToExpense(personelExpenseRequestDto);
+            if(personelExpenseRequestDto.getBase64Bill()!=null){
+                String encodedBill = Base64.getEncoder().encodeToString(personelExpenseRequestDto.getBase64Bill().getBytes());
+                expense.setBillPhoto(encodedBill);
+            }
             expense.setUserId(userProfileExpenseResponseDto.getUserId());
             expense.setName(userProfileExpenseResponseDto.getName());
             expense.setSurname(userProfileExpenseResponseDto.getSurname());
@@ -106,8 +110,6 @@ public class ExpenseService extends ServiceManager<Expense, String> {
         });
         UserProfileExpenseResponseDto userProfileExpenseResponseDto = userManager.getUserProfileExpenseInformation(authId).getBody();
         if (roles.contains(ERole.MANAGER.toString())) {
-            System.out.println(userProfileExpenseResponseDto);
-            System.out.println(dto);
             Expense expense = expenseRepository.findByCompanyIdAndExpenseId(userProfileExpenseResponseDto.getCompanyId(),dto.getExpenseId())
                     .orElseThrow(() -> {
                 throw new CompanyManagerException(ErrorType.NO_EXPENSE_EXIST);
