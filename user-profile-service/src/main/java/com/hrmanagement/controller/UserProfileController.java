@@ -49,6 +49,7 @@ public class UserProfileController {
     }
 
     @PostMapping("/create-manager")
+    @CrossOrigin(origins = "*", allowedHeaders = "*")
     public ResponseEntity<Boolean> createManagerUser(@RequestBody NewCreateManagerUserResponseDto dto) {
         return ResponseEntity.ok(userProfileService.createManagerUser(dto));
     }
@@ -186,7 +187,8 @@ public class UserProfileController {
      return ResponseEntity.ok(userProfileService.advanceRequest(dto,token));
     }
 
-    @PostMapping("/create-manager/{token}")
+    @PostMapping("/founder-create-manager/{token}")
+    @CrossOrigin(origins = "*", allowedHeaders = "*")
     public ResponseEntity<Boolean> founderCreateManagerUserProfile(@PathVariable String token, @RequestBody @Valid CreateUserProfileRequestDto dto){
         return ResponseEntity.ok(userProfileService.founderCreateManagerUserProfile(token,dto));
     }
