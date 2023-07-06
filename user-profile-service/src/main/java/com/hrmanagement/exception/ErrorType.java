@@ -28,7 +28,12 @@ public enum ErrorType {
     INVALID_WAGEDATE(5700,"Maaş alma günü geçersiz.",HttpStatus.NOT_FOUND),
     ADVANCE_NOT_FOUND(5800,"Böyle bir advance bulunamamıştır.",HttpStatus.NOT_FOUND),
     ADVANCE_NOT_PENDING(5900,"Advance pending durumda değildir.",HttpStatus.BAD_REQUEST),
-    INVALID_WAGE(6000,"Maaş miktarı avansı karşılamaya yeterli değildir.",HttpStatus.BAD_REQUEST);
+    INVALID_WAGE(6000,"Maaş miktarı avansı karşılamaya yeterli değildir.",HttpStatus.BAD_REQUEST),
+    CANNOT_REQUEST_MORE_LEAVE(6100, "Mevcut izin gün sayınızdan fazla izin talep edemezsiniz veya bekleyen izin günleriniz bulunmaktadır!!", HttpStatus.BAD_REQUEST),
+    NOT_FOUND_DAY_OFF_PERMISSION(6200,"İzin bulunamadı",HttpStatus.NOT_FOUND),
+    PERMISSION_STATUS_NOT_PENDING(6300,"İzin durumu Pending değil",HttpStatus.NOT_FOUND),
+    NOT_MANAGER(6400,"Manager Değilsiniz",HttpStatus.BAD_REQUEST),
+    PERSONNEL_NOT_FOUND(6500,"Personel bulunamadı",HttpStatus.NOT_FOUND);
     private int code;
     private String message;
     HttpStatus httpStatus;

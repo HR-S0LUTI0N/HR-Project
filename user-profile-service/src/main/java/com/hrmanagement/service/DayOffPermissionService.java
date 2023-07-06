@@ -17,9 +17,6 @@ import org.springframework.stereotype.Service;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.Instant;
-import java.time.LocalDate;
-import java.time.ZoneId;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -67,10 +64,10 @@ public class DayOffPermissionService extends ServiceManager<DayOffPermission, St
                 save(dayOffPermission);
                 return dayOffPermission;
             } else {
-                throw new RuntimeException("Mevcut izin gün sayınızdan fazla izin talep edemezsiniz veya bekleyen izin günleriniz bulunmaktadır!!");
+                throw new UserProfileManagerException(ErrorType.CANNOT_REQUEST_MORE_LEAVE);
             }
         } else {
-            throw new RuntimeException("ROlü personel değil");
+            throw new UserProfileManagerException(ErrorType.NOT_PERSONEL);
         }
 
     }
@@ -91,7 +88,7 @@ public class DayOffPermissionService extends ServiceManager<DayOffPermission, St
         List<String> roles = jwtTokenProvider.getRoleFromToken(token);
         if (roles.contains(ERole.MANAGER.toString())) {
             DayOffPermission dayOffPermission = findById(dto.getPermissionId()).orElseThrow(() -> {
-                throw new RuntimeException("İzin bulunamadı");
+                throw new UserProfileManagerException(ErrorType.NOT_FOUND_DAY_OFF_PERMISSION);
             });
             if (dayOffPermission.getStatus() == EStatus.PENDING) {
                 if (dto.getAction()) {
@@ -108,7 +105,7 @@ public class DayOffPermissionService extends ServiceManager<DayOffPermission, St
                 update(dayOffPermission);
                 return true;
             }
-            throw new RuntimeException("İzin durumu Pending değil");
+            throw new UserProfileManagerException(ErrorType.PERMISSION_STATUS_NOT_PENDING);
         }
         throw new UserProfileManagerException(ErrorType.AUTHORIZATION_ERROR);
     }
@@ -123,7 +120,7 @@ public class DayOffPermissionService extends ServiceManager<DayOffPermission, St
             List<FindAllPendingDayOfPermissionResponseDto> findAllPendingDayOfPermissionResponseDtos = dayOffPermissionList.stream().map(x -> {
                 FindAllPendingDayOfPermissionResponseDto dto = IUserProfileMapper.INSTANCE.fromToFindAllPendingDayOfPermissionResponseDtoToDayOffPermission(x);
                 UserProfile userProfile1 = userProfileService.findById(x.getUserId()).orElseThrow(() -> {
-                    throw new RuntimeException("Personel yok");
+                    throw new UserProfileManagerException(ErrorType.PERSONNEL_NOT_FOUND);
                 });
                 dto.setPermissionId(x.getPermissionId());
                 dto.setName(userProfile1.getName());
@@ -145,6 +142,6 @@ public class DayOffPermissionService extends ServiceManager<DayOffPermission, St
             }).collect(Collectors.toList());
             return findAllPendingDayOfPermissionResponseDtos;
         }
-        throw new RuntimeException("Manager değilsin.");
+        throw new UserProfileManagerException(ErrorType.NOT_MANAGER);
     }
 }
