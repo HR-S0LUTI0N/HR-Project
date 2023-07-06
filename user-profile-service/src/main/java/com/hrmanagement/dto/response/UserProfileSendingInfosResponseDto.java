@@ -14,7 +14,7 @@ public class UserProfileSendingInfosResponseDto {
     private String name;
     private String middleName;
     private String surname;
-    private Long dateOfBirth;
+    private String dateOfBirth;
     private String birthPlace;
     private String identificationNumber;
     private String phone;
