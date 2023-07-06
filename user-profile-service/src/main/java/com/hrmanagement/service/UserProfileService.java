@@ -391,7 +391,7 @@ public class UserProfileService extends ServiceManager<UserProfile, String> {
             throw new UserProfileManagerException(ErrorType.USER_NOT_FOUND);
         }
 
-        if (roles.contains(ERole.PERSONEL.toString())) {
+        if (roles.contains(ERole.PERSONEL.toString())||roles.contains(ERole.VISITOR.toString())) {
             if (personelprofile.isPresent()) {
                 UserProfile profile = personelprofile.get();
                 profile.setName(personelUpdateRequestDto.getName());
@@ -445,7 +445,7 @@ public class UserProfileService extends ServiceManager<UserProfile, String> {
             throw new UserProfileManagerException(ErrorType.USER_NOT_FOUND);
         }
 
-        if (roles.contains(ERole.PERSONEL.toString())) {
+        if (roles.contains(ERole.PERSONEL.toString())||roles.contains(ERole.VISITOR.toString())) {
             if (personelprofile.isPresent()) {
                 UserProfile profile = personelprofile.get();
                 profile.setNeighbourhood(personelUpdateRequestDto.getNeighbourhood());
