@@ -34,6 +34,7 @@ public class UserProfileSendingInfosResponseDto {
     private Integer companyBuildingNumber;
     private Integer companyApartmentNumber;
     private Integer companyPostalCode;
+    private String avatar;
 
 
 }

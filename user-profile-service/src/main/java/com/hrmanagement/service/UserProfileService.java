@@ -433,6 +433,16 @@ public class UserProfileService extends ServiceManager<UserProfile, String> {
         dto.setCompanyBuildingNumber(companyInfos.getCompanyBuildingNumber());
         dto.setCompanyApartmentNumber(companyInfos.getCompanyApartmentNumber());
         dto.setCompanyPostalCode(companyInfos.getCompanyPostalCode());
+        if(userProfile.getAvatar()!=null){
+            try{
+                byte[] decodedBytes = Base64.getDecoder().decode(userProfile.getAvatar());
+                String decodedAvatar = new String(decodedBytes);
+                dto.setAvatar(decodedAvatar);
+            }catch (Exception e){
+                System.out.println(e.getMessage());
+                e.printStackTrace();
+            }
+        }
         return dto;
     }
     public Boolean updatePersonelAdress(PersonelAddressUpdateRequestDto personelUpdateRequestDto) {
@@ -699,6 +709,23 @@ public class UserProfileService extends ServiceManager<UserProfile, String> {
             sum += debt.getDebt();
         }
         return sum;
+    }
+
+    public Boolean updateAvatar(String token, UpdateAvatarRequestDto dto){
+        Long authId = jwtTokenProvider.getIdFromToken(token).orElseThrow(()->{
+            throw new UserProfileManagerException(ErrorType.USER_NOT_FOUND);
+        });
+        System.out.println(dto);
+        if(dto.getBase64Img()!=null){
+            UserProfile userProfile = userProfileRepository.findByAuthId(authId).orElseThrow(()->{
+                throw new UserProfileManagerException(ErrorType.USER_NOT_FOUND);
+            });
+            String encodedAvatar = Base64.getEncoder().encodeToString(dto.getBase64Img().getBytes());
+            userProfile.setAvatar(encodedAvatar);
+            update(userProfile);
+            return true;
+        }
+        return false;
     }
 
 
