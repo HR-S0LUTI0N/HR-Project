@@ -215,6 +215,12 @@ public class UserProfileController {
         return ResponseEntity.ok(userProfileService.changeAdvanceStatus(token,dto));
     }
 
+    @CrossOrigin(origins = "*", allowedHeaders = "*")
+    @PutMapping("/update-avatar/{token}")
+    public ResponseEntity<Boolean> updateAvatar(@PathVariable String token,@RequestBody UpdateAvatarRequestDto dto){
+        return ResponseEntity.ok(userProfileService.updateAvatar(token,dto));
+    }
+
 
 
 }

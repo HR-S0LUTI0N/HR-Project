@@ -1,15 +1,27 @@
-# HR-PROJECT
+#   <u>HR Management</u>
 
-docker build --build-arg JAR_FILE=config-server-git/build/libs/config-server-git-v.0.0.1.jar --platform=linux/amd64 -t secil123456/config-git-server:v.1.0 .
+![LOGO](pictures/Logo_HR.png)
 
-docker build --build-arg JAR_FILE=auth-service/build/libs/auth-service-v.0.0.1.jar --platform=linux/amd64 -t secil123456/auth-service:v.4.0 .
-docker build --build-arg JAR_FILE=user-profile-service/build/libs/user-profile-service-v.0.0.1.jar --platform=linux/amd64 -t secil123456/user-profile-service:v.2.0 .
-docker build --build-arg JAR_FILE=company-service/build/libs/company-service-v.0.0.1.jar --platform=linux/amd64 -t secil123456/company-service:v.2.0 .
+---
+#   <u>Description</u>
 
+HR Management is a website in which gives its users freedom to manage their business easily. If companies
+want to use this program, they must forward their company information to the personnel with the admin role, and through these personnel, the companies are registered on the site.
+This website gives companies the option to manage their business easily and also advertise their companies.
 
-docker build --build-arg JAR_FILE=mail-service/build/libs/mail-service-v.0.0.1.jar --platform=linux/amd64 -t secil123456/mail-service:v.1.0 .
-docker build --build-arg JAR_FILE=api-gateway-service/build/libs/api-gateway-service-v.0.0.1.jar --platform=linux/amd64 -t secil123456/api-gateway-service:v.1.2 .
+This website will mainly consist of two main parts those are:
+    
+*   Visitor
+*   Business
 
+### <u>Visitor</u>
 
+Visitors can see the companies which are registered on the website and inspect the detailed information about them also comment's made by personnel who work at the companies
+can be seen on these detail pages for each company, and it'll supply trust between the company and the public.
 
-db.createUser({user: "Java7User",pwd: "root",roles: ["readWrite", "dbAdmin"]})
+### <u>Business</u>
+
+At the business part, it supplies solutions to the companies about management of the personnel requests. 
+All the personnel information will be included on the personnel and manager pages. Personnel can have many request
+options such as; advance, expense and day-off from their panels and also can inspect their information and Manager can do all
+those utility functions and can respond the personnel requests on their own panel.
