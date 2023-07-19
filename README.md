@@ -25,71 +25,91 @@ At the business part, it supplies solutions to the companies about management of
 All the personnel information will be included on the personnel and manager pages. Personnel can have many request
 options such as; advance, expense and day-off from their panels and also can inspect their information and Manager can do all
 those utility functions and can respond the personnel requests on their own panel.
-
+#### </br> REGISTER PAGE
+Visitor registration is being carried out on this page. After completing the registration, you will receive an activation status code via email, which you can use to activate your account.
 ![Visitor Register](pictures/visitor/Register.png)
-#### Register yaptıktan sonra maile activate status kodunuz gelir,bu kod ile hesabınızı aktif edebilirsiniz.
 
+#### </br> FORGOT PASSWORD
+When a visitor forgets their password, they can click on the "Forgot Password" button, and this page will open where they enter their email address. A password reset link will be sent to their email address.
+![Visitor ForgotPassword](pictures/visitor/ForgotPassword.png)
+Upon clicking the password reset link received in the email, the visitor will be directed to this page where they can update their password.
 ![Visitor ChangePassword](pictures/visitor/ChangePassword.png)
-#### DELETE
 
+#### </br> LOGIN PAGE
+In this page, the user logs in and is redirected to the relevant page based on their role.
 ![Visitor Login](pictures/visitor/Login.png)
 
+#### </br> VISITOR HOME PAGE
+After the visitor logs in, this page opens up. On this page, registered companies are displayed, and there is also a search button to search for specific companies.
 ![Visitor HomePage](pictures/visitor/HomePage.png)
-#### Username ve password ile giriş yapıyoruz.
-
-![Visitor UserProfile](pictures/visitor/UserProfile.png)
-#### Mailimize gelen aktivasyon kodu ile hesabımızı aktif ediyoruz.
-
+The section where the companies are displayed.
 ![Visitor Companies](pictures/visitor/Companies.png)
-#### UPDATE
-
+The section where the searched companies are displayed.
 ![Visitor CompanyFilter](pictures/visitor/CompanyFilter.png)
-#### DELETE
+#### </br> COMPANY OWN PAGES
+On this page, the details of the company are visible.
 ![Visitor CompanyOwnPage](pictures/visitor/CompanyOwnPage.png)
-#### DELETE
 
+#### </br> USERPROFILE DETAILS
+On this page, the user's information is displayed. If the user wishes, they can perform the password change process.
+![Visitor UserProfile](pictures/visitor/UserProfile.png)
 
+#### </br> PERSONNEL PAGE
+This page displays the company name where the personnel work, payday, department, salary, and some work-related data related to the company.
 ![Personel PersonelMainPage](pictures/personel/PersonelMainPage.png)
-#### DELETE
 ![Personel PersonelMainPage2](pictures/personel/PersonelMainPage2.png)
-#### DELETE
+#### </br> ADVANCE REQUEST
+This page is the personnel's advance request page. The personnel is required to specify the desired amount and provide an explanation regarding the reason for the request.
 ![Personel AdvanceRequest](pictures/personel/AdvanceRequest.png)
-#### DELETE
+
+#### </br> EXPENSE DEMAND
+This page is where the personnel enters data for the expenses they made.
 ![Personel ExpenseDemand](pictures/personel/ExpenseDemand.png)
-#### DELETE
+
+#### </br> DAY OFF REQUEST
+On this page, the personnel requests leave from the company. It is the section where they will enter the type of leave requested, the explanation, and the dates of the requested leave.
 ![Personel DayOffRequest](pictures/personel/DayOffRequest.png)
-#### DELETE
 
+#### </br> ADMIN PAGE
+This page is an admin management page. Here, the admin reviews and approves users with the manager role and the comments made by the personnel about the company they work for.
 ![Admin Admin](pictures/admin/Admin.png)
-#### DELETE
-![Admin AddCompany](pictures/admin/AddCompany.png)
-#### DELETE
-![Admin AddCompany2](pictures/admin/AddCompany2.png)
-#### DELETE
 
+#### </br> ADD COMPANY
+The admin can add a company on this page.
+![Admin AddCompany](pictures/admin/AddCompany.png)
+![Admin AddCompany2](pictures/admin/AddCompany2.png)
+
+#### </br> PRICING
+Users with the founder-manager role select a tariff for the visibility of their companies to visitors. This determines the number of days the company will be visible.
 ![Manager Pricing](pictures/manager/Pricing.png)
-#### DELETE
+
+#### </br> REGISTER MANAGER PAGE
+Manager registration is being carried out on this page.
 ![Manager Register](pictures/manager/Register.png)
-#### DELETE
+
+#### </br> MANAGER HOME PAGE
+On this page, the administrator can view the company name, number of personnel, sector, company revenue, and personnel list.
 ![Manager ManagerHomePage](pictures/manager/ManagerHomePage.png)
-#### DELETE
+
+#### </br> ADD MANAGER PAGE
+Users with the founder-manager role can add administrators for the company on this page.
 ![Manager AddManager](pictures/manager/AddManager.png)
-#### DELETE
 ![Manager AddManager2](pictures/manager/AddManager2.png)
-#### DELETE
+As a founder-manager is also a manager, they can add personnel as well.
 ![Manager AddPersonel](pictures/manager/AddPersonel.png)
-#### DELETE
 ![Manager AddPersonel2](pictures/manager/AddPersonel2.png)
-#### DELETE
+#### </br> ADVANCE REQUEST
+This page is the personnel's advance request page. The personnel is required to specify the desired amount and provide an explanation regarding the reason for the request.
 ![Manager AdvanceRequest](pictures/manager/AdvanceRequest.png)
-#### DELETE
+
+#### </br> CONFIRM ADVANCE
+Users with the manager role can approve or reject incoming requests for advances, expenses, and leave days.
 ![Manager ConfirmAdvance](pictures/manager/ConfirmAdvance.png)
-#### DELETE
 ![Manager ConfirmDayOff](pictures/manager/ConfirmDayOff.png)
-#### DELETE
 ![Manager ConfirmExpense](pictures/manager/ConfirmExpense.png)
-#### DELETE
+#### </br> DAY OFF REQUEST
+On this page, the manager requests leave from the company. It is the section where they will enter the type of leave requested, the explanation, and the dates of the requested leave.
 ![Manager DayOffRequest](pictures/manager/DayOffRequest.png)
-#### DELETE
+#### </br> EXPENSE REQUEST
+This page is where the manager enters data for the expenses they made.
 ![Manager ExpenseRequest](pictures/manager/ExpenseRequest.png)
-#### DELETE
